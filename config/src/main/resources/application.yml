@@ -1,0 +1,19 @@
+spring:
+  profiles:
+    active: native
+  application:
+    name: springCloud.config
+
+server:
+  port: 809 #配置中心端口
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://${host:localhost}:808/eureka/
+    registry-fetch-interval-seconds: 5 # 拉取服务注册信息间隔时间 (默认为30秒)
+  instance:
+    lease-expiration-duration-in-seconds: 60  # 注册中心超过这个时间没收到心跳，会视为无效节点(默认为90秒)
+    lease-renewal-interval-in-seconds: 30  # 发送心跳间隔时间（默认30秒）
+    preferIpAddress: true
+    instanceId: ${spring.cloud.client.ip-address}:${server.port}
