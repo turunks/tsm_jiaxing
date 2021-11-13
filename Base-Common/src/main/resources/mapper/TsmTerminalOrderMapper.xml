@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.com.heyue.mapper.TsmTerminalOrderMapper">
+  <resultMap id="BaseResultMap" type="cn.com.heyue.entity.TsmTerminalOrder">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="transaction_num" jdbcType="VARCHAR" property="transactionNum" />
+    <result column="transaction_type" jdbcType="VARCHAR" property="transactionType" />
+    <result column="city_code" jdbcType="VARCHAR" property="cityCode" />
+    <result column="area_code" jdbcType="VARCHAR" property="areaCode" />
+    <result column="card_species" jdbcType="VARCHAR" property="cardSpecies" />
+    <result column="terminal_no" jdbcType="VARCHAR" property="terminalNo" />
+    <result column="tsm_no" jdbcType="VARCHAR" property="tsmNo" />
+    <result column="createtime" jdbcType="TIMESTAMP" property="createtime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, transaction_num, transaction_type, city_code, area_code, card_species, terminal_no, 
+    tsm_no, createtime
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tsm_terminal_order
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from tsm_terminal_order
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="cn.com.heyue.entity.TsmTerminalOrder" useGeneratedKeys="true">
+    insert into tsm_terminal_order (transaction_num, transaction_type, 
+      city_code, area_code, card_species, 
+      terminal_no, tsm_no, createtime
+      )
+    values (#{transactionNum,jdbcType=VARCHAR}, #{transactionType,jdbcType=VARCHAR}, 
+      #{cityCode,jdbcType=VARCHAR}, #{areaCode,jdbcType=VARCHAR}, #{cardSpecies,jdbcType=VARCHAR}, 
+      #{terminalNo,jdbcType=VARCHAR}, #{tsmNo,jdbcType=VARCHAR}, #{createtime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="cn.com.heyue.entity.TsmTerminalOrder" useGeneratedKeys="true">
+    insert into tsm_terminal_order
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="transactionNum != null">
+        transaction_num,
+      </if>
+      <if test="transactionType != null">
+        transaction_type,
+      </if>
+      <if test="cityCode != null">
+        city_code,
+      </if>
+      <if test="areaCode != null">
+        area_code,
+      </if>
+      <if test="cardSpecies != null">
+        card_species,
+      </if>
+      <if test="terminalNo != null">
+        terminal_no,
+      </if>
+      <if test="tsmNo != null">
+        tsm_no,
+      </if>
+      <if test="createtime != null">
+        createtime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="transactionNum != null">
+        #{transactionNum,jdbcType=VARCHAR},
+      </if>
+      <if test="transactionType != null">
+        #{transactionType,jdbcType=VARCHAR},
+      </if>
+      <if test="cityCode != null">
+        #{cityCode,jdbcType=VARCHAR},
+      </if>
+      <if test="areaCode != null">
+        #{areaCode,jdbcType=VARCHAR},
+      </if>
+      <if test="cardSpecies != null">
+        #{cardSpecies,jdbcType=VARCHAR},
+      </if>
+      <if test="terminalNo != null">
+        #{terminalNo,jdbcType=VARCHAR},
+      </if>
+      <if test="tsmNo != null">
+        #{tsmNo,jdbcType=VARCHAR},
+      </if>
+      <if test="createtime != null">
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.com.heyue.entity.TsmTerminalOrder">
+    update tsm_terminal_order
+    <set>
+      <if test="transactionNum != null">
+        transaction_num = #{transactionNum,jdbcType=VARCHAR},
+      </if>
+      <if test="transactionType != null">
+        transaction_type = #{transactionType,jdbcType=VARCHAR},
+      </if>
+      <if test="cityCode != null">
+        city_code = #{cityCode,jdbcType=VARCHAR},
+      </if>
+      <if test="areaCode != null">
+        area_code = #{areaCode,jdbcType=VARCHAR},
+      </if>
+      <if test="cardSpecies != null">
+        card_species = #{cardSpecies,jdbcType=VARCHAR},
+      </if>
+      <if test="terminalNo != null">
+        terminal_no = #{terminalNo,jdbcType=VARCHAR},
+      </if>
+      <if test="tsmNo != null">
+        tsm_no = #{tsmNo,jdbcType=VARCHAR},
+      </if>
+      <if test="createtime != null">
+        createtime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.com.heyue.entity.TsmTerminalOrder">
+    update tsm_terminal_order
+    set transaction_num = #{transactionNum,jdbcType=VARCHAR},
+      transaction_type = #{transactionType,jdbcType=VARCHAR},
+      city_code = #{cityCode,jdbcType=VARCHAR},
+      area_code = #{areaCode,jdbcType=VARCHAR},
+      card_species = #{cardSpecies,jdbcType=VARCHAR},
+      terminal_no = #{terminalNo,jdbcType=VARCHAR},
+      tsm_no = #{tsmNo,jdbcType=VARCHAR},
+      createtime = #{createtime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

@@ -1,0 +1,47 @@
+############开发环境配置文件###################
+
+registry:
+  url: http://${host:localhost}:808/eureka/  #注册中心的地址与端口，方便给其他微服务的配置使用
+
+## spring配置
+spring:
+  datasource: #数据库配置
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://192.168.99.100:3306/tsm_develop?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai
+    username: root
+    password: 123456
+
+mybatis:
+  typeAliasesPackage: cn.com.heyue.model
+  mapperLocations: classpath*:mapper/*.xml
+  configuration:
+      log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+#  jpa:
+#    generate-ddl: false
+#    hibernate:
+#      ddl-auto: none
+#      naming:
+#        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+#    database: mysql
+#    show-sql: false
+#  resources:
+#    chain:
+#      strategy:
+#        content:
+#          enabled: true
+#          paths: /**
+#  redis: ## Redis配置
+#    host: 127.0.0.1
+#    port: 6379
+#    password: password
+#    database: 15
+#    pool:
+#      max-active: 100
+#      min-idle: 2
+#      max-idle: 2
+#      max-wait: 500
+
+# 自定义配置
+sysconfig:
+  isDebug: true  #是否Debug
+  swagger: true  #开启swagger

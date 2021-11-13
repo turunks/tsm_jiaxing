@@ -63,7 +63,7 @@ public class SignUtils<T> {
                     ? map.get(key).toString()
                     : null;
             if (value != null && !StringUtils.equals(key, fieldNames)) {
-//                buf.append(cn.com.heyue.utils.StringUtils.toUpperCaseFirstOne(key)).append("=").append(map.get(key).toString()).append("&");
+//                buf.append(StringUtils.toUpperCaseFirstOne(key)).append("=").append(map.get(key).toString()).append("&");
                 buf.append(key).append("=").append(map.get(key).toString()).append("&");
             }
         }

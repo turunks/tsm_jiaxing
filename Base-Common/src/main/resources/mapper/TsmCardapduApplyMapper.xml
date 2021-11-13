@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.com.heyue.mapper.TsmCardapduApplyMapper">
+  <resultMap id="BaseResultMap" type="cn.com.heyue.entity.TsmCardapduApply">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="city_code" jdbcType="VARCHAR" property="cityCode" />
+    <result column="area_code" jdbcType="VARCHAR" property="areaCode" />
+    <result column="card_ species" jdbcType="VARCHAR" property="cardSpecies" />
+    <result column="terminal_no" jdbcType="VARCHAR" property="terminalNo" />
+    <result column="tsm_no" jdbcType="VARCHAR" property="tsmNo" />
+    <result column="Card_no" jdbcType="VARCHAR" property="cardNo" />
+    <result column="Card_optype" jdbcType="VARCHAR" property="cardOptype" />
+    <result column="transaction_num" jdbcType="VARCHAR" property="transactionNum" />
+    <result column="transaction_datetime" jdbcType="TIMESTAMP" property="transactionDatetime" />
+    <result column="issubmit" jdbcType="VARCHAR" property="issubmit" />
+    <result column="submittime" jdbcType="TIMESTAMP" property="submittime" />
+    <result column="apdu" jdbcType="VARCHAR" property="apdu" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, city_code, area_code, `card_ species`, terminal_no, tsm_no, Card_no, Card_optype, 
+    transaction_num, transaction_datetime, issubmit, submittime, apdu
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tsm_cardapdu_apply
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from tsm_cardapdu_apply
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="cn.com.heyue.entity.TsmCardapduApply" useGeneratedKeys="true">
+    insert into tsm_cardapdu_apply (city_code, area_code, `card_ species`, 
+      terminal_no, tsm_no, Card_no, 
+      Card_optype, transaction_num, transaction_datetime, 
+      issubmit, submittime, apdu
+      )
+    values (#{cityCode,jdbcType=VARCHAR}, #{areaCode,jdbcType=VARCHAR}, #{cardSpecies,jdbcType=VARCHAR}, 
+      #{terminalNo,jdbcType=VARCHAR}, #{tsmNo,jdbcType=VARCHAR}, #{cardNo,jdbcType=VARCHAR}, 
+      #{cardOptype,jdbcType=VARCHAR}, #{transactionNum,jdbcType=VARCHAR}, #{transactionDatetime,jdbcType=TIMESTAMP}, 
+      #{issubmit,jdbcType=VARCHAR}, #{submittime,jdbcType=TIMESTAMP}, #{apdu,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="cn.com.heyue.entity.TsmCardapduApply" useGeneratedKeys="true">
+    insert into tsm_cardapdu_apply
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="cityCode != null">
+        city_code,
+      </if>
+      <if test="areaCode != null">
+        area_code,
+      </if>
+      <if test="cardSpecies != null">
+        `card_ species`,
+      </if>
+      <if test="terminalNo != null">
+        terminal_no,
+      </if>
+      <if test="tsmNo != null">
+        tsm_no,
+      </if>
+      <if test="cardNo != null">
+        Card_no,
+      </if>
+      <if test="cardOptype != null">
+        Card_optype,
+      </if>
+      <if test="transactionNum != null">
+        transaction_num,
+      </if>
+      <if test="transactionDatetime != null">
+        transaction_datetime,
+      </if>
+      <if test="issubmit != null">
+        issubmit,
+      </if>
+      <if test="submittime != null">
+        submittime,
+      </if>
+      <if test="apdu != null">
+        apdu,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="cityCode != null">
+        #{cityCode,jdbcType=VARCHAR},
+      </if>
+      <if test="areaCode != null">
+        #{areaCode,jdbcType=VARCHAR},
+      </if>
+      <if test="cardSpecies != null">
+        #{cardSpecies,jdbcType=VARCHAR},
+      </if>
+      <if test="terminalNo != null">
+        #{terminalNo,jdbcType=VARCHAR},
+      </if>
+      <if test="tsmNo != null">
+        #{tsmNo,jdbcType=VARCHAR},
+      </if>
+      <if test="cardNo != null">
+        #{cardNo,jdbcType=VARCHAR},
+      </if>
+      <if test="cardOptype != null">
+        #{cardOptype,jdbcType=VARCHAR},
+      </if>
+      <if test="transactionNum != null">
+        #{transactionNum,jdbcType=VARCHAR},
+      </if>
+      <if test="transactionDatetime != null">
+        #{transactionDatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="issubmit != null">
+        #{issubmit,jdbcType=VARCHAR},
+      </if>
+      <if test="submittime != null">
+        #{submittime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="apdu != null">
+        #{apdu,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.com.heyue.entity.TsmCardapduApply">
+    update tsm_cardapdu_apply
+    <set>
+      <if test="cityCode != null">
+        city_code = #{cityCode,jdbcType=VARCHAR},
+      </if>
+      <if test="areaCode != null">
+        area_code = #{areaCode,jdbcType=VARCHAR},
+      </if>
+      <if test="cardSpecies != null">
+        `card_ species` = #{cardSpecies,jdbcType=VARCHAR},
+      </if>
+      <if test="terminalNo != null">
+        terminal_no = #{terminalNo,jdbcType=VARCHAR},
+      </if>
+      <if test="tsmNo != null">
+        tsm_no = #{tsmNo,jdbcType=VARCHAR},
+      </if>
+      <if test="cardNo != null">
+        Card_no = #{cardNo,jdbcType=VARCHAR},
+      </if>
+      <if test="cardOptype != null">
+        Card_optype = #{cardOptype,jdbcType=VARCHAR},
+      </if>
+      <if test="transactionNum != null">
+        transaction_num = #{transactionNum,jdbcType=VARCHAR},
+      </if>
+      <if test="transactionDatetime != null">
+        transaction_datetime = #{transactionDatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="issubmit != null">
+        issubmit = #{issubmit,jdbcType=VARCHAR},
+      </if>
+      <if test="submittime != null">
+        submittime = #{submittime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="apdu != null">
+        apdu = #{apdu,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.com.heyue.entity.TsmCardapduApply">
+    update tsm_cardapdu_apply
+    set city_code = #{cityCode,jdbcType=VARCHAR},
+      area_code = #{areaCode,jdbcType=VARCHAR},
+      `card_ species` = #{cardSpecies,jdbcType=VARCHAR},
+      terminal_no = #{terminalNo,jdbcType=VARCHAR},
+      tsm_no = #{tsmNo,jdbcType=VARCHAR},
+      Card_no = #{cardNo,jdbcType=VARCHAR},
+      Card_optype = #{cardOptype,jdbcType=VARCHAR},
+      transaction_num = #{transactionNum,jdbcType=VARCHAR},
+      transaction_datetime = #{transactionDatetime,jdbcType=TIMESTAMP},
+      issubmit = #{issubmit,jdbcType=VARCHAR},
+      submittime = #{submittime,jdbcType=TIMESTAMP},
+      apdu = #{apdu,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+  <update id="updateByCardNo" parameterType="cn.com.heyue.entity.TsmCardapduApply">
+    update tsm_cardapdu_apply
+    <set>
+      <if test="cityCode != null">
+        city_code = #{cityCode,jdbcType=VARCHAR},
+      </if>
+      <if test="areaCode != null">
+        area_code = #{areaCode,jdbcType=VARCHAR},
+      </if>
+      <if test="cardSpecies != null">
+        `card_ species` = #{cardSpecies,jdbcType=VARCHAR},
+      </if>
+      <if test="terminalNo != null">
+        terminal_no = #{terminalNo,jdbcType=VARCHAR},
+      </if>
+      <if test="tsmNo != null">
+        tsm_no = #{tsmNo,jdbcType=VARCHAR},
+      </if>
+      <if test="cardNo != null">
+        Card_no = #{cardNo,jdbcType=VARCHAR},
+      </if>
+      <if test="cardOptype != null">
+        Card_optype = #{cardOptype,jdbcType=VARCHAR},
+      </if>
+      <if test="transactionNum != null">
+        transaction_num = #{transactionNum,jdbcType=VARCHAR},
+      </if>
+      <if test="transactionDatetime != null">
+        transaction_datetime = #{transactionDatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="issubmit != null">
+        issubmit = #{issubmit,jdbcType=VARCHAR},
+      </if>
+      <if test="submittime != null">
+        submittime = #{submittime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="apdu != null">
+        apdu = #{apdu,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where Card_no = #{cardNo,jdbcType=VARCHAR}
+  </update>
+
+</mapper>

@@ -1,0 +1,324 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.com.heyue.mapper.TsmCardDetailMapper">
+  <resultMap id="BaseResultMap" type="cn.com.heyue.entity.TsmCardDetail">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="cadFile_id" jdbcType="BIGINT" property="cadfileId" />
+    <result column="city_code" jdbcType="VARCHAR" property="cityCode" />
+    <result column="area_code" jdbcType="VARCHAR" property="areaCode" />
+    <result column="card_ species" jdbcType="VARCHAR" property="cardSpecies" />
+    <result column="card_no" jdbcType="VARCHAR" property="cardNo" />
+    <result column="card_sign" jdbcType="VARCHAR" property="cardSign" />
+    <result column="card_app_version" jdbcType="VARCHAR" property="cardAppVersion" />
+    <result column="app_serial_no" jdbcType="VARCHAR" property="appSerialNo" />
+    <result column="app_start_date" jdbcType="VARCHAR" property="appStartDate" />
+    <result column="app_valid_date" jdbcType="VARCHAR" property="appValidDate" />
+    <result column="card_custom_fci" jdbcType="VARCHAR" property="cardCustomFci" />
+    <result column="card_type_sign" jdbcType="VARCHAR" property="cardTypeSign" />
+    <result column="internate_code" jdbcType="VARCHAR" property="internateCode" />
+    <result column="province_code" jdbcType="VARCHAR" property="provinceCode" />
+    <result column="contact_card_type" jdbcType="VARCHAR" property="contactCardType" />
+    <result column="card_type" jdbcType="VARCHAR" property="cardType" />
+    <result column="reserve" jdbcType="VARCHAR" property="reserve" />
+    <result column="internation_key" jdbcType="VARCHAR" property="internationKey" />
+    <result column="domestic_key" jdbcType="VARCHAR" property="domesticKey" />
+    <result column="card_status" jdbcType="VARCHAR" property="cardStatus" />
+    <result column="in_deposit_time" jdbcType="TIMESTAMP" property="inDepositTime" />
+    <result column="out_deposit_time" jdbcType="TIMESTAMP" property="outDepositTime" />
+    <result column="app_id" jdbcType="VARCHAR" property="appId" />
+    <result column="merchant_no" jdbcType="VARCHAR" property="merchantNo" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, cadFile_id, city_code, area_code, `card_ species`, card_no, card_sign, card_app_version, 
+    app_serial_no, app_start_date, app_valid_date, card_custom_fci, card_type_sign, internate_code, 
+    province_code, contact_card_type, card_type, reserve, internation_key, domestic_key, 
+    card_status, in_deposit_time, out_deposit_time, app_id, merchant_no
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from `tsm_card _detail`
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from `tsm_card _detail`
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="cn.com.heyue.entity.TsmCardDetail" useGeneratedKeys="true">
+    insert into `tsm_card _detail` (cadFile_id, city_code, area_code, 
+      `card_ species`, card_no, card_sign, 
+      card_app_version, app_serial_no, app_start_date, 
+      app_valid_date, card_custom_fci, card_type_sign, 
+      internate_code, province_code, contact_card_type, 
+      card_type, reserve, internation_key, 
+      domestic_key, card_status, in_deposit_time, 
+      out_deposit_time, app_id, merchant_no
+      )
+    values (#{cadfileId,jdbcType=BIGINT}, #{cityCode,jdbcType=VARCHAR}, #{areaCode,jdbcType=VARCHAR}, 
+      #{cardSpecies,jdbcType=VARCHAR}, #{cardNo,jdbcType=VARCHAR}, #{cardSign,jdbcType=VARCHAR}, 
+      #{cardAppVersion,jdbcType=VARCHAR}, #{appSerialNo,jdbcType=VARCHAR}, #{appStartDate,jdbcType=VARCHAR}, 
+      #{appValidDate,jdbcType=VARCHAR}, #{cardCustomFci,jdbcType=VARCHAR}, #{cardTypeSign,jdbcType=VARCHAR}, 
+      #{internateCode,jdbcType=VARCHAR}, #{provinceCode,jdbcType=VARCHAR}, #{contactCardType,jdbcType=VARCHAR}, 
+      #{cardType,jdbcType=VARCHAR}, #{reserve,jdbcType=VARCHAR}, #{internationKey,jdbcType=VARCHAR}, 
+      #{domesticKey,jdbcType=VARCHAR}, #{cardStatus,jdbcType=VARCHAR}, #{inDepositTime,jdbcType=TIMESTAMP}, 
+      #{outDepositTime,jdbcType=TIMESTAMP}, #{appId,jdbcType=VARCHAR}, #{merchantNo,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="cn.com.heyue.entity.TsmCardDetail" useGeneratedKeys="true">
+    insert into `tsm_card _detail`
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="cadfileId != null">
+        cadFile_id,
+      </if>
+      <if test="cityCode != null">
+        city_code,
+      </if>
+      <if test="areaCode != null">
+        area_code,
+      </if>
+      <if test="cardSpecies != null">
+        `card_ species`,
+      </if>
+      <if test="cardNo != null">
+        card_no,
+      </if>
+      <if test="cardSign != null">
+        card_sign,
+      </if>
+      <if test="cardAppVersion != null">
+        card_app_version,
+      </if>
+      <if test="appSerialNo != null">
+        app_serial_no,
+      </if>
+      <if test="appStartDate != null">
+        app_start_date,
+      </if>
+      <if test="appValidDate != null">
+        app_valid_date,
+      </if>
+      <if test="cardCustomFci != null">
+        card_custom_fci,
+      </if>
+      <if test="cardTypeSign != null">
+        card_type_sign,
+      </if>
+      <if test="internateCode != null">
+        internate_code,
+      </if>
+      <if test="provinceCode != null">
+        province_code,
+      </if>
+      <if test="contactCardType != null">
+        contact_card_type,
+      </if>
+      <if test="cardType != null">
+        card_type,
+      </if>
+      <if test="reserve != null">
+        reserve,
+      </if>
+      <if test="internationKey != null">
+        internation_key,
+      </if>
+      <if test="domesticKey != null">
+        domestic_key,
+      </if>
+      <if test="cardStatus != null">
+        card_status,
+      </if>
+      <if test="inDepositTime != null">
+        in_deposit_time,
+      </if>
+      <if test="outDepositTime != null">
+        out_deposit_time,
+      </if>
+      <if test="appId != null">
+        app_id,
+      </if>
+      <if test="merchantNo != null">
+        merchant_no,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="cadfileId != null">
+        #{cadfileId,jdbcType=BIGINT},
+      </if>
+      <if test="cityCode != null">
+        #{cityCode,jdbcType=VARCHAR},
+      </if>
+      <if test="areaCode != null">
+        #{areaCode,jdbcType=VARCHAR},
+      </if>
+      <if test="cardSpecies != null">
+        #{cardSpecies,jdbcType=VARCHAR},
+      </if>
+      <if test="cardNo != null">
+        #{cardNo,jdbcType=VARCHAR},
+      </if>
+      <if test="cardSign != null">
+        #{cardSign,jdbcType=VARCHAR},
+      </if>
+      <if test="cardAppVersion != null">
+        #{cardAppVersion,jdbcType=VARCHAR},
+      </if>
+      <if test="appSerialNo != null">
+        #{appSerialNo,jdbcType=VARCHAR},
+      </if>
+      <if test="appStartDate != null">
+        #{appStartDate,jdbcType=VARCHAR},
+      </if>
+      <if test="appValidDate != null">
+        #{appValidDate,jdbcType=VARCHAR},
+      </if>
+      <if test="cardCustomFci != null">
+        #{cardCustomFci,jdbcType=VARCHAR},
+      </if>
+      <if test="cardTypeSign != null">
+        #{cardTypeSign,jdbcType=VARCHAR},
+      </if>
+      <if test="internateCode != null">
+        #{internateCode,jdbcType=VARCHAR},
+      </if>
+      <if test="provinceCode != null">
+        #{provinceCode,jdbcType=VARCHAR},
+      </if>
+      <if test="contactCardType != null">
+        #{contactCardType,jdbcType=VARCHAR},
+      </if>
+      <if test="cardType != null">
+        #{cardType,jdbcType=VARCHAR},
+      </if>
+      <if test="reserve != null">
+        #{reserve,jdbcType=VARCHAR},
+      </if>
+      <if test="internationKey != null">
+        #{internationKey,jdbcType=VARCHAR},
+      </if>
+      <if test="domesticKey != null">
+        #{domesticKey,jdbcType=VARCHAR},
+      </if>
+      <if test="cardStatus != null">
+        #{cardStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="inDepositTime != null">
+        #{inDepositTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="outDepositTime != null">
+        #{outDepositTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="appId != null">
+        #{appId,jdbcType=VARCHAR},
+      </if>
+      <if test="merchantNo != null">
+        #{merchantNo,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.com.heyue.entity.TsmCardDetail">
+    update `tsm_card _detail`
+    <set>
+      <if test="cadfileId != null">
+        cadFile_id = #{cadfileId,jdbcType=BIGINT},
+      </if>
+      <if test="cityCode != null">
+        city_code = #{cityCode,jdbcType=VARCHAR},
+      </if>
+      <if test="areaCode != null">
+        area_code = #{areaCode,jdbcType=VARCHAR},
+      </if>
+      <if test="cardSpecies != null">
+        `card_ species` = #{cardSpecies,jdbcType=VARCHAR},
+      </if>
+      <if test="cardNo != null">
+        card_no = #{cardNo,jdbcType=VARCHAR},
+      </if>
+      <if test="cardSign != null">
+        card_sign = #{cardSign,jdbcType=VARCHAR},
+      </if>
+      <if test="cardAppVersion != null">
+        card_app_version = #{cardAppVersion,jdbcType=VARCHAR},
+      </if>
+      <if test="appSerialNo != null">
+        app_serial_no = #{appSerialNo,jdbcType=VARCHAR},
+      </if>
+      <if test="appStartDate != null">
+        app_start_date = #{appStartDate,jdbcType=VARCHAR},
+      </if>
+      <if test="appValidDate != null">
+        app_valid_date = #{appValidDate,jdbcType=VARCHAR},
+      </if>
+      <if test="cardCustomFci != null">
+        card_custom_fci = #{cardCustomFci,jdbcType=VARCHAR},
+      </if>
+      <if test="cardTypeSign != null">
+        card_type_sign = #{cardTypeSign,jdbcType=VARCHAR},
+      </if>
+      <if test="internateCode != null">
+        internate_code = #{internateCode,jdbcType=VARCHAR},
+      </if>
+      <if test="provinceCode != null">
+        province_code = #{provinceCode,jdbcType=VARCHAR},
+      </if>
+      <if test="contactCardType != null">
+        contact_card_type = #{contactCardType,jdbcType=VARCHAR},
+      </if>
+      <if test="cardType != null">
+        card_type = #{cardType,jdbcType=VARCHAR},
+      </if>
+      <if test="reserve != null">
+        reserve = #{reserve,jdbcType=VARCHAR},
+      </if>
+      <if test="internationKey != null">
+        internation_key = #{internationKey,jdbcType=VARCHAR},
+      </if>
+      <if test="domesticKey != null">
+        domestic_key = #{domesticKey,jdbcType=VARCHAR},
+      </if>
+      <if test="cardStatus != null">
+        card_status = #{cardStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="inDepositTime != null">
+        in_deposit_time = #{inDepositTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="outDepositTime != null">
+        out_deposit_time = #{outDepositTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="appId != null">
+        app_id = #{appId,jdbcType=VARCHAR},
+      </if>
+      <if test="merchantNo != null">
+        merchant_no = #{merchantNo,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.com.heyue.entity.TsmCardDetail">
+    update `tsm_card _detail`
+    set cadFile_id = #{cadfileId,jdbcType=BIGINT},
+      city_code = #{cityCode,jdbcType=VARCHAR},
+      area_code = #{areaCode,jdbcType=VARCHAR},
+      `card_ species` = #{cardSpecies,jdbcType=VARCHAR},
+      card_no = #{cardNo,jdbcType=VARCHAR},
+      card_sign = #{cardSign,jdbcType=VARCHAR},
+      card_app_version = #{cardAppVersion,jdbcType=VARCHAR},
+      app_serial_no = #{appSerialNo,jdbcType=VARCHAR},
+      app_start_date = #{appStartDate,jdbcType=VARCHAR},
+      app_valid_date = #{appValidDate,jdbcType=VARCHAR},
+      card_custom_fci = #{cardCustomFci,jdbcType=VARCHAR},
+      card_type_sign = #{cardTypeSign,jdbcType=VARCHAR},
+      internate_code = #{internateCode,jdbcType=VARCHAR},
+      province_code = #{provinceCode,jdbcType=VARCHAR},
+      contact_card_type = #{contactCardType,jdbcType=VARCHAR},
+      card_type = #{cardType,jdbcType=VARCHAR},
+      reserve = #{reserve,jdbcType=VARCHAR},
+      internation_key = #{internationKey,jdbcType=VARCHAR},
+      domestic_key = #{domesticKey,jdbcType=VARCHAR},
+      card_status = #{cardStatus,jdbcType=VARCHAR},
+      in_deposit_time = #{inDepositTime,jdbcType=TIMESTAMP},
+      out_deposit_time = #{outDepositTime,jdbcType=TIMESTAMP},
+      app_id = #{appId,jdbcType=VARCHAR},
+      merchant_no = #{merchantNo,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>
