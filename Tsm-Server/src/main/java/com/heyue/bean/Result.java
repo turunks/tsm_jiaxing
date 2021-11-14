@@ -2,7 +2,9 @@ package com.heyue.bean;
 
 
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
 
+@Data
 public class Result<T> {
     /**
      * 状态码 0 正常 其他错误

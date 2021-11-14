@@ -41,6 +41,7 @@ public class TestController {
         String path = "D:\\" + date_2 + ".SQ";
         List<String> accountList = new ArrayList<>();
         accountList.add("111,222,333");
+        accountList.add("");
         accountList.add("TRADELIST END,000000,000000000000");
         try {
             FileUtils.writeFileContext(accountList, path);
