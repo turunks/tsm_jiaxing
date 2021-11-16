@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.com.heyue.mapper.TsmCardMakefileMapper">
+  <resultMap id="BaseResultMap" type="cn.com.heyue.entity.TsmCardMakefile">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="city_code" jdbcType="VARCHAR" property="cityCode" />
+    <result column="area_code" jdbcType="VARCHAR" property="areaCode" />
+    <result column="card_species" jdbcType="VARCHAR" property="cardSpecies" />
+    <result column="makefile_name" jdbcType="VARCHAR" property="makefileName" />
+    <result column="makefile_ftppath" jdbcType="VARCHAR" property="makefileFtppath" />
+    <result column="makefile_createtime" jdbcType="TIMESTAMP" property="makefileCreatetime" />
+    <result column="makefile_serialno" jdbcType="VARCHAR" property="makefileSerialno" />
+    <result column="cardnum" jdbcType="INTEGER" property="cardnum" />
+    <result column="cardtype" jdbcType="VARCHAR" property="cardtype" />
+    <result column="feedback_filename" jdbcType="VARCHAR" property="feedbackFilename" />
+    <result column="feedbackfile_createtime" jdbcType="VARCHAR" property="feedbackfileCreatetime" />
+    <result column="gettime" jdbcType="TIMESTAMP" property="gettime" />
+    <result column="feedbackfile_serialno" jdbcType="VARCHAR" property="feedbackfileSerialno" />
+    <result column="feedbackfile_cardnum" jdbcType="INTEGER" property="feedbackfileCardnum" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, city_code, area_code, card_species, makefile_name, makefile_ftppath, makefile_createtime, 
+    makefile_serialno, cardnum, cardtype, feedback_filename, feedbackfile_createtime, 
+    gettime, feedbackfile_serialno, feedbackfile_cardnum
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tsm_card_makefile
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from tsm_card_makefile
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="cn.com.heyue.entity.TsmCardMakefile" useGeneratedKeys="true">
+    insert into tsm_card_makefile (city_code, area_code, card_species, 
+      makefile_name, makefile_ftppath, makefile_createtime, 
+      makefile_serialno, cardnum, cardtype, 
+      feedback_filename, feedbackfile_createtime, 
+      gettime, feedbackfile_serialno, feedbackfile_cardnum
+      )
+    values (#{cityCode,jdbcType=VARCHAR}, #{areaCode,jdbcType=VARCHAR}, #{cardSpecies,jdbcType=VARCHAR}, 
+      #{makefileName,jdbcType=VARCHAR}, #{makefileFtppath,jdbcType=VARCHAR}, #{makefileCreatetime,jdbcType=TIMESTAMP}, 
+      #{makefileSerialno,jdbcType=VARCHAR}, #{cardnum,jdbcType=INTEGER}, #{cardtype,jdbcType=VARCHAR}, 
+      #{feedbackFilename,jdbcType=VARCHAR}, #{feedbackfileCreatetime,jdbcType=VARCHAR}, 
+      #{gettime,jdbcType=TIMESTAMP}, #{feedbackfileSerialno,jdbcType=VARCHAR}, #{feedbackfileCardnum,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="cn.com.heyue.entity.TsmCardMakefile" useGeneratedKeys="true">
+    insert into tsm_card_makefile
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="cityCode != null">
+        city_code,
+      </if>
+      <if test="areaCode != null">
+        area_code,
+      </if>
+      <if test="cardSpecies != null">
+        card_species,
+      </if>
+      <if test="makefileName != null">
+        makefile_name,
+      </if>
+      <if test="makefileFtppath != null">
+        makefile_ftppath,
+      </if>
+      <if test="makefileCreatetime != null">
+        makefile_createtime,
+      </if>
+      <if test="makefileSerialno != null">
+        makefile_serialno,
+      </if>
+      <if test="cardnum != null">
+        cardnum,
+      </if>
+      <if test="cardtype != null">
+        cardtype,
+      </if>
+      <if test="feedbackFilename != null">
+        feedback_filename,
+      </if>
+      <if test="feedbackfileCreatetime != null">
+        feedbackfile_createtime,
+      </if>
+      <if test="gettime != null">
+        gettime,
+      </if>
+      <if test="feedbackfileSerialno != null">
+        feedbackfile_serialno,
+      </if>
+      <if test="feedbackfileCardnum != null">
+        feedbackfile_cardnum,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="cityCode != null">
+        #{cityCode,jdbcType=VARCHAR},
+      </if>
+      <if test="areaCode != null">
+        #{areaCode,jdbcType=VARCHAR},
+      </if>
+      <if test="cardSpecies != null">
+        #{cardSpecies,jdbcType=VARCHAR},
+      </if>
+      <if test="makefileName != null">
+        #{makefileName,jdbcType=VARCHAR},
+      </if>
+      <if test="makefileFtppath != null">
+        #{makefileFtppath,jdbcType=VARCHAR},
+      </if>
+      <if test="makefileCreatetime != null">
+        #{makefileCreatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="makefileSerialno != null">
+        #{makefileSerialno,jdbcType=VARCHAR},
+      </if>
+      <if test="cardnum != null">
+        #{cardnum,jdbcType=INTEGER},
+      </if>
+      <if test="cardtype != null">
+        #{cardtype,jdbcType=VARCHAR},
+      </if>
+      <if test="feedbackFilename != null">
+        #{feedbackFilename,jdbcType=VARCHAR},
+      </if>
+      <if test="feedbackfileCreatetime != null">
+        #{feedbackfileCreatetime,jdbcType=VARCHAR},
+      </if>
+      <if test="gettime != null">
+        #{gettime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="feedbackfileSerialno != null">
+        #{feedbackfileSerialno,jdbcType=VARCHAR},
+      </if>
+      <if test="feedbackfileCardnum != null">
+        #{feedbackfileCardnum,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.com.heyue.entity.TsmCardMakefile">
+    update tsm_card_makefile
+    <set>
+      <if test="cityCode != null">
+        city_code = #{cityCode,jdbcType=VARCHAR},
+      </if>
+      <if test="areaCode != null">
+        area_code = #{areaCode,jdbcType=VARCHAR},
+      </if>
+      <if test="cardSpecies != null">
+        card_species = #{cardSpecies,jdbcType=VARCHAR},
+      </if>
+      <if test="makefileName != null">
+        makefile_name = #{makefileName,jdbcType=VARCHAR},
+      </if>
+      <if test="makefileFtppath != null">
+        makefile_ftppath = #{makefileFtppath,jdbcType=VARCHAR},
+      </if>
+      <if test="makefileCreatetime != null">
+        makefile_createtime = #{makefileCreatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="makefileSerialno != null">
+        makefile_serialno = #{makefileSerialno,jdbcType=VARCHAR},
+      </if>
+      <if test="cardnum != null">
+        cardnum = #{cardnum,jdbcType=INTEGER},
+      </if>
+      <if test="cardtype != null">
+        cardtype = #{cardtype,jdbcType=VARCHAR},
+      </if>
+      <if test="feedbackFilename != null">
+        feedback_filename = #{feedbackFilename,jdbcType=VARCHAR},
+      </if>
+      <if test="feedbackfileCreatetime != null">
+        feedbackfile_createtime = #{feedbackfileCreatetime,jdbcType=VARCHAR},
+      </if>
+      <if test="gettime != null">
+        gettime = #{gettime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="feedbackfileSerialno != null">
+        feedbackfile_serialno = #{feedbackfileSerialno,jdbcType=VARCHAR},
+      </if>
+      <if test="feedbackfileCardnum != null">
+        feedbackfile_cardnum = #{feedbackfileCardnum,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.com.heyue.entity.TsmCardMakefile">
+    update tsm_card_makefile
+    set city_code = #{cityCode,jdbcType=VARCHAR},
+      area_code = #{areaCode,jdbcType=VARCHAR},
+      card_species = #{cardSpecies,jdbcType=VARCHAR},
+      makefile_name = #{makefileName,jdbcType=VARCHAR},
+      makefile_ftppath = #{makefileFtppath,jdbcType=VARCHAR},
+      makefile_createtime = #{makefileCreatetime,jdbcType=TIMESTAMP},
+      makefile_serialno = #{makefileSerialno,jdbcType=VARCHAR},
+      cardnum = #{cardnum,jdbcType=INTEGER},
+      cardtype = #{cardtype,jdbcType=VARCHAR},
+      feedback_filename = #{feedbackFilename,jdbcType=VARCHAR},
+      feedbackfile_createtime = #{feedbackfileCreatetime,jdbcType=VARCHAR},
+      gettime = #{gettime,jdbcType=TIMESTAMP},
+      feedbackfile_serialno = #{feedbackfileSerialno,jdbcType=VARCHAR},
+      feedbackfile_cardnum = #{feedbackfileCardnum,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateBySerialno" parameterType="cn.com.heyue.entity.TsmCardMakefile">
+    update tsm_card_makefile
+    <set>
+      <if test="cityCode != null">
+        city_code = #{cityCode,jdbcType=VARCHAR},
+      </if>
+      <if test="areaCode != null">
+        area_code = #{areaCode,jdbcType=VARCHAR},
+      </if>
+      <if test="cardSpecies != null">
+        card_species = #{cardSpecies,jdbcType=VARCHAR},
+      </if>
+      <if test="makefileName != null">
+        makefile_name = #{makefileName,jdbcType=VARCHAR},
+      </if>
+      <if test="makefileFtppath != null">
+        makefile_ftppath = #{makefileFtppath,jdbcType=VARCHAR},
+      </if>
+      <if test="makefileCreatetime != null">
+        makefile_createtime = #{makefileCreatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="makefileSerialno != null">
+        makefile_serialno = #{makefileSerialno,jdbcType=VARCHAR},
+      </if>
+      <if test="cardnum != null">
+        cardnum = #{cardnum,jdbcType=INTEGER},
+      </if>
+      <if test="cardtype != null">
+        cardtype = #{cardtype,jdbcType=VARCHAR},
+      </if>
+      <if test="feedbackFilename != null">
+        feedback_filename = #{feedbackFilename,jdbcType=VARCHAR},
+      </if>
+      <if test="feedbackfileCreatetime != null">
+        feedbackfile_createtime = #{feedbackfileCreatetime,jdbcType=VARCHAR},
+      </if>
+      <if test="gettime != null">
+        gettime = #{gettime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="feedbackfileSerialno != null">
+        feedbackfile_serialno = #{feedbackfileSerialno,jdbcType=VARCHAR},
+      </if>
+      <if test="feedbackfileCardnum != null">
+        feedbackfile_cardnum = #{feedbackfileCardnum,jdbcType=INTEGER},
+      </if>
+    </set>
+    where makefile_serialno = #{makefileSerialno,jdbcType=VARCHAR}
+  </update>
+
+  <!--// 根据流水号查询制卡数据文件表-->
+  <select id="selBySerialno" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from tsm_card_makefile
+    where makefile_serialno = #{makefileSerialno,jdbcType=VARCHAR}
+  </select>
+</mapper>
