@@ -1,33 +1,35 @@
 package com.heyue.task;
 
+import cn.com.heyue.utils.FtpUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
+
+import java.io.File;
 
 //@Component
 public class FeedBackTask {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    @Autowired
-//    private ResourceGrantService resourceGrantService;
-
 
     // 解析城市平台反馈文件定时任务
-    @Scheduled(cron = "0/30 * * * * ? ")// 30秒
+//    @Scheduled(cron = "0/30 * * * * ? ")// 30秒
     public void FeedBackTask() {
         // 定时解析指定目录（城市平台ftp过来）获取到的反馈文件
-        System.out.println("nihao");
-//        String downloadFielName = "211116110407001111.FS";
-////        SftpUtils sftp = new SftpUtils(Constant.SFTP_USER_NAME,Constant.SFTP_HOST, Constant.SFTP_PORT,"/home/cx_sem/.ssh/id_rsa");
-//        SftpUtils sftp = new SftpUtils("baotgj", "CVgcayEJ5S", "jiaotong.unionpay.com", 6022);
-//        sftp.login();
-//        try {
-//            sftp.download("directory", "downloadFile", "saveFile");
-//        } catch (Exception e) {
-//            logger.error("下载文件异常:{}", e);
-//        }
-//        sftp.logout();
+        // 下载至ftp
+        FtpUtils ftpUtils = new FtpUtils();
+        ftpUtils.setServer("192.168.99.100");
+        ftpUtils.setPort("21");
+        ftpUtils.setUser("test");
+        ftpUtils.setPassword("test");
+        ftpUtils.setTimeout("30000");
+        try {
+            ftpUtils.connectServer("");
+            System.out.println("登录成功。。。");
+            //ftpUtils.getZdFile("/cmpay/20180410/","D:\\Users\\UserA\\Desktop\\bak");
+            File f = new File("D:/bak", "test.txt");
+            ftpUtils.download("/xuyang1/test.txt", f.getPath());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
-
 }

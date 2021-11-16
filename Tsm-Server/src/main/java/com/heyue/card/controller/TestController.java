@@ -8,6 +8,7 @@ import cn.com.heyue.mapper.TsmCardDetailMapper;
 import cn.com.heyue.mapper.TsmCardMakefileMapper;
 import cn.com.heyue.mapper.TsmTerminalOrderMapper;
 import cn.com.heyue.utils.FileUtils;
+import cn.com.heyue.utils.FtpUtils;
 import com.alibaba.fastjson.JSONObject;
 import com.heyue.card.message.request.CreatCardDataReq;
 import com.heyue.card.message.response.Secretkey;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -167,7 +169,7 @@ public class TestController {
             for (String data : body) {
                 // 数据域1
                 String card_no = data.substring(0, card_no_index); // 用户卡号1
-                String remark = data.substring(card_no_index, remark_index); // 保留域
+                String retain = data.substring(card_no_index, remark_index); // 保留域
                 String Card_sign = data.substring(remark_index, Card_sign_index);//发卡方标识
                 String requestType = data.substring(Card_sign_index, requestType_index);//应用类型标识
                 String card_app_version = data.substring(requestType_index, area_code_index);//发卡方应用版本
@@ -180,7 +182,7 @@ public class TestController {
                 String province_code = data.substring(internate_code_index, province_code_index);//省际代码
                 String city_code = data.substring(province_code_index, city_code_index);//城市代码
                 String contact_card_type = data.substring(city_code_index, contact_card_type_index);//互通卡种
-                String remark1 = data.substring(city_code_index, contact_card_type_index);//互通卡种
+                String remark1 = data.substring(city_code_index, contact_card_type_index);//预留
                 System.out.println(data);
 
                 // 解析数据域2
@@ -211,7 +213,7 @@ public class TestController {
                 tsmCardDetail.setCityCode(city_code);//城市代码
                 tsmCardDetail.setContactCardType(contact_card_type);//互通卡种
                 tsmCardDetail.setCardType(card_type);//卡类型
-                tsmCardDetail.setReserve(remark);//预留
+                tsmCardDetail.setReserve(remark1);//预留
                 tsmCardDetail.setInternationKey(domesticKey);//国际密钥 json
 //                tsmCardDetail.setDomesticKey("");//国密密钥
                 tsmCardDetail.setCardStatus("1");//卡状态 1入库2出库
@@ -267,6 +269,49 @@ public class TestController {
         secretkey.setUserUnlockAppMaintainKey(userUnlockAppMaintainKey);
         String domesticKey = JSONObject.toJSONString(secretkey);
         return domesticKey;
+    }
+
+    @RequestMapping("downFromFTP")
+    @ResponseBody
+    public void downFromFTP() throws Exception {
+        // 下载至ftp
+        FtpUtils ftpUtils = new FtpUtils();
+        ftpUtils.setServer("192.168.99.100");
+        ftpUtils.setPort("21");
+        ftpUtils.setUser("test");
+        ftpUtils.setPassword("test");
+        ftpUtils.setTimeout("30000");
+        try {
+            ftpUtils.connectServer("");
+            System.out.println("登录成功。。。");
+            //ftpUtils.getZdFile("/cmpay/20180410/","D:\\Users\\UserA\\Desktop\\bak");
+            File f = new File("D:/bak", "test.txt");
+            ftpUtils.download("/xuyang1/test.txt", f.getPath());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+
+    @RequestMapping("toFTP")
+    @ResponseBody
+    public void toFTP() throws Exception {
+        // 上传至ftp
+        FtpUtils ftpUtils = new FtpUtils();
+        ftpUtils.setServer("192.168.99.100");
+        ftpUtils.setPort("21");
+        ftpUtils.setUser("test");
+        ftpUtils.setPassword("test");
+        ftpUtils.setTimeout("30000");
+        try {
+            ftpUtils.connectServer("");
+            System.out.println("登录成功。。。");
+            ftpUtils.upload("D:/bak/upload.txt", "/xuyang1/upload.txt");// 本地路径,ftp路径
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
 
