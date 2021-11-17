@@ -8,26 +8,22 @@ import cn.com.heyue.mapper.TsmCardDetailMapper;
 import cn.com.heyue.mapper.TsmCardMakefileMapper;
 import cn.com.heyue.mapper.TsmTerminalOrderMapper;
 import cn.com.heyue.utils.FileUtils;
-import cn.com.heyue.utils.FtpUtils;
 import com.alibaba.fastjson.JSONObject;
 import com.heyue.card.message.request.CreatCardDataReq;
 import com.heyue.card.message.response.Secretkey;
+import com.heyue.card.service.CardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.File;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 
-/**
- * @author lyc
- * @date 2020-07-01 17:19:03
- */
 @RestController
+@RequestMapping("/test")
 public class TestController {
 
     // 城市平台服务反馈文件数据体下标位置
@@ -73,6 +69,9 @@ public class TestController {
 
     @Autowired
     private TsmCardDetailMapper tsmCardDetailMapper;
+
+    @Autowired
+    private CardService cardService;
 
 
     @RequestMapping("TsmTerminalOrder/get")
@@ -127,15 +126,14 @@ public class TestController {
         tsmCardMakefile.setCardnum(Integer.valueOf(recordNum));
         tsmCardMakefile.setCardtype(requestType);
         tsmCardMakefileMapper.insertSelective(tsmCardMakefile);
-
     }
 
     @RequestMapping("readFile")
     @ResponseBody
-    public void readFile() {
+    public void readFile(String localPath, String filename) {
         try {
-
-            String path = "D:\\" + "211116110407001111.FS";
+            String path = localPath + filename;
+//            String path = "D:\\" + "211116110407001111.FS";
             String fileName = new File(path.trim()).getName();// 获取文件名
             String serialno = fileName.substring(14, 18);
 
@@ -274,45 +272,22 @@ public class TestController {
     @RequestMapping("downFromFTP")
     @ResponseBody
     public void downFromFTP() throws Exception {
-        // 下载至ftp
-        FtpUtils ftpUtils = new FtpUtils();
-        ftpUtils.setServer("192.168.99.100");
-        ftpUtils.setPort("21");
-        ftpUtils.setUser("test");
-        ftpUtils.setPassword("test");
-        ftpUtils.setTimeout("30000");
-        try {
-            ftpUtils.connectServer("");
-            System.out.println("登录成功。。。");
-            //ftpUtils.getZdFile("/cmpay/20180410/","D:\\Users\\UserA\\Desktop\\bak");
-            File f = new File("D:/bak", "test.txt");
-            ftpUtils.download("/xuyang1/test.txt", f.getPath());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
+        // 下载至ftp并解析
+        cardService.downFromFTP();
     }
 
 
     @RequestMapping("toFTP")
     @ResponseBody
-    public void toFTP() throws Exception {
-        // 上传至ftp
-        FtpUtils ftpUtils = new FtpUtils();
-        ftpUtils.setServer("192.168.99.100");
-        ftpUtils.setPort("21");
-        ftpUtils.setUser("test");
-        ftpUtils.setPassword("test");
-        ftpUtils.setTimeout("30000");
-        try {
-            ftpUtils.connectServer("");
-            System.out.println("登录成功。。。");
-            ftpUtils.upload("D:/bak/upload.txt", "/xuyang1/upload.txt");// 本地路径,ftp路径
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
+    public void toFTP(String filename) throws Exception {
+        cardService.toFTP(filename);
     }
 
+
+    @PostMapping("testCreateCard")
+    @ResponseBody
+    public void testCreateCard(@RequestBody CreatCardDataReq creatCardDataReq) {
+        cardService.creatCardDataFile(creatCardDataReq);
+    }
 
 }

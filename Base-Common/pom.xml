@@ -256,11 +256,11 @@
             <version>4.3.12.RELEASE</version>
             <scope>compile</scope>
         </dependency>
-        <dependency>
-            <groupId>com.cmft</groupId>
-            <artifactId>cmft</artifactId>
-            <version>1.0</version>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>com.cmft</groupId>-->
+            <!--<artifactId>cmft</artifactId>-->
+            <!--<version>1.0</version>-->
+        <!--</dependency>-->
 
     </dependencies>
 
