@@ -18,6 +18,9 @@ public class Constant {
     public static String CARD_ACCOUNT_INFO_URL;
     public static String CARD_CONSUM_RECORD_URL;
 
+    // 私钥
+    public static String TSM_LOC_PRI_KEY;
+
     @Value("${SEL_TRADEINFO_URL}")
     public void setselTradeInfoUrl(String selTradeInfoUrl) {
         SEL_TRADEINFO_URL = selTradeInfoUrl;
@@ -52,4 +55,12 @@ public class Constant {
     public void setcardConsumRecordUrl(String cardConsumRecordUrl) {
         CARD_CONSUM_RECORD_URL = cardConsumRecordUrl;
     }
+
+    // 发送请求私钥
+    @Value("${TSM_LOC_PRI_KEY}")
+    public void setTsmLocPriKey(String cardTsmLocPriKey) {
+        TSM_LOC_PRI_KEY = cardTsmLocPriKey;
+    }
+
+
 }

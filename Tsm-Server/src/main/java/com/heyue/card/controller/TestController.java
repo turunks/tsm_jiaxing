@@ -8,14 +8,21 @@ import cn.com.heyue.mapper.TsmCardDetailMapper;
 import cn.com.heyue.mapper.TsmCardMakefileMapper;
 import cn.com.heyue.mapper.TsmTerminalOrderMapper;
 import cn.com.heyue.utils.FileUtils;
+import cn.com.heyue.utils.RSAUtils;
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.heyue.bean.TsmBaseReq;
 import com.heyue.card.message.request.CreatCardDataReq;
 import com.heyue.card.message.response.Secretkey;
 import com.heyue.card.service.CardService;
+import com.heyue.constant.Constant;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.File;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -61,6 +68,8 @@ public class TestController {
     public static int key2_index = reserveKey2_index + 2;// 充值密钥 2（国际）
     public static int remark2_index = key2_index + 2;// // 预留
 
+    private static Logger logger = LoggerFactory.getLogger(TestController.class);
+
     @Autowired
     private TsmTerminalOrderMapper tsmTerminalOrderMapper;
 
@@ -78,13 +87,22 @@ public class TestController {
     @ResponseBody
     public TsmTerminalOrder getTsmTerminalOrder() {
         TsmTerminalOrder tsmTerminalOrder = tsmTerminalOrderMapper.selectByPrimaryKey((long) 1);
+        try {
+            String signRet = RSAUtils.signWithRsa2(JSON.toJSONString(tsmTerminalOrder).getBytes(StandardCharsets.UTF_8), Constant.TSM_LOC_PRI_KEY).replaceAll(System.getProperty("line.separator"), "");
+            TsmBaseReq<TsmTerminalOrder> tsmTerminalOrderTsmBaseReq = new TsmBaseReq<TsmTerminalOrder>("00", "00", tsmTerminalOrder, signRet);
+            System.out.println(tsmTerminalOrderTsmBaseReq);
+        } catch (Exception e) {
+            logger.info("系统异常:{}", e);
+        }
+
+
         return tsmTerminalOrder;
     }
 
     @PostMapping("writeFile")
     @ResponseBody
     public void createCard(@RequestBody CreatCardDataReq creatCardDataReq) {
-        String version = "01";// 版本号
+        String version = "1.0.0";// 版本号
         String recordNum = creatCardDataReq.getRecordNum();// 2 长度
         String city_code = creatCardDataReq.getCity_code();// 2
         String requestType = creatCardDataReq.getRequestType();// 1

@@ -6,11 +6,15 @@ import cn.com.heyue.entity.TsmTerminalOrder;
 import cn.com.heyue.mapper.TsmCardapduApplyMapper;
 import cn.com.heyue.mapper.TsmTerminalOrderMapper;
 import cn.com.heyue.utils.HttpRequestUtils;
+import cn.com.heyue.utils.RSAUtils;
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.heyue.bean.Result;
+import com.heyue.bean.TsmBaseReq;
+import com.heyue.bean.TsmBaseRes;
 import com.heyue.cityservice.message.request.*;
-import com.heyue.cityservice.message.response.*;
+import com.heyue.cityservice.message.response.CardAccountInfoRes;
+import com.heyue.cityservice.message.response.CardActiveRes;
+import com.heyue.cityservice.message.response.CardConsumRecordRes;
+import com.heyue.cityservice.message.response.CardTrapRes;
 import com.heyue.cityservice.service.CityService;
 import com.heyue.constant.Constant;
 import org.apache.commons.lang3.StringUtils;
@@ -19,6 +23,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.List;
 
@@ -35,39 +40,43 @@ public class CityServiceImpl implements CityService {
 
     // 1.交易信息查询
     @Override
-    public Result selTradeInfoR(TradeInfoReq tradeInfoReq) {
+    public TsmBaseRes selTradeInfoR(TradeInfoReq tradeInfoReq) {
         // 向城市服务发送交易查询
-        String req = JSON.toJSONString(tradeInfoReq);
-        logger.info("发送城市服务发送交易查询报文:{}", req);
         try {
+            String signRet = RSAUtils.signWithRsa2(JSON.toJSONString(tradeInfoReq).getBytes(StandardCharsets.UTF_8), Constant.TSM_LOC_PRI_KEY).replaceAll(System.getProperty("line.separator"), "");
+            TsmBaseReq<TradeInfoReq> tsmBaseReq = new TsmBaseReq<>("citycode", "tsm_id", tradeInfoReq, signRet);
+            String req = JSON.toJSONString(tsmBaseReq);
+            logger.info("发送城市服务发送交易查询报文:{}", req);
             String res = HttpRequestUtils.doPost(Constant.SEL_TRADEINFO_URL, req);
             logger.info("返回城市服务发送交易查询报文:{}", res);
             if (StringUtils.isBlank(res)) {
                 logger.warn("{}返回城市服务发送交易查询为空");
-                return Result.fail();
+                return TsmBaseRes.fail();
             }
-            TradeInfoRes tradeInfoRes = JSON.parseObject(res, TradeInfoRes.class);
-            return Result.ok(tradeInfoRes);
+            TsmBaseRes tsmBaseRes = JSON.parseObject(res, TsmBaseRes.class);
+            return tsmBaseRes;
         } catch (Exception e) {
             logger.error("返回城市服务发送交易查询异常:{}", e);
-            return Result.fail();
+            return TsmBaseRes.fail();
         }
     }
 
     // 2.卡激活请求
     @Override
-    public Result cardActive(CardActiveReq cardActiveReq) {
+    public TsmBaseRes cardActive(CardActiveReq cardActiveReq) {
         // 向城市服务发送卡激活请求
-        String req = JSON.toJSONString(cardActiveReq);
-        logger.info("发送城市服务卡激活报文:{}", req);
         try {
+            String signRet = RSAUtils.signWithRsa2(JSON.toJSONString(cardActiveReq).getBytes(StandardCharsets.UTF_8), Constant.TSM_LOC_PRI_KEY).replaceAll(System.getProperty("line.separator"), "");
+            TsmBaseReq<CardActiveReq> tsmBaseReq = new TsmBaseReq<>("citycode", "tsm_id", cardActiveReq, signRet);
+            String req = JSON.toJSONString(tsmBaseReq);
+            logger.info("发送城市服务卡激活报文:{}", req);
             String res = HttpRequestUtils.doPost(Constant.CARD_ACTIVE_URL, req);
             logger.info("返回城市服务卡激活报文:{}", res);
             if (StringUtils.isBlank(res)) {
                 logger.warn("{}返回城市服务卡激活信息为空");
-                return Result.fail();
+                return TsmBaseRes.fail();
             }
-            CardActiveRes cardActiveRes = JSON.parseObject(res, CardActiveRes.class);
+            TsmBaseRes<CardActiveRes> tsmBaseRes = JSON.parseObject(res, TsmBaseRes.class);
             // 提交成功插入卡指令请求记录表，终端交易数据存入 终端交易订单表
 
             //
@@ -76,10 +85,16 @@ public class CityServiceImpl implements CityService {
             String cardSpecies = cardActiveReq.getCard_species();
             String terminalCode = cardActiveReq.getTerminal_code();
             String cardNo = cardActiveReq.getCard_no();
-            String transactionNum = cardActiveRes.getTransaction_num();
-            String apdu = cardActiveRes.getApdu();
+            String transactionNum = "";
+            String apdu = "";
 
-            TsmCardapduApply record =new TsmCardapduApply();
+            CardActiveRes cardActiveRes = tsmBaseRes.getData();
+            if (cardActiveRes != null) {
+                transactionNum = cardActiveRes.getTransaction_num();
+                apdu = cardActiveRes.getApdu();
+            }
+
+            TsmCardapduApply record = new TsmCardapduApply();
             record.setCityCode(cityCode);
             record.setAreaCode(regionCode);
             record.setCardSpecies(cardSpecies);
@@ -95,7 +110,7 @@ public class CityServiceImpl implements CityService {
             tsmCardapduApplyMapper.insertSelective(record);
 
 //            tsmTerminalOrderMapper.insertSelective();
-            TsmTerminalOrder record_one =new TsmTerminalOrder();
+            TsmTerminalOrder record_one = new TsmTerminalOrder();
             record_one.setTransactionNum(transactionNum);
             record_one.setTransactionType("2");
             record_one.setCityCode(cityCode);
@@ -106,68 +121,76 @@ public class CityServiceImpl implements CityService {
             record_one.setCreatetime(new Date());
             tsmTerminalOrderMapper.insertSelective(record_one);
 
-            return Result.ok(cardActiveRes);
+            return tsmBaseRes;
         } catch (Exception e) {
             logger.error("卡激活请求异常:{}", e);
-            return Result.fail();
+            return TsmBaseRes.fail();
         }
 
     }
 
     // 3.卡激活请求提交
     @Override
-    public Result cardActiveSubmit(CardActiveSubmitReq cardActiveSubmitReq) {
+    public TsmBaseRes cardActiveSubmit(CardActiveSubmitReq cardActiveSubmitReq) {
         // 向城市服务发送卡激活请求提交
-        String req = JSON.toJSONString(cardActiveSubmitReq);
-        logger.info("发送城市服务卡激活请求提交报文:{}", req);
         try {
+            String signRet = RSAUtils.signWithRsa2(JSON.toJSONString(cardActiveSubmitReq).getBytes(StandardCharsets.UTF_8), Constant.TSM_LOC_PRI_KEY).replaceAll(System.getProperty("line.separator"), "");
+            TsmBaseReq<CardActiveSubmitReq> tsmBaseReq = new TsmBaseReq<>("citycode", "tsm_id", cardActiveSubmitReq, signRet);
+            String req = JSON.toJSONString(tsmBaseReq);
+            logger.info("发送城市服务卡激活请求提交报文:{}", req);
             String res = HttpRequestUtils.doPost(Constant.CARD_ACTIVE_SUBMIT_URL, req);
             logger.info("返回城市服务卡激活请求提交报文:{}", res);
             if (StringUtils.isBlank(res)) {
                 logger.warn("{}返回卡激活请求提交为空");
-                return Result.fail();
+                return TsmBaseRes.fail();
             }
+            TsmBaseRes<CardActiveRes> tsmBaseRes = JSON.parseObject(res, TsmBaseRes.class);
 
             // 提交成功后更新 卡指令请求记录表 的是否请求被提交 和 请求提交时间字段。
-            TsmCardapduApply record =new TsmCardapduApply();
+            TsmCardapduApply record = new TsmCardapduApply();
             record.setCardNo(cardActiveSubmitReq.getCard_no());
             record.setIssubmit("01");
             record.setSubmittime(new Date());
             tsmCardapduApplyMapper.updateByCardNo(record);
 
-            return Result.ok();
+            return tsmBaseRes;
         } catch (Exception e) {
             logger.error("卡激活请求提交异常:{}", e);
-            return Result.fail();
+            return TsmBaseRes.fail();
         }
     }
 
     // 4.卡圈存请求
     @Override
-    public Result cardTrap(CardTrapReq cardTrapReq) {
+    public TsmBaseRes cardTrap(CardTrapReq cardTrapReq) {
         // 向城市服务发送卡圈存请求
-        String req = JSON.toJSONString(cardTrapReq);
-        logger.info("发送卡圈存请求报文:{}", req);
         try {
+            String signRet = RSAUtils.signWithRsa2(JSON.toJSONString(cardTrapReq).getBytes(StandardCharsets.UTF_8), Constant.TSM_LOC_PRI_KEY).replaceAll(System.getProperty("line.separator"), "");
+            TsmBaseReq<CardTrapReq> tsmBaseReq = new TsmBaseReq<>("citycode", "tsm_id", cardTrapReq, signRet);
+            String req = JSON.toJSONString(tsmBaseReq);
+            logger.info("发送卡圈存请求报文:{}", req);
             String res = HttpRequestUtils.doPost(Constant.CARD_TRAP_URL, req);
             logger.info("返回卡圈存请求报文:{}", res);
             if (StringUtils.isBlank(res)) {
                 logger.warn("{}返回卡圈存请求为空");
-                return Result.fail();
+                return TsmBaseRes.fail();
             }
-            CardTrapRes cardTrapRes = JSON.parseObject(res, CardTrapRes.class);
+            TsmBaseRes<CardTrapRes> tsmBaseRes = JSON.parseObject(res, TsmBaseRes.class);
             // 成功后将插入一条记录到 卡指令请求记录表，另外 会将终端交易数据存入 终端交易订单表
-
+            CardTrapRes cardTrapRes = tsmBaseRes.getData();
             //
             String cityCode = cardTrapReq.getCity_code();
             String regionCode = cardTrapReq.getRegion_code();
             String cardSpecies = cardTrapReq.getCard_species();
             String terminalCode = cardTrapReq.getTerminal_code();
             String cardNo = cardTrapReq.getCard_no();
-            String transactionNum = cardTrapRes.getTransaction_num();
+            String transactionNum = "";
+            if (cardTrapRes != null) {
+                transactionNum = cardTrapRes.getTransaction_num();
+            }
 //            String apdu = cardTrapRes.getApdu();
 
-            TsmCardapduApply record =new TsmCardapduApply();
+            TsmCardapduApply record = new TsmCardapduApply();
             record.setCityCode(cityCode);
             record.setAreaCode(regionCode);
             record.setCardSpecies(cardSpecies);
@@ -183,7 +206,7 @@ public class CityServiceImpl implements CityService {
             tsmCardapduApplyMapper.insertSelective(record);
 
 //            tsmTerminalOrderMapper.insertSelective();
-            TsmTerminalOrder record_one =new TsmTerminalOrder();
+            TsmTerminalOrder record_one = new TsmTerminalOrder();
             record_one.setTransactionNum(transactionNum);
             record_one.setTransactionType("3");
             record_one.setCityCode(cityCode);
@@ -194,81 +217,90 @@ public class CityServiceImpl implements CityService {
             record_one.setCreatetime(new Date());
             tsmTerminalOrderMapper.insertSelective(record_one);
 
-            return Result.ok(cardTrapRes);
+            return tsmBaseRes;
         } catch (Exception e) {
             logger.error("卡圈存请求异常:{}", e);
-            return Result.fail();
+            return TsmBaseRes.fail();
         }
     }
 
     // 5.卡圈存请求提交
     //
     @Override
-    public Result cardTrapSubmit(CardTrapSubmitReq cardTrapSubmitReq) {
+    public TsmBaseRes cardTrapSubmit(CardTrapSubmitReq cardTrapSubmitReq) {
         // 向城市服务发送卡圈存请求提交
-        String req = JSON.toJSONString(cardTrapSubmitReq);
-        logger.info("发送卡圈存请求提交报文:{}", req);
         try {
+            String signRet = RSAUtils.signWithRsa2(JSON.toJSONString(cardTrapSubmitReq).getBytes(StandardCharsets.UTF_8), Constant.TSM_LOC_PRI_KEY).replaceAll(System.getProperty("line.separator"), "");
+            TsmBaseReq<CardTrapSubmitReq> tsmBaseReq = new TsmBaseReq<>("citycode", "tsm_id", cardTrapSubmitReq, signRet);
+            String req = JSON.toJSONString(tsmBaseReq);
+            logger.info("发送卡圈存请求提交报文:{}", req);
             String res = HttpRequestUtils.doPost(Constant.CARD_TRAP_SUBMIT_URL, req);
             logger.info("返回卡圈存请求提交报文:{}", res);
             if (StringUtils.isBlank(res)) {
                 logger.warn("{}返回卡圈存请求提交为空");
-                return Result.fail();
+                return TsmBaseRes.fail();
             }
+            TsmBaseRes tsmBaseRes = JSON.parseObject(res, TsmBaseRes.class);
             // 如果提交成功后更新 卡指令请求记录表 的是否请求被提交和 请求提交时间字段。
-            TsmCardapduApply record =new TsmCardapduApply();
+            TsmCardapduApply record = new TsmCardapduApply();
 
             record.setCardNo(cardTrapSubmitReq.getCard_no());
             record.setIssubmit("01");
             record.setSubmittime(new Date());
             tsmCardapduApplyMapper.updateByCardNo(record);
 
-            return Result.ok();
+            return tsmBaseRes;
         } catch (Exception e) {
             logger.error("卡圈存请求提交异常:{}", e);
-            return Result.fail();
+            return TsmBaseRes.fail();
         }
     }
 
     // 6.卡账户信息查询
     @Override
-    public Result cardAccountInfo(CardAccountInfoReq cardAccountInfoReq) {
+    public TsmBaseRes cardAccountInfo(CardAccountInfoReq cardAccountInfoReq) {
         // 向城市服务发送卡账户信息查询
-        String req = JSON.toJSONString(cardAccountInfoReq);
-        logger.info("发送卡账户信息查询报文:{}", req);
+
         try {
+            String signRet = RSAUtils.signWithRsa2(JSON.toJSONString(cardAccountInfoReq).getBytes(StandardCharsets.UTF_8), Constant.TSM_LOC_PRI_KEY).replaceAll(System.getProperty("line.separator"), "");
+            TsmBaseReq<CardAccountInfoReq> tsmBaseReq = new TsmBaseReq<>("citycode", "tsm_id", cardAccountInfoReq, signRet);
+            String req = JSON.toJSONString(tsmBaseReq);
+            logger.info("发送卡账户信息查询报文:{}", req);
             String res = HttpRequestUtils.doPost(Constant.CARD_ACCOUNT_INFO_URL, req);
             logger.info("返回卡账户信息查询报文:{}", res);
             if (StringUtils.isBlank(res)) {
                 logger.warn("{}返回卡账户信息为空");
-                return Result.fail();
+                return TsmBaseRes.fail();
             }
-            CardAccountInfoRes cardAccountInfoRes = JSON.parseObject(res, CardAccountInfoRes.class);
-            return Result.ok(cardAccountInfoRes);
+            TsmBaseRes<CardAccountInfoRes> tsmBaseRes = JSON.parseObject(res, TsmBaseRes.class);
+            return tsmBaseRes;
         } catch (Exception e) {
             logger.error("返回卡账户信息异常:{}", e);
-            return Result.fail();
+            return TsmBaseRes.fail();
         }
     }
 
     // 7.卡消费记录查询
     @Override
-    public Result cardConsumRecord(CardConsumRecordReq cardConsumRecordReq) {
+    public TsmBaseRes cardConsumRecord(CardConsumRecordReq cardConsumRecordReq) {
         // 向城市服务发送卡消费记录查询
-        String req = JSON.toJSONString(cardConsumRecordReq);
-        logger.info("发送卡消费记录查询报文:{}", req);
         try {
+            String signRet = RSAUtils.signWithRsa2(JSON.toJSONString(cardConsumRecordReq).getBytes(StandardCharsets.UTF_8), Constant.TSM_LOC_PRI_KEY).replaceAll(System.getProperty("line.separator"), "");
+            TsmBaseReq<CardConsumRecordReq> tsmBaseReq = new TsmBaseReq<>("citycode", "tsm_id", cardConsumRecordReq, signRet);
+            String req = JSON.toJSONString(tsmBaseReq);
+            logger.info("发送卡消费记录查询报文:{}", req);
             String res = HttpRequestUtils.doPost(Constant.CARD_CONSUM_RECORD_URL, req);
             logger.info("返回卡消费记录查询报文:{}", res);
             if (StringUtils.isBlank(res)) {
                 logger.warn("{}返回卡消费记录为空");
-                return Result.fail();
+                return TsmBaseRes.fail();
             }
-            List<CardConsumRecordRes> cardConsumRecordResList = JSONArray.parseObject(res, List.class);
-            return Result.ok(cardConsumRecordResList);
+            TsmBaseRes<List<CardConsumRecordRes>> tsmBaseRes = JSON.parseObject(res, TsmBaseRes.class);
+//            List<CardConsumRecordRes> cardConsumRecordResList = JSONArray.parseObject(res, List.class);
+            return tsmBaseRes;
         } catch (Exception e) {
             logger.error("返回卡消费记录异常:{}", e);
-            return Result.fail();
+            return TsmBaseRes.fail();
         }
     }
 }
