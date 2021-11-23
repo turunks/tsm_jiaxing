@@ -65,24 +65,24 @@
 					<archive>
 						<manifest>
 							<addClasspath>true</addClasspath>
-							<mainClass>com.heyue.registry.RegistryApplication</mainClass>
-							<classpathPrefix>eureka/</classpathPrefix>
+							<mainClass>com.heyue.registry.RegistryApplication</mainClass><!--入口-->
+							<classpathPrefix>lib/eureka/</classpathPrefix><!--class所在resource的目录-->
 						</manifest>
 					</archive>
 				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
+				<artifactId>maven-dependency-plugin</artifactId><!--将第三方包打入lib/eureka-->
 				<executions>
 					<execution>
 						<id>copy-lib</id>
 						<phase>prepare-package</phase>
 						<goals>
-							<goal>copy-dependencies</goal>
+							<goal>copy-dependencies</goal><!--复制第三方依赖-->
 						</goals>
 						<configuration>
-							<outputDirectory>${project.build.directory}/lib/eureka</outputDirectory>
+							<outputDirectory>${project.build.directory}/lib/eureka</outputDirectory><!--第三方依赖路径-->
 							<overWriteReleases>false</overWriteReleases>
 							<overWriteSnapshots>false</overWriteSnapshots>
 							<overWriteIfNewer>true</overWriteIfNewer>

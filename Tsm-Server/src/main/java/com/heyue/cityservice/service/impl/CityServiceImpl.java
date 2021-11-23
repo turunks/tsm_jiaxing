@@ -11,10 +11,7 @@ import com.alibaba.fastjson.JSON;
 import com.heyue.bean.TsmBaseReq;
 import com.heyue.bean.TsmBaseRes;
 import com.heyue.cityservice.message.request.*;
-import com.heyue.cityservice.message.response.CardAccountInfoRes;
-import com.heyue.cityservice.message.response.CardActiveRes;
-import com.heyue.cityservice.message.response.CardConsumRecordRes;
-import com.heyue.cityservice.message.response.CardTrapRes;
+import com.heyue.cityservice.message.response.*;
 import com.heyue.cityservice.service.CityService;
 import com.heyue.constant.Constant;
 import org.apache.commons.lang3.StringUtils;
@@ -80,31 +77,31 @@ public class CityServiceImpl implements CityService {
             // 提交成功插入卡指令请求记录表，终端交易数据存入 终端交易订单表
 
             //
-            String cityCode = cardActiveReq.getCity_code();
-            String regionCode = cardActiveReq.getRegion_code();
             String cardSpecies = cardActiveReq.getCard_species();
+            String regionCode = cardActiveReq.getRegion_code();
             String terminalCode = cardActiveReq.getTerminal_code();
             String cardNo = cardActiveReq.getCard_no();
-            String transactionNum = "";
+            String orderNo = cardActiveReq.getOrder_no();
+            String transactionNum = cardActiveReq.getTransaction_num();
             String apdu = "";
+            String transaction_datetime = "";
 
             CardActiveRes cardActiveRes = tsmBaseRes.getData();
             if (cardActiveRes != null) {
-                transactionNum = cardActiveRes.getTransaction_num();
+                transaction_datetime = cardActiveRes.getTransaction_datetime();
                 apdu = cardActiveRes.getApdu();
             }
 
             TsmCardapduApply record = new TsmCardapduApply();
-            record.setCityCode(cityCode);
             record.setAreaCode(regionCode);
             record.setCardSpecies(cardSpecies);
             record.setTerminalNo(terminalCode);
-//            record.setTsmNo(cardActiveReq.getCity_code());
             record.setCardNo(cardNo);
-            record.setCardOptype("01");
+            record.setCardOptype("01");// 卡激活
             record.setTransactionNum(transactionNum);
+            record.setCityOrderNo(orderNo);
             record.setTransactionDatetime(new Date());
-            record.setIssubmit("00");
+            record.setIssubmit("00");// 未提交
             record.setSubmittime(new Date());
             record.setApdu(apdu);
             tsmCardapduApplyMapper.insertSelective(record);
@@ -112,15 +109,14 @@ public class CityServiceImpl implements CityService {
 //            tsmTerminalOrderMapper.insertSelective();
             TsmTerminalOrder record_one = new TsmTerminalOrder();
             record_one.setTransactionNum(transactionNum);
-            record_one.setTransactionType("2");
-            record_one.setCityCode(cityCode);
+            record_one.setCityOrderNo(orderNo);
+            record_one.setTransactionType("2");// 激活请求
+            record_one.setCityCode("");
             record_one.setAreaCode(regionCode);
             record_one.setCardSpecies(cardSpecies);
             record_one.setTerminalNo(terminalCode);
-//            record_one.setTsmNo();
             record_one.setCreatetime(new Date());
             tsmTerminalOrderMapper.insertSelective(record_one);
-
             return tsmBaseRes;
         } catch (Exception e) {
             logger.error("卡激活请求异常:{}", e);
@@ -144,7 +140,7 @@ public class CityServiceImpl implements CityService {
                 logger.warn("{}返回卡激活请求提交为空");
                 return TsmBaseRes.fail();
             }
-            TsmBaseRes<CardActiveRes> tsmBaseRes = JSON.parseObject(res, TsmBaseRes.class);
+            TsmBaseRes<CardActiveSubmitRes> tsmBaseRes = JSON.parseObject(res, TsmBaseRes.class);
 
             // 提交成功后更新 卡指令请求记录表 的是否请求被提交 和 请求提交时间字段。
             TsmCardapduApply record = new TsmCardapduApply();
@@ -152,7 +148,6 @@ public class CityServiceImpl implements CityService {
             record.setIssubmit("01");
             record.setSubmittime(new Date());
             tsmCardapduApplyMapper.updateByCardNo(record);
-
             return tsmBaseRes;
         } catch (Exception e) {
             logger.error("卡激活请求提交异常:{}", e);
@@ -179,41 +174,40 @@ public class CityServiceImpl implements CityService {
             // 成功后将插入一条记录到 卡指令请求记录表，另外 会将终端交易数据存入 终端交易订单表
             CardTrapRes cardTrapRes = tsmBaseRes.getData();
             //
-            String cityCode = cardTrapReq.getCity_code();
             String regionCode = cardTrapReq.getRegion_code();
             String cardSpecies = cardTrapReq.getCard_species();
             String terminalCode = cardTrapReq.getTerminal_code();
             String cardNo = cardTrapReq.getCard_no();
-            String transactionNum = "";
+            String orderNo = cardTrapReq.getOrder_no();
+            String transactionNum = cardTrapReq.getTransaction_num();
+            String apdu = "";
             if (cardTrapRes != null) {
-                transactionNum = cardTrapRes.getTransaction_num();
+                apdu = cardTrapRes.getApdu();
             }
-//            String apdu = cardTrapRes.getApdu();
-
             TsmCardapduApply record = new TsmCardapduApply();
-            record.setCityCode(cityCode);
             record.setAreaCode(regionCode);
             record.setCardSpecies(cardSpecies);
             record.setTerminalNo(terminalCode);
-//            record.setTsmNo(cardActiveReq.getCity_code());
             record.setCardNo(cardNo);
             record.setCardOptype("02");
             record.setTransactionNum(transactionNum);
             record.setTransactionDatetime(new Date());
+            record.setCityOrderNo(orderNo);
+            record.setCityOrderNo(transactionNum);
             record.setIssubmit("00");
             record.setSubmittime(new Date());
-//            record.setApdu(apdu);
+            record.setApdu(apdu);
             tsmCardapduApplyMapper.insertSelective(record);
 
 //            tsmTerminalOrderMapper.insertSelective();
             TsmTerminalOrder record_one = new TsmTerminalOrder();
             record_one.setTransactionNum(transactionNum);
             record_one.setTransactionType("3");
-            record_one.setCityCode(cityCode);
+            record_one.setCityOrderNo(orderNo);
+            record_one.setCityCode("");
             record_one.setAreaCode(regionCode);
             record_one.setCardSpecies(cardSpecies);
             record_one.setTerminalNo(terminalCode);
-//            record_one.setTsmNo();
             record_one.setCreatetime(new Date());
             tsmTerminalOrderMapper.insertSelective(record_one);
 
@@ -240,7 +234,7 @@ public class CityServiceImpl implements CityService {
                 logger.warn("{}返回卡圈存请求提交为空");
                 return TsmBaseRes.fail();
             }
-            TsmBaseRes tsmBaseRes = JSON.parseObject(res, TsmBaseRes.class);
+            TsmBaseRes<CardTrapSubmitRes> tsmBaseRes = JSON.parseObject(res, TsmBaseRes.class);
             // 如果提交成功后更新 卡指令请求记录表 的是否请求被提交和 请求提交时间字段。
             TsmCardapduApply record = new TsmCardapduApply();
 

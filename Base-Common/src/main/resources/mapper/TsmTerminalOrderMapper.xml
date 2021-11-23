@@ -4,6 +4,7 @@
   <resultMap id="BaseResultMap" type="cn.com.heyue.entity.TsmTerminalOrder">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="transaction_num" jdbcType="VARCHAR" property="transactionNum" />
+    <result column="city_order_no" jdbcType="VARCHAR" property="cityOrderNo" />
     <result column="transaction_type" jdbcType="VARCHAR" property="transactionType" />
     <result column="city_code" jdbcType="VARCHAR" property="cityCode" />
     <result column="area_code" jdbcType="VARCHAR" property="areaCode" />
@@ -13,7 +14,7 @@
     <result column="createtime" jdbcType="TIMESTAMP" property="createtime" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, transaction_num, transaction_type, city_code, area_code, card_species, terminal_no, 
+    id, transaction_num, city_order_no, transaction_type, city_code, area_code, card_species, terminal_no,
     tsm_no, createtime
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
@@ -27,11 +28,11 @@
     where id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="insert" keyColumn="id" keyProperty="id" parameterType="cn.com.heyue.entity.TsmTerminalOrder" useGeneratedKeys="true">
-    insert into tsm_terminal_order (transaction_num, transaction_type, 
+    insert into tsm_terminal_order (transaction_num,city_order_no, transaction_type,
       city_code, area_code, card_species, 
       terminal_no, tsm_no, createtime
       )
-    values (#{transactionNum,jdbcType=VARCHAR}, #{transactionType,jdbcType=VARCHAR}, 
+    values (#{transactionNum,jdbcType=VARCHAR},#{cityOrderNo,jdbcType=VARCHAR}, #{transactionType,jdbcType=VARCHAR},
       #{cityCode,jdbcType=VARCHAR}, #{areaCode,jdbcType=VARCHAR}, #{cardSpecies,jdbcType=VARCHAR}, 
       #{terminalNo,jdbcType=VARCHAR}, #{tsmNo,jdbcType=VARCHAR}, #{createtime,jdbcType=TIMESTAMP}
       )
@@ -41,6 +42,9 @@
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="transactionNum != null">
         transaction_num,
+      </if>
+      <if test="cityOrderNo != null">
+        city_order_no,
       </if>
       <if test="transactionType != null">
         transaction_type,
@@ -67,6 +71,9 @@
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="transactionNum != null">
         #{transactionNum,jdbcType=VARCHAR},
+      </if>
+      <if test="cityOrderNo != null">
+        #{cityOrderNo,jdbcType=VARCHAR},
       </if>
       <if test="transactionType != null">
         #{transactionType,jdbcType=VARCHAR},
@@ -97,6 +104,9 @@
       <if test="transactionNum != null">
         transaction_num = #{transactionNum,jdbcType=VARCHAR},
       </if>
+      <if test="cityOrderNo != null">
+        city_order_no = #{cityOrderNo,jdbcType=VARCHAR},
+      </if>
       <if test="transactionType != null">
         transaction_type = #{transactionType,jdbcType=VARCHAR},
       </if>
@@ -124,6 +134,7 @@
   <update id="updateByPrimaryKey" parameterType="cn.com.heyue.entity.TsmTerminalOrder">
     update tsm_terminal_order
     set transaction_num = #{transactionNum,jdbcType=VARCHAR},
+      city_order_no = #{cityOrderNo,jdbcType=VARCHAR},
       transaction_type = #{transactionType,jdbcType=VARCHAR},
       city_code = #{cityCode,jdbcType=VARCHAR},
       area_code = #{areaCode,jdbcType=VARCHAR},

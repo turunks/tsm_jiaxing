@@ -8,17 +8,18 @@
     <result column="card_ species" jdbcType="VARCHAR" property="cardSpecies" />
     <result column="terminal_no" jdbcType="VARCHAR" property="terminalNo" />
     <result column="tsm_no" jdbcType="VARCHAR" property="tsmNo" />
-    <result column="Card_no" jdbcType="VARCHAR" property="cardNo" />
-    <result column="Card_optype" jdbcType="VARCHAR" property="cardOptype" />
+    <result column="card_no" jdbcType="VARCHAR" property="cardNo" />
+    <result column="card_optype" jdbcType="VARCHAR" property="cardOptype" />
     <result column="transaction_num" jdbcType="VARCHAR" property="transactionNum" />
+    <result column="city_order_no" jdbcType="VARCHAR" property="cityOrderNo" />
     <result column="transaction_datetime" jdbcType="TIMESTAMP" property="transactionDatetime" />
     <result column="issubmit" jdbcType="VARCHAR" property="issubmit" />
     <result column="submittime" jdbcType="TIMESTAMP" property="submittime" />
     <result column="apdu" jdbcType="VARCHAR" property="apdu" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, city_code, area_code, `card_ species`, terminal_no, tsm_no, Card_no, Card_optype, 
-    transaction_num, transaction_datetime, issubmit, submittime, apdu
+    id, city_code, area_code, `card_ species`, terminal_no, tsm_no, card_no, card_optype, 
+    transaction_num,city_order_no,transaction_datetime, issubmit, submittime, apdu
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -32,13 +33,13 @@
   </delete>
   <insert id="insert" keyColumn="id" keyProperty="id" parameterType="cn.com.heyue.entity.TsmCardapduApply" useGeneratedKeys="true">
     insert into tsm_cardapdu_apply (city_code, area_code, `card_ species`, 
-      terminal_no, tsm_no, Card_no, 
-      Card_optype, transaction_num, transaction_datetime, 
+      terminal_no, tsm_no, card_no, 
+      card_optype, transaction_num,city_order_no,transaction_datetime,
       issubmit, submittime, apdu
       )
     values (#{cityCode,jdbcType=VARCHAR}, #{areaCode,jdbcType=VARCHAR}, #{cardSpecies,jdbcType=VARCHAR}, 
       #{terminalNo,jdbcType=VARCHAR}, #{tsmNo,jdbcType=VARCHAR}, #{cardNo,jdbcType=VARCHAR}, 
-      #{cardOptype,jdbcType=VARCHAR}, #{transactionNum,jdbcType=VARCHAR}, #{transactionDatetime,jdbcType=TIMESTAMP}, 
+      #{cardOptype,jdbcType=VARCHAR}, #{transactionNum,jdbcType=VARCHAR},#{cityOrderNo,jdbcType=VARCHAR},#{transactionDatetime,jdbcType=TIMESTAMP},
       #{issubmit,jdbcType=VARCHAR}, #{submittime,jdbcType=TIMESTAMP}, #{apdu,jdbcType=VARCHAR}
       )
   </insert>
@@ -61,13 +62,16 @@
         tsm_no,
       </if>
       <if test="cardNo != null">
-        Card_no,
+        card_no,
       </if>
       <if test="cardOptype != null">
-        Card_optype,
+        card_optype,
       </if>
       <if test="transactionNum != null">
         transaction_num,
+      </if>
+      <if test="cityOrderNo != null">
+        city_order_no,
       </if>
       <if test="transactionDatetime != null">
         transaction_datetime,
@@ -107,6 +111,9 @@
       <if test="transactionNum != null">
         #{transactionNum,jdbcType=VARCHAR},
       </if>
+      <if test="cityOrderNo != null">
+        #{cityOrderNo,jdbcType=VARCHAR},
+      </if>
       <if test="transactionDatetime != null">
         #{transactionDatetime,jdbcType=TIMESTAMP},
       </if>
@@ -140,13 +147,16 @@
         tsm_no = #{tsmNo,jdbcType=VARCHAR},
       </if>
       <if test="cardNo != null">
-        Card_no = #{cardNo,jdbcType=VARCHAR},
+        card_no = #{cardNo,jdbcType=VARCHAR},
       </if>
       <if test="cardOptype != null">
-        Card_optype = #{cardOptype,jdbcType=VARCHAR},
+        card_optype = #{cardOptype,jdbcType=VARCHAR},
       </if>
       <if test="transactionNum != null">
         transaction_num = #{transactionNum,jdbcType=VARCHAR},
+      </if>
+      <if test="cityOrderNo != null">
+        city_order_no = #{cityOrderNo,jdbcType=VARCHAR},
       </if>
       <if test="transactionDatetime != null">
         transaction_datetime = #{transactionDatetime,jdbcType=TIMESTAMP},
@@ -170,9 +180,10 @@
       `card_ species` = #{cardSpecies,jdbcType=VARCHAR},
       terminal_no = #{terminalNo,jdbcType=VARCHAR},
       tsm_no = #{tsmNo,jdbcType=VARCHAR},
-      Card_no = #{cardNo,jdbcType=VARCHAR},
-      Card_optype = #{cardOptype,jdbcType=VARCHAR},
+      card_no = #{cardNo,jdbcType=VARCHAR},
+      card_optype = #{cardOptype,jdbcType=VARCHAR},
       transaction_num = #{transactionNum,jdbcType=VARCHAR},
+      city_order_no = #{cityOrderNo,jdbcType=VARCHAR},
       transaction_datetime = #{transactionDatetime,jdbcType=TIMESTAMP},
       issubmit = #{issubmit,jdbcType=VARCHAR},
       submittime = #{submittime,jdbcType=TIMESTAMP},
@@ -199,13 +210,16 @@
         tsm_no = #{tsmNo,jdbcType=VARCHAR},
       </if>
       <if test="cardNo != null">
-        Card_no = #{cardNo,jdbcType=VARCHAR},
+        card_no = #{cardNo,jdbcType=VARCHAR},
       </if>
       <if test="cardOptype != null">
-        Card_optype = #{cardOptype,jdbcType=VARCHAR},
+        card_optype = #{cardOptype,jdbcType=VARCHAR},
       </if>
       <if test="transactionNum != null">
         transaction_num = #{transactionNum,jdbcType=VARCHAR},
+      </if>
+      <if test="cityOrderNo != null">
+        city_order_no = #{cityOrderNo,jdbcType=VARCHAR},
       </if>
       <if test="transactionDatetime != null">
         transaction_datetime = #{transactionDatetime,jdbcType=TIMESTAMP},
@@ -220,7 +234,7 @@
         apdu = #{apdu,jdbcType=VARCHAR},
       </if>
     </set>
-    where Card_no = #{cardNo,jdbcType=VARCHAR}
+    where card_no = #{cardNo,jdbcType=VARCHAR}
   </update>
 
 </mapper>

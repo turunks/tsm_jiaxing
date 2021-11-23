@@ -12,6 +12,7 @@ import cn.com.heyue.utils.RSAUtils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.heyue.bean.TsmBaseReq;
+import com.heyue.bean.TsmBaseRes;
 import com.heyue.card.message.request.CreatCardDataReq;
 import com.heyue.card.message.response.Secretkey;
 import com.heyue.card.service.CardService;
@@ -23,15 +24,13 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 
 @RestController
-@RequestMapping("/test")
-public class TestController {
+@RequestMapping("/card")
+public class CardController {
 
     // 城市平台服务反馈文件数据体下标位置
     public static int card_no_index = 10;
@@ -68,7 +67,7 @@ public class TestController {
     public static int key2_index = reserveKey2_index + 2;// 充值密钥 2（国际）
     public static int remark2_index = key2_index + 2;// // 预留
 
-    private static Logger logger = LoggerFactory.getLogger(TestController.class);
+    private static Logger logger = LoggerFactory.getLogger(CardController.class);
 
     @Autowired
     private TsmTerminalOrderMapper tsmTerminalOrderMapper;
@@ -94,56 +93,7 @@ public class TestController {
         } catch (Exception e) {
             logger.info("系统异常:{}", e);
         }
-
-
         return tsmTerminalOrder;
-    }
-
-    @PostMapping("writeFile")
-    @ResponseBody
-    public void createCard(@RequestBody CreatCardDataReq creatCardDataReq) {
-        String version = "1.0.0";// 版本号
-        String recordNum = creatCardDataReq.getRecordNum();// 2 长度
-        String city_code = creatCardDataReq.getCity_code();// 2
-        String requestType = creatCardDataReq.getRequestType();// 1
-        String area_code = creatCardDataReq.getArea_code();// 1
-        String card_species = creatCardDataReq.getCard_species();// 2
-        StringBuffer sb = new StringBuffer();
-        sb.append(recordNum);
-        sb.append(city_code);
-        sb.append(requestType);
-        sb.append(area_code);
-        sb.append(card_species);
-
-
-        SimpleDateFormat df = new SimpleDateFormat("yyMMddHHmmss");
-        String date_2 = df.format(new Date().getTime());
-        city_code = "00";
-        String serialno = "1111";// 流水号
-        String filename = date_2 + city_code + serialno + ".SQ";
-        String path = "D:\\" + filename;
-        List<String> accountList = new ArrayList<>();
-        accountList.add(version);
-        accountList.add("");
-        accountList.add(sb.toString());
-        try {
-            FileUtils.writeFileContext(accountList, path);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        // 写入制卡数据文件表
-        TsmCardMakefile tsmCardMakefile = new TsmCardMakefile();
-        tsmCardMakefile.setCityCode(city_code);
-        tsmCardMakefile.setAreaCode(area_code);
-        tsmCardMakefile.setCardSpecies(card_species);
-        tsmCardMakefile.setMakefileName(filename);
-        tsmCardMakefile.setMakefileFtppath("d://ftppath");
-        tsmCardMakefile.setMakefileCreatetime(new Date());
-        tsmCardMakefile.setMakefileSerialno(serialno);
-        tsmCardMakefile.setCardnum(Integer.valueOf(recordNum));
-        tsmCardMakefile.setCardtype(requestType);
-        tsmCardMakefileMapper.insertSelective(tsmCardMakefile);
     }
 
     @RequestMapping("readFile")
@@ -294,18 +244,10 @@ public class TestController {
         cardService.downFromFTP();
     }
 
-
-    @RequestMapping("toFTP")
+    @PostMapping("createCard")
     @ResponseBody
-    public void toFTP(String filename) throws Exception {
-        cardService.toFTP(filename);
-    }
-
-
-    @PostMapping("testCreateCard")
-    @ResponseBody
-    public void testCreateCard(@RequestBody CreatCardDataReq creatCardDataReq) {
-        cardService.creatCardDataFile(creatCardDataReq);
+    public TsmBaseRes testCreateCard(@RequestBody CreatCardDataReq creatCardDataReq) {
+        return cardService.creatCardDataFile(creatCardDataReq);
     }
 
 }

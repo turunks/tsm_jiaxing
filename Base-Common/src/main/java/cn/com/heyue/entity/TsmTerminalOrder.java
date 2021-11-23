@@ -22,6 +22,11 @@ public class TsmTerminalOrder implements Serializable {
     private String transactionNum;
 
     /**
+     * 城市平台订单编号
+     */
+    private String cityOrderNo;
+
+    /**
      * 交易类型: 
 1-获取开卡文件
 2-激活请求

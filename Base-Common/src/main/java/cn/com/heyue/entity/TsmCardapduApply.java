@@ -59,6 +59,11 @@ public class TsmCardapduApply implements Serializable {
     private String transactionNum;
 
     /**
+     * 城市平台订单编号
+     */
+    private String cityOrderNo;
+
+    /**
      * 交易日期时间
      */
     private Date transactionDatetime;

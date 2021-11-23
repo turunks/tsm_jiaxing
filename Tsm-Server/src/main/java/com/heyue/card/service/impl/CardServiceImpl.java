@@ -7,10 +7,13 @@ import cn.com.heyue.mapper.TsmCardMakefileMapper;
 import cn.com.heyue.utils.FileUtils;
 import cn.com.heyue.utils.FtpUtils;
 import com.alibaba.fastjson.JSONObject;
+import com.heyue.bean.TsmBaseRes;
 import com.heyue.card.message.request.CreatCardDataReq;
 import com.heyue.card.message.response.Secretkey;
 import com.heyue.card.service.CardService;
 import com.heyue.cityservice.service.impl.CityServiceImpl;
+import com.heyue.constant.Constant;
+import com.heyue.utils.IdUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,22 +71,28 @@ public class CardServiceImpl implements CardService {
     public static int key2_index = reserveKey2_index + 2;// 充值密钥 2（国际）
     public static int remark2_index = key2_index + 2;// // 预留
 
-    //
-    public static final String local_catalog = "D:/bak/";
+//    public static final String local_catalog = "D:/bak/";
 
     // 制卡
     @Override
-    public void creatCardDataFile(CreatCardDataReq creatCardDataReq) {
+    public TsmBaseRes creatCardDataFile(CreatCardDataReq creatCardDataReq) {
         // 按照一定文件格式生成制卡数据申请文件 并ftp至城市平台指定目
-        //1.制卡
-        String filename = writeFile(creatCardDataReq);
-        //2.上传
-        toFTP(filename);
+        try {
+            logger.info("制卡请求报文:{}", creatCardDataReq);
+            //1.制卡
+            String filename = writeFile(creatCardDataReq);
+            //2.上传
+            toFTP(filename);
+            return TsmBaseRes.ok();
+        } catch (Exception e) {
+            logger.error("制卡请求出错:{}", e);
+            return TsmBaseRes.fail();
+        }
     }
 
     //
     public String writeFile(CreatCardDataReq creatCardDataReq) {
-        String version = "01";// 版本号
+        String version = "1.0.0";// 版本号
         String recordNum = creatCardDataReq.getRecordNum();// 2 长度
         String city_code = creatCardDataReq.getCity_code();// 2
         String requestType = creatCardDataReq.getRequestType();// 1
@@ -99,11 +108,9 @@ public class CardServiceImpl implements CardService {
 
         SimpleDateFormat df = new SimpleDateFormat("yyMMddHHmmss");
         String date_2 = df.format(new Date().getTime());
-        city_code = "00";
-        String serialno = "1111";// 流水号
+        String serialno = IdUtil.get10Serialno();// 流水号
         String filename = date_2 + city_code + serialno + ".SQ";
-//        String path = "D:\\" + filename;
-        String path = local_catalog + filename;
+        String path = Constant.LOCAL_CATALOG + filename;
         List<String> accountList = new ArrayList<>();
         accountList.add(version);
         accountList.add("");
@@ -120,7 +127,7 @@ public class CardServiceImpl implements CardService {
         tsmCardMakefile.setAreaCode(area_code);
         tsmCardMakefile.setCardSpecies(card_species);
         tsmCardMakefile.setMakefileName(filename);
-        tsmCardMakefile.setMakefileFtppath("d://ftppath");
+        tsmCardMakefile.setMakefileFtppath(Constant.FTP_UPLOAD_CATALOG + "/" + filename);
         tsmCardMakefile.setMakefileCreatetime(new Date());
         tsmCardMakefile.setMakefileSerialno(serialno);
         tsmCardMakefile.setCardnum(Integer.valueOf(recordNum));
@@ -134,7 +141,7 @@ public class CardServiceImpl implements CardService {
 
     public void readFile(String filename) {
         try {
-            String path = local_catalog + filename;
+            String path = Constant.LOCAL_CATALOG + filename;
 //            String path = "D:\\" + "211116110407001111.FS";
             String fileName = new File(path.trim()).getName();// 获取文件名
             String serialno = fileName.substring(14, 18);
@@ -272,47 +279,46 @@ public class CardServiceImpl implements CardService {
     }
 
 
-    public void toFTP(String filename) {
-        // 上传至ftp
+    public void downFromFTP() {
+        // 下载至ftp
         FtpUtils ftpUtils = new FtpUtils();
-        ftpUtils.setServer("192.168.99.100");
-        ftpUtils.setPort("21");
-        ftpUtils.setUser("test");
-        ftpUtils.setPassword("test");
+        ftpUtils.setServer(Constant.FTP_HOST);
+        ftpUtils.setPort(Constant.FTP_PORT);
+        ftpUtils.setUser(Constant.FTP_USER_NAME);
+        ftpUtils.setPassword(Constant.FTP_PASSWORD);
         ftpUtils.setTimeout("30000");
         try {
-            ftpUtils.connectServer("upload");
+            ftpUtils.connectServer(Constant.FTP_DOWNLOAD_CATALOG);// test用户下的目录
             System.out.println("登录成功。。。");
-//            String resource = this.getClass().getResource("/").toString();// class路径
-//            System.out.println(resource);
-//            String uploadRelativePath = "upload/";
-//            String path = resource + uploadRelativePath;
-            ftpUtils.upload(local_catalog + filename, filename);// 本地路径,ftp路径
+            // 获取指定ftp下目录的文件
+            List<String> allFile = ftpUtils.getAllFile(Constant.LOCAL_CATALOG);
+            // 下载完毕将反馈文件移动至历史文件夹;
+            for (String downloadfilename : allFile) {
+                ftpUtils.moveFile(downloadfilename, Constant.FTP_DOWNLOAD_HISTORY + "/" + downloadfilename);
+                // 解析下载的文件数据
+                readFile(downloadfilename);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-
-    public void downFromFTP() {
-        // 下载至ftp
+    public void toFTP(String filename) {
+        // 上传至ftp
         FtpUtils ftpUtils = new FtpUtils();
-        ftpUtils.setServer("192.168.99.100");
-        ftpUtils.setPort("21");
-        ftpUtils.setUser("test");
-        ftpUtils.setPassword("test");
+        ftpUtils.setServer(Constant.FTP_HOST);
+        ftpUtils.setPort(Constant.FTP_PORT);
+        ftpUtils.setUser(Constant.FTP_USER_NAME);
+        ftpUtils.setPassword(Constant.FTP_PASSWORD);
         ftpUtils.setTimeout("30000");
         try {
-            ftpUtils.connectServer("download");// test用户下的目录
+            ftpUtils.connectServer(Constant.FTP_UPLOAD_CATALOG);
             System.out.println("登录成功。。。");
-            // 获取指定ftp下目录的文件
-            List<String> allFile = ftpUtils.getAllFile(local_catalog);
-            // 下载完毕将反馈文件移动至历史文件夹;
-            for (String downloadfilename : allFile) {
-                ftpUtils.moveFile(downloadfilename, "/downloadhistory/" + downloadfilename);
-                // 解析下载的文件数据
-                readFile(downloadfilename);
-            }
+//            String resource = this.getClass().getResource("/").toString();// class路径
+//            System.out.println(resource);
+//            String uploadRelativePath = "upload/";
+//            String path = resource + uploadRelativePath;
+            ftpUtils.upload(Constant.LOCAL_CATALOG + filename, filename);// 本地路径,ftp路径
         } catch (Exception e) {
             e.printStackTrace();
         }

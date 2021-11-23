@@ -17,4 +17,7 @@ public class TsmBaseRes<T> {
     public static <T> TsmBaseRes fail() {
         return new TsmBaseRes("500", "error", null, null, null);
     }
+    public static <T> TsmBaseRes ok() {
+        return new TsmBaseRes("200", "success", null, null, null);
+    }
 }

@@ -1,5 +1,6 @@
 package com.heyue.card.service;
 
+import com.heyue.bean.TsmBaseRes;
 import com.heyue.card.message.request.CreatCardDataReq;
 
 /**
@@ -8,7 +9,7 @@ import com.heyue.card.message.request.CreatCardDataReq;
 public interface CardService {
 
     // 生成制卡数据申请文件
-    void creatCardDataFile(CreatCardDataReq creatCardDataReq);
+    TsmBaseRes creatCardDataFile(CreatCardDataReq creatCardDataReq);
 
     // 读取ftp文件
     void readFile(String filename);
