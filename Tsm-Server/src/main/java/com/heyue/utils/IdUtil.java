@@ -8,8 +8,6 @@ import java.util.Date;
 
 public class IdUtil {
 
-    public static SimpleDateFormat df = new SimpleDateFormat("YYYYMMddHHmmssms");
-
     /**
      * 获得10个长度的流水号（时间+4位随机数）
      *
@@ -20,5 +18,14 @@ public class IdUtil {
         String date_2 = df.format(new Date().getTime());
         String random = RandomUtil.randomNumbers(4);
         return date_2 + random;
+    }
+
+    /**
+     * 获取终端交易序号：本次产生的交易序号 4位hex
+     *
+     * @return
+     */
+    public static String getTransactionNum() {
+        return UUIDUtil.get8UUID();
     }
 }

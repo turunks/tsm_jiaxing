@@ -14,6 +14,7 @@ import com.heyue.cityservice.message.request.*;
 import com.heyue.cityservice.message.response.*;
 import com.heyue.cityservice.service.CityService;
 import com.heyue.constant.Constant;
+import com.heyue.utils.IdUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -63,6 +65,12 @@ public class CityServiceImpl implements CityService {
     public TsmBaseRes cardActive(CardActiveReq cardActiveReq) {
         // 向城市服务发送卡激活请求
         try {
+            // 参数二次封装
+            String terminalCode = cardActiveReq.getTerminal_code();
+            String transactionNum = IdUtil.getTransactionNum();
+            String orderNo = getOrderNo(terminalCode, transactionNum);
+            cardActiveReq.setTransaction_num(transactionNum);
+            cardActiveReq.setOrder_no(orderNo);
             String signRet = RSAUtils.signWithRsa2(JSON.toJSONString(cardActiveReq).getBytes(StandardCharsets.UTF_8), Constant.TSM_LOC_PRI_KEY).replaceAll(System.getProperty("line.separator"), "");
             TsmBaseReq<CardActiveReq> tsmBaseReq = new TsmBaseReq<>("citycode", "tsm_id", cardActiveReq, signRet);
             String req = JSON.toJSONString(tsmBaseReq);
@@ -73,20 +81,18 @@ public class CityServiceImpl implements CityService {
                 logger.warn("{}返回城市服务卡激活信息为空");
                 return TsmBaseRes.fail();
             }
-            TsmBaseRes<CardActiveRes> tsmBaseRes = JSON.parseObject(res, TsmBaseRes.class);
+            TsmBaseRes tsmBaseRes = JSON.parseObject(res, TsmBaseRes.class);
             // 提交成功插入卡指令请求记录表，终端交易数据存入 终端交易订单表
 
             //
             String cardSpecies = cardActiveReq.getCard_species();
             String regionCode = cardActiveReq.getRegion_code();
-            String terminalCode = cardActiveReq.getTerminal_code();
             String cardNo = cardActiveReq.getCard_no();
-            String orderNo = cardActiveReq.getOrder_no();
-            String transactionNum = cardActiveReq.getTransaction_num();
             String apdu = "";
             String transaction_datetime = "";
 
-            CardActiveRes cardActiveRes = tsmBaseRes.getData();
+            CardActiveRes cardActiveRes = JSON.parseObject(JSON.parseObject(res).getString("data"),CardActiveRes.class);
+
             if (cardActiveRes != null) {
                 transaction_datetime = cardActiveRes.getTransaction_datetime();
                 apdu = cardActiveRes.getApdu();
@@ -106,7 +112,6 @@ public class CityServiceImpl implements CityService {
             record.setApdu(apdu);
             tsmCardapduApplyMapper.insertSelective(record);
 
-//            tsmTerminalOrderMapper.insertSelective();
             TsmTerminalOrder record_one = new TsmTerminalOrder();
             record_one.setTransactionNum(transactionNum);
             record_one.setCityOrderNo(orderNo);
@@ -130,6 +135,12 @@ public class CityServiceImpl implements CityService {
     public TsmBaseRes cardActiveSubmit(CardActiveSubmitReq cardActiveSubmitReq) {
         // 向城市服务发送卡激活请求提交
         try {
+            // 参数二次封装
+            String terminalCode = cardActiveSubmitReq.getTerminal_code();
+            String transactionNum = IdUtil.getTransactionNum();
+            String orderNo = getOrderNo(terminalCode, transactionNum);
+            cardActiveSubmitReq.setTransaction_num(transactionNum);
+            cardActiveSubmitReq.setOrder_no(orderNo);
             String signRet = RSAUtils.signWithRsa2(JSON.toJSONString(cardActiveSubmitReq).getBytes(StandardCharsets.UTF_8), Constant.TSM_LOC_PRI_KEY).replaceAll(System.getProperty("line.separator"), "");
             TsmBaseReq<CardActiveSubmitReq> tsmBaseReq = new TsmBaseReq<>("citycode", "tsm_id", cardActiveSubmitReq, signRet);
             String req = JSON.toJSONString(tsmBaseReq);
@@ -160,6 +171,12 @@ public class CityServiceImpl implements CityService {
     public TsmBaseRes cardTrap(CardTrapReq cardTrapReq) {
         // 向城市服务发送卡圈存请求
         try {
+            // 参数二次封装
+            String terminalCode = cardTrapReq.getTerminal_code();
+            String transactionNum = IdUtil.getTransactionNum();
+            String orderNo = getOrderNo(terminalCode, transactionNum);
+            cardTrapReq.setTransaction_num(transactionNum);
+            cardTrapReq.setOrder_no(orderNo);
             String signRet = RSAUtils.signWithRsa2(JSON.toJSONString(cardTrapReq).getBytes(StandardCharsets.UTF_8), Constant.TSM_LOC_PRI_KEY).replaceAll(System.getProperty("line.separator"), "");
             TsmBaseReq<CardTrapReq> tsmBaseReq = new TsmBaseReq<>("citycode", "tsm_id", cardTrapReq, signRet);
             String req = JSON.toJSONString(tsmBaseReq);
@@ -172,14 +189,11 @@ public class CityServiceImpl implements CityService {
             }
             TsmBaseRes<CardTrapRes> tsmBaseRes = JSON.parseObject(res, TsmBaseRes.class);
             // 成功后将插入一条记录到 卡指令请求记录表，另外 会将终端交易数据存入 终端交易订单表
-            CardTrapRes cardTrapRes = tsmBaseRes.getData();
+            CardTrapRes cardTrapRes = JSON.parseObject(JSON.parseObject(res).getString("data"),CardTrapRes.class);
             //
             String regionCode = cardTrapReq.getRegion_code();
             String cardSpecies = cardTrapReq.getCard_species();
-            String terminalCode = cardTrapReq.getTerminal_code();
             String cardNo = cardTrapReq.getCard_no();
-            String orderNo = cardTrapReq.getOrder_no();
-            String transactionNum = cardTrapReq.getTransaction_num();
             String apdu = "";
             if (cardTrapRes != null) {
                 apdu = cardTrapRes.getApdu();
@@ -193,13 +207,11 @@ public class CityServiceImpl implements CityService {
             record.setTransactionNum(transactionNum);
             record.setTransactionDatetime(new Date());
             record.setCityOrderNo(orderNo);
-            record.setCityOrderNo(transactionNum);
             record.setIssubmit("00");
             record.setSubmittime(new Date());
             record.setApdu(apdu);
             tsmCardapduApplyMapper.insertSelective(record);
 
-//            tsmTerminalOrderMapper.insertSelective();
             TsmTerminalOrder record_one = new TsmTerminalOrder();
             record_one.setTransactionNum(transactionNum);
             record_one.setTransactionType("3");
@@ -224,6 +236,11 @@ public class CityServiceImpl implements CityService {
     public TsmBaseRes cardTrapSubmit(CardTrapSubmitReq cardTrapSubmitReq) {
         // 向城市服务发送卡圈存请求提交
         try {
+            String terminalCode = cardTrapSubmitReq.getTerminal_code();
+            String transactionNum = IdUtil.getTransactionNum();
+            String orderNo = getOrderNo(terminalCode, transactionNum);
+            cardTrapSubmitReq.setTransaction_num(transactionNum);
+            cardTrapSubmitReq.setOrder_no(orderNo);
             String signRet = RSAUtils.signWithRsa2(JSON.toJSONString(cardTrapSubmitReq).getBytes(StandardCharsets.UTF_8), Constant.TSM_LOC_PRI_KEY).replaceAll(System.getProperty("line.separator"), "");
             TsmBaseReq<CardTrapSubmitReq> tsmBaseReq = new TsmBaseReq<>("citycode", "tsm_id", cardTrapSubmitReq, signRet);
             String req = JSON.toJSONString(tsmBaseReq);
@@ -296,5 +313,19 @@ public class CityServiceImpl implements CityService {
             logger.error("返回卡消费记录异常:{}", e);
             return TsmBaseRes.fail();
         }
+    }
+
+    // 生成唯一的order_no
+
+    /**
+     * @param terminalCode   终端编号
+     * @param transactionNum 终端交易序号
+     * @return
+     */
+    private String getOrderNo(String terminalCode, String transactionNum) {
+        SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
+        String date_2 = df.format(new Date().getTime());
+        String orderNo = terminalCode + transactionNum + date_2;
+        return orderNo;
     }
 }
