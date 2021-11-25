@@ -3,6 +3,10 @@ package com.heyue.cityservice.service;
 
 import com.heyue.bean.TsmBaseRes;
 import com.heyue.cityservice.message.request.*;
+import com.heyue.cityservice.message.response.CardActiveRes;
+import com.heyue.cityservice.message.response.CardActiveSubmitRes;
+import com.heyue.cityservice.message.response.CardTrapRes;
+import com.heyue.cityservice.message.response.CardTrapSubmitRes;
 
 /**
  * 城市服务
@@ -13,16 +17,16 @@ public interface CityService {
     TsmBaseRes selTradeInfoR(TradeInfoReq tradeInfoReq);
 
     // 2.卡激活请求
-    TsmBaseRes cardActive(CardActiveReq cardActiveReq);
+    CardActiveRes cardActive(CardActiveReq cardActiveReq);
 
     // 3.卡激活请求提交
-    TsmBaseRes cardActiveSubmit(CardActiveSubmitReq cardActiveSubmitReq);
+    CardActiveSubmitRes cardActiveSubmit(CardActiveSubmitReq cardActiveSubmitReq);
 
     // 4.卡圈存请求
-    TsmBaseRes cardTrap(CardTrapReq cardTrapReq);
+    CardTrapRes cardTrap(CardTrapReq cardTrapReq);
 
     // 5.卡圈存请求提交
-    TsmBaseRes cardTrapSubmit(CardTrapSubmitReq cardTrapSubmitReq);
+    CardTrapSubmitRes cardTrapSubmit(CardTrapSubmitReq cardTrapSubmitReq);
 
     // 6.卡账户信息查询
     TsmBaseRes cardAccountInfo(CardAccountInfoReq cardAccountInfoReq);

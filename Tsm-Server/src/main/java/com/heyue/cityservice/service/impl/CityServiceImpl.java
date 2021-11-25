@@ -62,7 +62,7 @@ public class CityServiceImpl implements CityService {
 
     // 2.卡激活请求
     @Override
-    public TsmBaseRes cardActive(CardActiveReq cardActiveReq) {
+    public CardActiveRes cardActive(CardActiveReq cardActiveReq) {
         // 向城市服务发送卡激活请求
         try {
             // 参数二次封装
@@ -79,9 +79,9 @@ public class CityServiceImpl implements CityService {
             logger.info("返回城市服务卡激活报文:{}", res);
             if (StringUtils.isBlank(res)) {
                 logger.warn("{}返回城市服务卡激活信息为空");
-                return TsmBaseRes.fail();
+                return null;
             }
-            TsmBaseRes tsmBaseRes = JSON.parseObject(res, TsmBaseRes.class);
+//            TsmBaseRes tsmBaseRes = JSON.parseObject(res, TsmBaseRes.class);
             // 提交成功插入卡指令请求记录表，终端交易数据存入 终端交易订单表
 
             //
@@ -91,7 +91,7 @@ public class CityServiceImpl implements CityService {
             String apdu = "";
             String transaction_datetime = "";
 
-            CardActiveRes cardActiveRes = JSON.parseObject(JSON.parseObject(res).getString("data"),CardActiveRes.class);
+            CardActiveRes cardActiveRes = JSON.parseObject(JSON.parseObject(res).getString("data"), CardActiveRes.class);
 
             if (cardActiveRes != null) {
                 transaction_datetime = cardActiveRes.getTransaction_datetime();
@@ -122,17 +122,17 @@ public class CityServiceImpl implements CityService {
             record_one.setTerminalNo(terminalCode);
             record_one.setCreatetime(new Date());
             tsmTerminalOrderMapper.insertSelective(record_one);
-            return tsmBaseRes;
+            return cardActiveRes;
         } catch (Exception e) {
             logger.error("卡激活请求异常:{}", e);
-            return TsmBaseRes.fail();
+            return null;
         }
 
     }
 
     // 3.卡激活请求提交
     @Override
-    public TsmBaseRes cardActiveSubmit(CardActiveSubmitReq cardActiveSubmitReq) {
+    public CardActiveSubmitRes cardActiveSubmit(CardActiveSubmitReq cardActiveSubmitReq) {
         // 向城市服务发送卡激活请求提交
         try {
             // 参数二次封装
@@ -149,9 +149,10 @@ public class CityServiceImpl implements CityService {
             logger.info("返回城市服务卡激活请求提交报文:{}", res);
             if (StringUtils.isBlank(res)) {
                 logger.warn("{}返回卡激活请求提交为空");
-                return TsmBaseRes.fail();
+                return null;
             }
-            TsmBaseRes<CardActiveSubmitRes> tsmBaseRes = JSON.parseObject(res, TsmBaseRes.class);
+//            TsmBaseRes<CardActiveSubmitRes> tsmBaseRes = JSON.parseObject(res, TsmBaseRes.class);
+            CardActiveSubmitRes cardActiveSubmitRes = JSON.parseObject(JSON.parseObject(res).getString("data"), CardActiveSubmitRes.class);
 
             // 提交成功后更新 卡指令请求记录表 的是否请求被提交 和 请求提交时间字段。
             TsmCardapduApply record = new TsmCardapduApply();
@@ -159,16 +160,16 @@ public class CityServiceImpl implements CityService {
             record.setIssubmit("01");
             record.setSubmittime(new Date());
             tsmCardapduApplyMapper.updateByCardNo(record);
-            return tsmBaseRes;
+            return cardActiveSubmitRes;
         } catch (Exception e) {
             logger.error("卡激活请求提交异常:{}", e);
-            return TsmBaseRes.fail();
+            return null;
         }
     }
 
     // 4.卡圈存请求
     @Override
-    public TsmBaseRes cardTrap(CardTrapReq cardTrapReq) {
+    public CardTrapRes cardTrap(CardTrapReq cardTrapReq) {
         // 向城市服务发送卡圈存请求
         try {
             // 参数二次封装
@@ -185,11 +186,11 @@ public class CityServiceImpl implements CityService {
             logger.info("返回卡圈存请求报文:{}", res);
             if (StringUtils.isBlank(res)) {
                 logger.warn("{}返回卡圈存请求为空");
-                return TsmBaseRes.fail();
+                return null;
             }
             TsmBaseRes<CardTrapRes> tsmBaseRes = JSON.parseObject(res, TsmBaseRes.class);
             // 成功后将插入一条记录到 卡指令请求记录表，另外 会将终端交易数据存入 终端交易订单表
-            CardTrapRes cardTrapRes = JSON.parseObject(JSON.parseObject(res).getString("data"),CardTrapRes.class);
+            CardTrapRes cardTrapRes = JSON.parseObject(JSON.parseObject(res).getString("data"), CardTrapRes.class);
             //
             String regionCode = cardTrapReq.getRegion_code();
             String cardSpecies = cardTrapReq.getCard_species();
@@ -223,17 +224,17 @@ public class CityServiceImpl implements CityService {
             record_one.setCreatetime(new Date());
             tsmTerminalOrderMapper.insertSelective(record_one);
 
-            return tsmBaseRes;
+            return cardTrapRes;
         } catch (Exception e) {
             logger.error("卡圈存请求异常:{}", e);
-            return TsmBaseRes.fail();
+            return null;
         }
     }
 
     // 5.卡圈存请求提交
     //
     @Override
-    public TsmBaseRes cardTrapSubmit(CardTrapSubmitReq cardTrapSubmitReq) {
+    public CardTrapSubmitRes cardTrapSubmit(CardTrapSubmitReq cardTrapSubmitReq) {
         // 向城市服务发送卡圈存请求提交
         try {
             String terminalCode = cardTrapSubmitReq.getTerminal_code();
@@ -249,9 +250,11 @@ public class CityServiceImpl implements CityService {
             logger.info("返回卡圈存请求提交报文:{}", res);
             if (StringUtils.isBlank(res)) {
                 logger.warn("{}返回卡圈存请求提交为空");
-                return TsmBaseRes.fail();
+                return null;
             }
-            TsmBaseRes<CardTrapSubmitRes> tsmBaseRes = JSON.parseObject(res, TsmBaseRes.class);
+//            TsmBaseRes<CardTrapSubmitRes> tsmBaseRes = JSON.parseObject(res, TsmBaseRes.class);
+            CardTrapSubmitRes cardTrapSubmitRes = JSON.parseObject(JSON.parseObject(res).getString("data"), CardTrapSubmitRes.class);
+
             // 如果提交成功后更新 卡指令请求记录表 的是否请求被提交和 请求提交时间字段。
             TsmCardapduApply record = new TsmCardapduApply();
 
@@ -260,10 +263,10 @@ public class CityServiceImpl implements CityService {
             record.setSubmittime(new Date());
             tsmCardapduApplyMapper.updateByCardNo(record);
 
-            return tsmBaseRes;
+            return cardTrapSubmitRes;
         } catch (Exception e) {
             logger.error("卡圈存请求提交异常:{}", e);
-            return TsmBaseRes.fail();
+            return null;
         }
     }
 

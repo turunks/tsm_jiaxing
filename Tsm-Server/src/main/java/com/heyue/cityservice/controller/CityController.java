@@ -5,6 +5,10 @@ import cn.com.heyue.entity.TsmCardDetail;
 import cn.com.heyue.mapper.TsmCardDetailMapper;
 import com.heyue.bean.TsmBaseRes;
 import com.heyue.cityservice.message.request.*;
+import com.heyue.cityservice.message.response.CardActiveRes;
+import com.heyue.cityservice.message.response.CardActiveSubmitRes;
+import com.heyue.cityservice.message.response.CardTrapRes;
+import com.heyue.cityservice.message.response.CardTrapSubmitRes;
 import com.heyue.cityservice.service.CityService;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,43 +50,41 @@ public class CityController {
     // 向城市服务发送卡激活请求
     @PostMapping("cardActive/get")
     @ResponseBody
-    public TsmBaseRes cardActive(@RequestBody CardActiveReq cardActiveReq) {
-        TsmBaseRes result = cityService.cardActive(cardActiveReq);
-        return result;
+    public CardActiveRes cardActive(@RequestBody CardActiveReq cardActiveReq) {
+        CardActiveRes cardActiveRes = cityService.cardActive(cardActiveReq);
+        return cardActiveRes;
     }
 
 
     // 向城市服务发送卡激活请求提交
     @PostMapping("cardActiveSubmit/get")
     @ResponseBody
-    public TsmBaseRes cardActiveSubmit(@RequestBody CardActiveSubmitReq cardActiveSubmitReq) {
-        TsmBaseRes result = cityService.cardActiveSubmit(cardActiveSubmitReq);
-        return result;
+    public CardActiveSubmitRes cardActiveSubmit(@RequestBody CardActiveSubmitReq cardActiveSubmitReq) {
+        CardActiveSubmitRes cardActiveSubmitRes = cityService.cardActiveSubmit(cardActiveSubmitReq);
+        return cardActiveSubmitRes;
     }
 
     // 向城市服务发送卡圈存请求
     @PostMapping("cardTrap/get")
     @ResponseBody
-    public TsmBaseRes cardTrap(@RequestBody CardTrapReq cardTrapReq) {
-        TsmBaseRes result = cityService.cardTrap(cardTrapReq);
-        return result;
+    public CardTrapRes cardTrap(@RequestBody CardTrapReq cardTrapReq) {
+        CardTrapRes cardTrapRes = cityService.cardTrap(cardTrapReq);
+        return cardTrapRes;
     }
 
     // 卡圈存请求提交
     @PostMapping("cardTrapSubmit/get")
     @ResponseBody
-    public TsmBaseRes cardTrapSubmit(@RequestBody CardTrapSubmitReq cardTrapSubmitReq) {
-        TsmBaseRes result = cityService.cardTrapSubmit(cardTrapSubmitReq);
-        return result;
+    public CardTrapSubmitRes cardTrapSubmit(@RequestBody CardTrapSubmitReq cardTrapSubmitReq) {
+        CardTrapSubmitRes cardTrapSubmitRes = cityService.cardTrapSubmit(cardTrapSubmitReq);
+        return cardTrapSubmitRes;
     }
 
-    // 卡圈存请求提交
+    // 卡消费记录查询
     @PostMapping("cardConsumRecord/get")
     @ResponseBody
     public TsmBaseRes cardConsumRecord(@RequestBody CardConsumRecordReq cardConsumRecordReq) {
         TsmBaseRes result = cityService.cardConsumRecord(cardConsumRecordReq);
         return result;
     }
-
-
 }
