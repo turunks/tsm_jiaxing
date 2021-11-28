@@ -18,10 +18,10 @@ import java.nio.charset.Charset;
  * @description：XXX
  */
 @Component
-public class PayServiceFallbackProvider implements ZuulFallbackProvider {
+public class TsmServiceFallbackProvider implements ZuulFallbackProvider {
     @Override
     public String getRoute() {
-        return "pay-service";
+        return "Tsm-service";
     }
 
     @Override
@@ -49,7 +49,7 @@ public class PayServiceFallbackProvider implements ZuulFallbackProvider {
 
             @Override
             public InputStream getBody() throws IOException {
-                return new ByteArrayInputStream("pay-service不可用".getBytes());
+                return new ByteArrayInputStream("Tsm-service不可用".getBytes());
             }
 
             @Override
