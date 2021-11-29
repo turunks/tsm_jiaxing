@@ -24,15 +24,15 @@ public class Constant {
 
     // 地址
     // 本地制卡目录
-    public static String LOCAL_CATALOG = "D:/bak/";
+    public static String LOCAL_CATALOG;
     // FTP
-    public static String FTP_HOST = "192.168.99.100";
-    public static String FTP_PORT = "21";
-    public static String FTP_USER_NAME = "test";
-    public static String FTP_PASSWORD = "test";
-    public static String FTP_UPLOAD_CATALOG = "/upload";
-    public static String FTP_DOWNLOAD_CATALOG = "/download";
-    public static String FTP_DOWNLOAD_HISTORY = "/downloadhistory";
+    public static String FTP_HOST;
+    public static String FTP_PORT;
+    public static String FTP_USER_NAME;
+    public static String FTP_PASSWORD;
+    public static String FTP_UPLOAD_CATALOG;
+    public static String FTP_DOWNLOAD_CATALOG;
+    public static String FTP_DOWNLOAD_HISTORY;
 
     // 系统参数
     // TSM_ID
@@ -82,6 +82,46 @@ public class Constant {
         TSM_LOC_PRI_KEY = cardTsmLocPriKey;
     }
 
-    //
+
+    //FTP
+    @Value("${FTP_HOST}")
+    public void setftpHost(String ftpHost) {
+        FTP_HOST = ftpHost;
+    }
+
+    @Value("${FTP_PORT}")
+    public void setftpPort(String ftpPort) {
+        FTP_PORT = ftpPort;
+    }
+
+    @Value("${FTP_USER_NAME}")
+    public void setftpUserName(String ftpUserName) {
+        FTP_USER_NAME = ftpUserName;
+    }
+
+    @Value("${FTP_PASSWORD}")
+    public void setftpPassWord(String ftpPassWord) {
+        FTP_PASSWORD = ftpPassWord;
+    }
+
+    @Value("${LOCAL_CATALOG}")
+    public void setlocalCatalog(String localCatalog) {
+        LOCAL_CATALOG = localCatalog;
+    }
+
+    @Value("${FTP_UPLOAD_CATALOG}")
+    public void setftpUploadCatalog(String ftpUploadCatalog) {
+        FTP_UPLOAD_CATALOG = ftpUploadCatalog;
+    }
+
+    @Value("${FTP_DOWNLOAD_CATALOG}")
+    public void setftpDownloadCatalog(String ftpDownloadCatalog) {
+        FTP_DOWNLOAD_CATALOG = ftpDownloadCatalog;
+    }
+
+    @Value("${FTP_DOWNLOAD_HISTORY}")
+    public void setftpDownloadHistory(String ftpDownloadHistory) {
+        FTP_DOWNLOAD_HISTORY = ftpDownloadHistory;
+    }
 
 }

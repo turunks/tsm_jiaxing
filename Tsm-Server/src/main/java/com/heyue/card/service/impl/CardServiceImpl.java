@@ -18,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -73,6 +74,7 @@ public class CardServiceImpl implements CardService {
 
 
     // 制卡
+    @Transactional
     @Override
     public TsmBaseRes creatCardDataFile(CreatCardDataReq creatCardDataReq) {
         // 按照一定文件格式生成制卡数据申请文件 并ftp至城市平台指定目
@@ -80,6 +82,7 @@ public class CardServiceImpl implements CardService {
             logger.info("制卡请求报文:{}", creatCardDataReq);
             //1.制卡
             String filename = writeFile(creatCardDataReq);
+            logger.info("制卡文件名:{}", filename);
             //2.上传
             toFTP(filename);
             return TsmBaseRes.ok();
@@ -90,7 +93,7 @@ public class CardServiceImpl implements CardService {
     }
 
     //
-    public String writeFile(CreatCardDataReq creatCardDataReq) {
+    public String writeFile(CreatCardDataReq creatCardDataReq) throws Exception {
         String version = Constant.VERSION;// 版本号
         String recordNum = creatCardDataReq.getRecordNum();// 2 长度
         String city_code = creatCardDataReq.getCity_code();// 2
@@ -114,11 +117,7 @@ public class CardServiceImpl implements CardService {
         accountList.add(version);
         accountList.add("");
         accountList.add(sb.toString());
-        try {
-            FileUtils.writeFileContext(accountList, path);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        FileUtils.writeFileContext(accountList, path);
 
         // 写入制卡数据文件表
         TsmCardMakefile tsmCardMakefile = new TsmCardMakefile();
@@ -126,7 +125,7 @@ public class CardServiceImpl implements CardService {
         tsmCardMakefile.setAreaCode(area_code);
         tsmCardMakefile.setCardSpecies(card_species);
         tsmCardMakefile.setMakefileName(filename);
-        tsmCardMakefile.setMakefileFtppath(Constant.FTP_UPLOAD_CATALOG + "/" + filename);
+        tsmCardMakefile.setMakefileFtppath(Constant.FTP_UPLOAD_CATALOG + filename);
         tsmCardMakefile.setMakefileCreatetime(new Date());
         tsmCardMakefile.setMakefileSerialno(serialno);
         tsmCardMakefile.setCardnum(Integer.valueOf(recordNum));
@@ -228,7 +227,6 @@ public class CardServiceImpl implements CardService {
                 tsmCardDetail.setAppId("");//应用id
                 tsmCardDetail.setMerchantNo("");//服务商号
                 tsmCardDetailMapper.insertSelective(tsmCardDetail);
-
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -293,7 +291,7 @@ public class CardServiceImpl implements CardService {
             List<String> allFile = ftpUtils.getAllFile(Constant.LOCAL_CATALOG);
             // 下载完毕将反馈文件移动至历史文件夹;
             for (String downloadfilename : allFile) {
-                ftpUtils.moveFile(downloadfilename, Constant.FTP_DOWNLOAD_HISTORY + "/" + downloadfilename);
+                ftpUtils.moveFile(downloadfilename, Constant.FTP_DOWNLOAD_HISTORY + downloadfilename);
                 // 解析下载的文件数据
                 readFile(downloadfilename);
             }
@@ -302,7 +300,7 @@ public class CardServiceImpl implements CardService {
         }
     }
 
-    public void toFTP(String filename) {
+    public void toFTP(String filename) throws Exception {
         // 上传至ftp
         FtpUtils ftpUtils = new FtpUtils();
         ftpUtils.setServer(Constant.FTP_HOST);
@@ -310,17 +308,9 @@ public class CardServiceImpl implements CardService {
         ftpUtils.setUser(Constant.FTP_USER_NAME);
         ftpUtils.setPassword(Constant.FTP_PASSWORD);
         ftpUtils.setTimeout("30000");
-        try {
-            ftpUtils.connectServer(Constant.FTP_UPLOAD_CATALOG);
-            System.out.println("登录成功。。。");
-//            String resource = this.getClass().getResource("/").toString();// class路径
-//            System.out.println(resource);
-//            String uploadRelativePath = "upload/";
-//            String path = resource + uploadRelativePath;
-            ftpUtils.upload(Constant.LOCAL_CATALOG + filename, filename);// 本地路径,ftp路径
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        ftpUtils.connectServer(Constant.FTP_UPLOAD_CATALOG);
+        logger.info("登陆成功，开始上传文件:{}", filename);
+        ftpUtils.upload(Constant.LOCAL_CATALOG + filename, filename);// 本地路径,ftp路径
     }
 
 }

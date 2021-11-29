@@ -15,7 +15,7 @@ public interface CardService {
     void readFile(String filename);
 
     // 上传ftp
-    void toFTP(String filename);
+    void toFTP(String filename) throws Exception;
 
     // ftp下载并解析
     void downFromFTP();

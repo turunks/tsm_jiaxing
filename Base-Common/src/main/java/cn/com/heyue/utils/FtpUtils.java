@@ -328,17 +328,17 @@ public class FtpUtils
     public static void main(String[] args) throws Exception
     {
         FtpUtils ftpUtils = new FtpUtils();
-        ftpUtils.setServer("118.178.132.220");
+        ftpUtils.setServer("81.69.189.227");
         ftpUtils.setPort("21");
-        ftpUtils.setUser("hy_duiz");
-        ftpUtils.setPassword("heyu_1065_HY");
+        ftpUtils.setUser("tsm");
+        ftpUtils.setPassword("~S;/mUh3Wz._j2");
         ftpUtils.setTimeout("30000");
         try {
-            ftpUtils.connectServer("");
+            ftpUtils.connectServer("/tsm_cardfile/upload");
             System.out.println("登录成功。。。");
-            //ftpUtils.getZdFile("/cmpay/20180410/","D:\\Users\\UserA\\Desktop\\bak");
-            File f = new File("E:/bak", "2018050702610105010598852434324324234234.txt");
-            ftpUtils.download("/bestpay/2018050702610105010598852434324324234234.txt", f.getPath());
+            ftpUtils.upload("D:/bak/upload.txt", "upload.txt");// 本地路径,ftp路径
+//            File f = new File("D:/bak", "tsmFTP用户.txt");
+//            ftpUtils.download("tsmFTP用户.txt", f.getPath());
         } catch (IOException e) {
             e.printStackTrace();
         }
