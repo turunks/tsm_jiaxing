@@ -1,6 +1,7 @@
 package com.heyue.bean;
 
 import cn.hutool.core.util.RandomUtil;
+import com.heyue.constant.Constant;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,19 +22,17 @@ public class TsmBaseReq<T> {
     private String sign;// 网关签名
 
     /**
-     * @param city_code 城市id
-     * @param tsm_id    tsm_id
-     * @param data      数据体
-     * @param sign      签名
+     * @param data 数据体
+     * @param sign 签名
      */
-    public TsmBaseReq(String city_code, String tsm_id, T data, String sign) {
+    public TsmBaseReq(T data, String sign) {
         SimpleDateFormat df = new SimpleDateFormat("YYYYMMDDhhmmssms");
         String date_2 = df.format(new Date().getTime());
         // 4位随机数
         String random = RandomUtil.randomNumbers(4);
-        this.version = "1.0.0";
-        this.city_code = city_code;
-        this.tsm_id = tsm_id;
+        this.version = Constant.VERSION;
+        this.city_code = Constant.CITY_CODE;
+        this.tsm_id = Constant.TSM_ID;
         this.action_id = tsm_id + date_2 + random;
         this.data = data;
         this.action_time = date_2;

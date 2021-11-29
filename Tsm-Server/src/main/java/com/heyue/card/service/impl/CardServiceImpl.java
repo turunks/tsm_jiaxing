@@ -71,7 +71,6 @@ public class CardServiceImpl implements CardService {
     public static int key2_index = reserveKey2_index + 2;// 充值密钥 2（国际）
     public static int remark2_index = key2_index + 2;// // 预留
 
-//    public static final String local_catalog = "D:/bak/";
 
     // 制卡
     @Override
@@ -92,7 +91,7 @@ public class CardServiceImpl implements CardService {
 
     //
     public String writeFile(CreatCardDataReq creatCardDataReq) {
-        String version = "1.0.0";// 版本号
+        String version = Constant.VERSION;// 版本号
         String recordNum = creatCardDataReq.getRecordNum();// 2 长度
         String city_code = creatCardDataReq.getCity_code();// 2
         String requestType = creatCardDataReq.getRequestType();// 1

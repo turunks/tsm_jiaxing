@@ -5,7 +5,7 @@
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="city_code" jdbcType="VARCHAR" property="cityCode" />
     <result column="area_code" jdbcType="VARCHAR" property="areaCode" />
-    <result column="card_ species" jdbcType="VARCHAR" property="cardSpecies" />
+    <result column="card_species" jdbcType="VARCHAR" property="cardSpecies" />
     <result column="terminal_no" jdbcType="VARCHAR" property="terminalNo" />
     <result column="tsm_no" jdbcType="VARCHAR" property="tsmNo" />
     <result column="card_no" jdbcType="VARCHAR" property="cardNo" />
@@ -18,7 +18,7 @@
     <result column="apdu" jdbcType="VARCHAR" property="apdu" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, city_code, area_code, `card_ species`, terminal_no, tsm_no, card_no, card_optype, 
+    id, city_code, area_code, `card_species`, terminal_no, tsm_no, card_no, card_optype, 
     transaction_num,city_order_no,transaction_datetime, issubmit, submittime, apdu
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
@@ -32,7 +32,7 @@
     where id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="insert" keyColumn="id" keyProperty="id" parameterType="cn.com.heyue.entity.TsmCardapduApply" useGeneratedKeys="true">
-    insert into tsm_cardapdu_apply (city_code, area_code, `card_ species`, 
+    insert into tsm_cardapdu_apply (city_code, area_code, `card_species`, 
       terminal_no, tsm_no, card_no, 
       card_optype, transaction_num,city_order_no,transaction_datetime,
       issubmit, submittime, apdu
@@ -53,7 +53,7 @@
         area_code,
       </if>
       <if test="cardSpecies != null">
-        `card_ species`,
+        `card_species`,
       </if>
       <if test="terminalNo != null">
         terminal_no,
@@ -138,7 +138,7 @@
         area_code = #{areaCode,jdbcType=VARCHAR},
       </if>
       <if test="cardSpecies != null">
-        `card_ species` = #{cardSpecies,jdbcType=VARCHAR},
+        `card_species` = #{cardSpecies,jdbcType=VARCHAR},
       </if>
       <if test="terminalNo != null">
         terminal_no = #{terminalNo,jdbcType=VARCHAR},
@@ -177,7 +177,7 @@
     update tsm_cardapdu_apply
     set city_code = #{cityCode,jdbcType=VARCHAR},
       area_code = #{areaCode,jdbcType=VARCHAR},
-      `card_ species` = #{cardSpecies,jdbcType=VARCHAR},
+      `card_species` = #{cardSpecies,jdbcType=VARCHAR},
       terminal_no = #{terminalNo,jdbcType=VARCHAR},
       tsm_no = #{tsmNo,jdbcType=VARCHAR},
       card_no = #{cardNo,jdbcType=VARCHAR},
@@ -201,7 +201,7 @@
         area_code = #{areaCode,jdbcType=VARCHAR},
       </if>
       <if test="cardSpecies != null">
-        `card_ species` = #{cardSpecies,jdbcType=VARCHAR},
+        `card_species` = #{cardSpecies,jdbcType=VARCHAR},
       </if>
       <if test="terminalNo != null">
         terminal_no = #{terminalNo,jdbcType=VARCHAR},
@@ -213,7 +213,7 @@
         card_no = #{cardNo,jdbcType=VARCHAR},
       </if>
       <if test="cardOptype != null">
-        card_optype = #{cardOptype,jdbcType=VARCHAR},
+        card_optype = #{cardOptype,jdbcType=VARCHAR},.189
       </if>
       <if test="transactionNum != null">
         transaction_num = #{transactionNum,jdbcType=VARCHAR},

@@ -43,7 +43,7 @@ public class CityServiceImpl implements CityService {
         // 向城市服务发送交易查询
         try {
             String signRet = RSAUtils.signWithRsa2(JSON.toJSONString(tradeInfoReq).getBytes(StandardCharsets.UTF_8), Constant.TSM_LOC_PRI_KEY).replaceAll(System.getProperty("line.separator"), "");
-            TsmBaseReq<TradeInfoReq> tsmBaseReq = new TsmBaseReq<>("citycode", "tsm_id", tradeInfoReq, signRet);
+            TsmBaseReq<TradeInfoReq> tsmBaseReq = new TsmBaseReq<>(tradeInfoReq, signRet);
             String req = JSON.toJSONString(tsmBaseReq);
             logger.info("发送城市服务发送交易查询报文:{}", req);
             String res = HttpRequestUtils.doPost(Constant.SEL_TRADEINFO_URL, req);
@@ -72,7 +72,7 @@ public class CityServiceImpl implements CityService {
             cardActiveReq.setTransaction_num(transactionNum);
             cardActiveReq.setOrder_no(orderNo);
             String signRet = RSAUtils.signWithRsa2(JSON.toJSONString(cardActiveReq).getBytes(StandardCharsets.UTF_8), Constant.TSM_LOC_PRI_KEY).replaceAll(System.getProperty("line.separator"), "");
-            TsmBaseReq<CardActiveReq> tsmBaseReq = new TsmBaseReq<>("citycode", "tsm_id", cardActiveReq, signRet);
+            TsmBaseReq<CardActiveReq> tsmBaseReq = new TsmBaseReq<>(cardActiveReq, signRet);
             String req = JSON.toJSONString(tsmBaseReq);
             logger.info("发送城市服务卡激活报文:{}", req);
             String res = HttpRequestUtils.doPost(Constant.CARD_ACTIVE_URL, req);
@@ -84,7 +84,6 @@ public class CityServiceImpl implements CityService {
 //            TsmBaseRes tsmBaseRes = JSON.parseObject(res, TsmBaseRes.class);
             // 提交成功插入卡指令请求记录表，终端交易数据存入 终端交易订单表
 
-            //
             String cardSpecies = cardActiveReq.getCard_species();
             String regionCode = cardActiveReq.getRegion_code();
             String cardNo = cardActiveReq.getCard_no();
@@ -142,7 +141,7 @@ public class CityServiceImpl implements CityService {
             cardActiveSubmitReq.setTransaction_num(transactionNum);
             cardActiveSubmitReq.setOrder_no(orderNo);
             String signRet = RSAUtils.signWithRsa2(JSON.toJSONString(cardActiveSubmitReq).getBytes(StandardCharsets.UTF_8), Constant.TSM_LOC_PRI_KEY).replaceAll(System.getProperty("line.separator"), "");
-            TsmBaseReq<CardActiveSubmitReq> tsmBaseReq = new TsmBaseReq<>("citycode", "tsm_id", cardActiveSubmitReq, signRet);
+            TsmBaseReq<CardActiveSubmitReq> tsmBaseReq = new TsmBaseReq<>(cardActiveSubmitReq, signRet);
             String req = JSON.toJSONString(tsmBaseReq);
             logger.info("发送城市服务卡激活请求提交报文:{}", req);
             String res = HttpRequestUtils.doPost(Constant.CARD_ACTIVE_SUBMIT_URL, req);
@@ -179,7 +178,7 @@ public class CityServiceImpl implements CityService {
             cardTrapReq.setTransaction_num(transactionNum);
             cardTrapReq.setOrder_no(orderNo);
             String signRet = RSAUtils.signWithRsa2(JSON.toJSONString(cardTrapReq).getBytes(StandardCharsets.UTF_8), Constant.TSM_LOC_PRI_KEY).replaceAll(System.getProperty("line.separator"), "");
-            TsmBaseReq<CardTrapReq> tsmBaseReq = new TsmBaseReq<>("citycode", "tsm_id", cardTrapReq, signRet);
+            TsmBaseReq<CardTrapReq> tsmBaseReq = new TsmBaseReq<>(cardTrapReq, signRet);
             String req = JSON.toJSONString(tsmBaseReq);
             logger.info("发送卡圈存请求报文:{}", req);
             String res = HttpRequestUtils.doPost(Constant.CARD_TRAP_URL, req);
@@ -188,7 +187,7 @@ public class CityServiceImpl implements CityService {
                 logger.warn("{}返回卡圈存请求为空");
                 return null;
             }
-            TsmBaseRes<CardTrapRes> tsmBaseRes = JSON.parseObject(res, TsmBaseRes.class);
+//            TsmBaseRes<CardTrapRes> tsmBaseRes = JSON.parseObject(res, TsmBaseRes.class);
             // 成功后将插入一条记录到 卡指令请求记录表，另外 会将终端交易数据存入 终端交易订单表
             CardTrapRes cardTrapRes = JSON.parseObject(JSON.parseObject(res).getString("data"), CardTrapRes.class);
             //
@@ -217,7 +216,7 @@ public class CityServiceImpl implements CityService {
             record_one.setTransactionNum(transactionNum);
             record_one.setTransactionType("3");
             record_one.setCityOrderNo(orderNo);
-            record_one.setCityCode("");
+            record_one.setCityCode(Constant.CITY_CODE);
             record_one.setAreaCode(regionCode);
             record_one.setCardSpecies(cardSpecies);
             record_one.setTerminalNo(terminalCode);
@@ -243,7 +242,7 @@ public class CityServiceImpl implements CityService {
             cardTrapSubmitReq.setTransaction_num(transactionNum);
             cardTrapSubmitReq.setOrder_no(orderNo);
             String signRet = RSAUtils.signWithRsa2(JSON.toJSONString(cardTrapSubmitReq).getBytes(StandardCharsets.UTF_8), Constant.TSM_LOC_PRI_KEY).replaceAll(System.getProperty("line.separator"), "");
-            TsmBaseReq<CardTrapSubmitReq> tsmBaseReq = new TsmBaseReq<>("citycode", "tsm_id", cardTrapSubmitReq, signRet);
+            TsmBaseReq<CardTrapSubmitReq> tsmBaseReq = new TsmBaseReq<>(cardTrapSubmitReq, signRet);
             String req = JSON.toJSONString(tsmBaseReq);
             logger.info("发送卡圈存请求提交报文:{}", req);
             String res = HttpRequestUtils.doPost(Constant.CARD_TRAP_SUBMIT_URL, req);
@@ -277,7 +276,7 @@ public class CityServiceImpl implements CityService {
 
         try {
             String signRet = RSAUtils.signWithRsa2(JSON.toJSONString(cardAccountInfoReq).getBytes(StandardCharsets.UTF_8), Constant.TSM_LOC_PRI_KEY).replaceAll(System.getProperty("line.separator"), "");
-            TsmBaseReq<CardAccountInfoReq> tsmBaseReq = new TsmBaseReq<>("citycode", "tsm_id", cardAccountInfoReq, signRet);
+            TsmBaseReq<CardAccountInfoReq> tsmBaseReq = new TsmBaseReq<>(cardAccountInfoReq, signRet);
             String req = JSON.toJSONString(tsmBaseReq);
             logger.info("发送卡账户信息查询报文:{}", req);
             String res = HttpRequestUtils.doPost(Constant.CARD_ACCOUNT_INFO_URL, req);
@@ -300,7 +299,7 @@ public class CityServiceImpl implements CityService {
         // 向城市服务发送卡消费记录查询
         try {
             String signRet = RSAUtils.signWithRsa2(JSON.toJSONString(cardConsumRecordReq).getBytes(StandardCharsets.UTF_8), Constant.TSM_LOC_PRI_KEY).replaceAll(System.getProperty("line.separator"), "");
-            TsmBaseReq<CardConsumRecordReq> tsmBaseReq = new TsmBaseReq<>("citycode", "tsm_id", cardConsumRecordReq, signRet);
+            TsmBaseReq<CardConsumRecordReq> tsmBaseReq = new TsmBaseReq<>(cardConsumRecordReq, signRet);
             String req = JSON.toJSONString(tsmBaseReq);
             logger.info("发送卡消费记录查询报文:{}", req);
             String res = HttpRequestUtils.doPost(Constant.CARD_CONSUM_RECORD_URL, req);

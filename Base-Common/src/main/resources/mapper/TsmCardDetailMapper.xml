@@ -6,7 +6,7 @@
     <result column="cadFile_id" jdbcType="BIGINT" property="cadfileId" />
     <result column="city_code" jdbcType="VARCHAR" property="cityCode" />
     <result column="area_code" jdbcType="VARCHAR" property="areaCode" />
-    <result column="card_ species" jdbcType="VARCHAR" property="cardSpecies" />
+    <result column="card_species" jdbcType="VARCHAR" property="cardSpecies" />
     <result column="card_no" jdbcType="VARCHAR" property="cardNo" />
     <result column="card_sign" jdbcType="VARCHAR" property="cardSign" />
     <result column="card_app_version" jdbcType="VARCHAR" property="cardAppVersion" />
@@ -29,7 +29,7 @@
     <result column="merchant_no" jdbcType="VARCHAR" property="merchantNo" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, cadFile_id, city_code, area_code, `card_ species`, card_no, card_sign, card_app_version, 
+    id, cadFile_id, city_code, area_code, `card_species`, card_no, card_sign, card_app_version, 
     app_serial_no, app_start_date, app_valid_date, card_custom_fci, card_type_sign, internate_code, 
     province_code, contact_card_type, card_type, reserve, internation_key, domestic_key, 
     card_status, in_deposit_time, out_deposit_time, app_id, merchant_no
@@ -37,16 +37,16 @@
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from `tsm_card _detail`
+    from `tsm_card_detail`
     where id = #{id,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from `tsm_card _detail`
+    delete from `tsm_card_detail`
     where id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="insert" keyColumn="id" keyProperty="id" parameterType="cn.com.heyue.entity.TsmCardDetail" useGeneratedKeys="true">
-    insert into `tsm_card _detail` (cadFile_id, city_code, area_code, 
-      `card_ species`, card_no, card_sign, 
+    insert into `tsm_card_detail` (cadFile_id, city_code, area_code, 
+      `card_species`, card_no, card_sign, 
       card_app_version, app_serial_no, app_start_date, 
       app_valid_date, card_custom_fci, card_type_sign, 
       internate_code, province_code, contact_card_type, 
@@ -65,7 +65,7 @@
       )
   </insert>
   <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="cn.com.heyue.entity.TsmCardDetail" useGeneratedKeys="true">
-    insert into `tsm_card _detail`
+    insert into `tsm_card_detail`
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="cadfileId != null">
         cadFile_id,
@@ -77,7 +77,7 @@
         area_code,
       </if>
       <if test="cardSpecies != null">
-        `card_ species`,
+        `card_species`,
       </if>
       <if test="cardNo != null">
         card_no,
@@ -216,7 +216,7 @@
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="cn.com.heyue.entity.TsmCardDetail">
-    update `tsm_card _detail`
+    update `tsm_card_detail`
     <set>
       <if test="cadfileId != null">
         cadFile_id = #{cadfileId,jdbcType=BIGINT},
@@ -228,7 +228,7 @@
         area_code = #{areaCode,jdbcType=VARCHAR},
       </if>
       <if test="cardSpecies != null">
-        `card_ species` = #{cardSpecies,jdbcType=VARCHAR},
+        `card_species` = #{cardSpecies,jdbcType=VARCHAR},
       </if>
       <if test="cardNo != null">
         card_no = #{cardNo,jdbcType=VARCHAR},
@@ -294,11 +294,11 @@
     where id = #{id,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="cn.com.heyue.entity.TsmCardDetail">
-    update `tsm_card _detail`
+    update `tsm_card_detail`
     set cadFile_id = #{cadfileId,jdbcType=BIGINT},
       city_code = #{cityCode,jdbcType=VARCHAR},
       area_code = #{areaCode,jdbcType=VARCHAR},
-      `card_ species` = #{cardSpecies,jdbcType=VARCHAR},
+      `card_species` = #{cardSpecies,jdbcType=VARCHAR},
       card_no = #{cardNo,jdbcType=VARCHAR},
       card_sign = #{cardSign,jdbcType=VARCHAR},
       card_app_version = #{cardAppVersion,jdbcType=VARCHAR},

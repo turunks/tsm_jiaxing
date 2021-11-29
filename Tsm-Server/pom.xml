@@ -186,7 +186,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <mainClass>com.heyue.TsmApplication</mainClass>
-                            <classpathPrefix>tsmServer/</classpathPrefix>
+                            <classpathPrefix>lib/tsmServer/</classpathPrefix>
                         </manifest>
                     </archive>
                 </configuration>

@@ -73,8 +73,8 @@
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
-                            <mainClass>com.heyue.ServiceZuulApplication</mainClass>
-                            <classpathPrefix>zuul/</classpathPrefix>
+                            <mainClass>cn.com.heyue.ServiceZuulApplication</mainClass>
+                            <classpathPrefix>lib/zuul/</classpathPrefix>
                         </manifest>
                     </archive>
                 </configuration>

@@ -70,7 +70,7 @@
 						<manifest>
 							<addClasspath>true</addClasspath>
 							<mainClass>com.heyue.config.ConfigApplication</mainClass>
-							<classpathPrefix>config/</classpathPrefix>
+							<classpathPrefix>lib/configserver/</classpathPrefix>
 						</manifest>
 					</archive>
 				</configuration>

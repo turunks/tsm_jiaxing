@@ -22,18 +22,24 @@ public class Constant {
     public static String TSM_LOC_PRI_KEY;
 
 
-
     // 地址
     // 本地制卡目录
     public static String LOCAL_CATALOG = "D:/bak/";
     // FTP
-    public static String FTP_HOST="192.168.99.100";
-    public static String FTP_PORT="21";
-    public static String FTP_USER_NAME="test";
-    public static String FTP_PASSWORD="test";
-    public static String FTP_UPLOAD_CATALOG="/upload";
-    public static String FTP_DOWNLOAD_CATALOG="/download";
-    public static String FTP_DOWNLOAD_HISTORY="/downloadhistory";
+    public static String FTP_HOST = "192.168.99.100";
+    public static String FTP_PORT = "21";
+    public static String FTP_USER_NAME = "test";
+    public static String FTP_PASSWORD = "test";
+    public static String FTP_UPLOAD_CATALOG = "/upload";
+    public static String FTP_DOWNLOAD_CATALOG = "/download";
+    public static String FTP_DOWNLOAD_HISTORY = "/downloadhistory";
+
+    // 系统参数
+    // TSM_ID
+    public static String TSM_ID = "TSM_ID";
+    public static String CITY_CODE = "CITY_CODE";
+    public static String VERSION = "1.0.0";
+
 
     @Value("${SEL_TRADEINFO_URL}")
     public void setselTradeInfoUrl(String selTradeInfoUrl) {

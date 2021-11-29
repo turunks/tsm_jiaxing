@@ -88,7 +88,7 @@ public class CardController {
         TsmTerminalOrder tsmTerminalOrder = tsmTerminalOrderMapper.selectByPrimaryKey((long) 1);
         try {
             String signRet = RSAUtils.signWithRsa2(JSON.toJSONString(tsmTerminalOrder).getBytes(StandardCharsets.UTF_8), Constant.TSM_LOC_PRI_KEY).replaceAll(System.getProperty("line.separator"), "");
-            TsmBaseReq<TsmTerminalOrder> tsmTerminalOrderTsmBaseReq = new TsmBaseReq<TsmTerminalOrder>("00", "00", tsmTerminalOrder, signRet);
+            TsmBaseReq<TsmTerminalOrder> tsmTerminalOrderTsmBaseReq = new TsmBaseReq<TsmTerminalOrder>(tsmTerminalOrder, signRet);
             System.out.println(tsmTerminalOrderTsmBaseReq);
         } catch (Exception e) {
             logger.info("系统异常:{}", e);
