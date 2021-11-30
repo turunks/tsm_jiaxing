@@ -22,17 +22,19 @@ public class Constant {
     public static String TSM_LOC_PRI_KEY;
 
 
-    // 地址
-    // 本地制卡目录
-    public static String LOCAL_CATALOG;
     // FTP
     public static String FTP_HOST;
     public static String FTP_PORT;
     public static String FTP_USER_NAME;
     public static String FTP_PASSWORD;
-    public static String FTP_UPLOAD_CATALOG;
-    public static String FTP_DOWNLOAD_CATALOG;
-    public static String FTP_DOWNLOAD_HISTORY;
+    // 地址目录
+    public static String CREATECARD_LOCAL_CATALOG;
+    public static String CREATECARD_UPLOAD_CATALOG;
+    public static String CREATECARD_DOWNLOAD_CATALOG;
+    public static String CREATECARD_DOWNLOAD_HISTORY;
+    // 卡信息同步文件目录
+    public static String CARDINFO_SYNFILE_LOCAL_CATALOG;
+    public static String CARDINFO_SYNFILE_UPLOAD_CATALOG;
 
     // 系统参数
     // TSM_ID
@@ -104,24 +106,34 @@ public class Constant {
         FTP_PASSWORD = ftpPassWord;
     }
 
-    @Value("${LOCAL_CATALOG}")
-    public void setlocalCatalog(String localCatalog) {
-        LOCAL_CATALOG = localCatalog;
+    @Value("${CREATECARD_LOCAL_CATALOG}")
+    public void setCreatecardLocalCatalog(String createcardLocalCatalog) {
+        CREATECARD_LOCAL_CATALOG = createcardLocalCatalog;
     }
 
-    @Value("${FTP_UPLOAD_CATALOG}")
-    public void setftpUploadCatalog(String ftpUploadCatalog) {
-        FTP_UPLOAD_CATALOG = ftpUploadCatalog;
+    @Value("${CREATECARD_UPLOAD_CATALOG}")
+    public void setCreatecardUploadCatalog(String createcardUploadCatalog) {
+        CREATECARD_UPLOAD_CATALOG = createcardUploadCatalog;
     }
 
-    @Value("${FTP_DOWNLOAD_CATALOG}")
-    public void setftpDownloadCatalog(String ftpDownloadCatalog) {
-        FTP_DOWNLOAD_CATALOG = ftpDownloadCatalog;
+    @Value("${CREATECARD_DOWNLOAD_CATALOG}")
+    public void setCreatecardDownloadCatalog(String createcardDownloadCatalog) {
+        CREATECARD_DOWNLOAD_CATALOG = createcardDownloadCatalog;
     }
 
-    @Value("${FTP_DOWNLOAD_HISTORY}")
-    public void setftpDownloadHistory(String ftpDownloadHistory) {
-        FTP_DOWNLOAD_HISTORY = ftpDownloadHistory;
+    @Value("${CREATECARD_DOWNLOAD_HISTORY}")
+    public void setCreatecardDownloadHistory(String createcardDownloadHistory) {
+        CREATECARD_DOWNLOAD_HISTORY = createcardDownloadHistory;
+    }
+
+    @Value("${CARDINFO_SYNFILE_LOCAL_CATALOG}")
+    public void setcardInfoSynFileLocalCatalog(String cardInfoSynFileLocalCatalog) {
+        CARDINFO_SYNFILE_LOCAL_CATALOG = cardInfoSynFileLocalCatalog;
+    }
+
+    @Value("${CARDINFO_SYNFILE_UPLOAD_CATALOG}")
+    public void setcardInfoSynFileUploadCatalog(String cardInfoSynFileUploadCatalog) {
+        CARDINFO_SYNFILE_UPLOAD_CATALOG = cardInfoSynFileUploadCatalog;
     }
 
 }

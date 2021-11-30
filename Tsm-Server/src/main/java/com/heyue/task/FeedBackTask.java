@@ -19,4 +19,12 @@ public class FeedBackTask {
         // 下载至ftp并解析
         cardService.downFromFTP();
     }
+
+
+    // 生成发卡信息同步文件定时任务
+//    @Scheduled(cron = "0/30 * * * * ? ")// 30秒
+    public void cardInfoSynFileTask() {
+        // 生成发卡信息同步文件并上传FTP
+        cardService.cardInfoSynFile();
+    }
 }

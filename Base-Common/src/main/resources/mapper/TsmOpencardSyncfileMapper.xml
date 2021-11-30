@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.com.heyue.mapper.TsmOpencardSyncfileMapper">
+  <resultMap id="BaseResultMap" type="cn.com.heyue.entity.TsmOpencardSyncfile">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="city_code" jdbcType="VARCHAR" property="cityCode" />
+    <result column="cardissuefile" jdbcType="VARCHAR" property="cardissuefile" />
+    <result column="ftppath" jdbcType="VARCHAR" property="ftppath" />
+    <result column="cardissuenum" jdbcType="INTEGER" property="cardissuenum" />
+    <result column="starttime" jdbcType="TIMESTAMP" property="starttime" />
+    <result column="endtime" jdbcType="TIMESTAMP" property="endtime" />
+    <result column="createtime" jdbcType="TIMESTAMP" property="createtime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, city_code, cardissuefile, ftppath, cardissuenum, starttime, endtime, createtime
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tsm_opencard_syncfile
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from tsm_opencard_syncfile
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="cn.com.heyue.entity.TsmOpencardSyncfile" useGeneratedKeys="true">
+    insert into tsm_opencard_syncfile (city_code, cardissuefile, ftppath, 
+      cardissuenum, starttime, endtime, 
+      createtime)
+    values (#{cityCode,jdbcType=VARCHAR}, #{cardissuefile,jdbcType=VARCHAR}, #{ftppath,jdbcType=VARCHAR}, 
+      #{cardissuenum,jdbcType=INTEGER}, #{starttime,jdbcType=TIMESTAMP}, #{endtime,jdbcType=TIMESTAMP}, 
+      #{createtime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="cn.com.heyue.entity.TsmOpencardSyncfile" useGeneratedKeys="true">
+    insert into tsm_opencard_syncfile
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="cityCode != null">
+        city_code,
+      </if>
+      <if test="cardissuefile != null">
+        cardissuefile,
+      </if>
+      <if test="ftppath != null">
+        ftppath,
+      </if>
+      <if test="cardissuenum != null">
+        cardissuenum,
+      </if>
+      <if test="starttime != null">
+        starttime,
+      </if>
+      <if test="endtime != null">
+        endtime,
+      </if>
+      <if test="createtime != null">
+        createtime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="cityCode != null">
+        #{cityCode,jdbcType=VARCHAR},
+      </if>
+      <if test="cardissuefile != null">
+        #{cardissuefile,jdbcType=VARCHAR},
+      </if>
+      <if test="ftppath != null">
+        #{ftppath,jdbcType=VARCHAR},
+      </if>
+      <if test="cardissuenum != null">
+        #{cardissuenum,jdbcType=INTEGER},
+      </if>
+      <if test="starttime != null">
+        #{starttime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endtime != null">
+        #{endtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createtime != null">
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.com.heyue.entity.TsmOpencardSyncfile">
+    update tsm_opencard_syncfile
+    <set>
+      <if test="cityCode != null">
+        city_code = #{cityCode,jdbcType=VARCHAR},
+      </if>
+      <if test="cardissuefile != null">
+        cardissuefile = #{cardissuefile,jdbcType=VARCHAR},
+      </if>
+      <if test="ftppath != null">
+        ftppath = #{ftppath,jdbcType=VARCHAR},
+      </if>
+      <if test="cardissuenum != null">
+        cardissuenum = #{cardissuenum,jdbcType=INTEGER},
+      </if>
+      <if test="starttime != null">
+        starttime = #{starttime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endtime != null">
+        endtime = #{endtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createtime != null">
+        createtime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.com.heyue.entity.TsmOpencardSyncfile">
+    update tsm_opencard_syncfile
+    set city_code = #{cityCode,jdbcType=VARCHAR},
+      cardissuefile = #{cardissuefile,jdbcType=VARCHAR},
+      ftppath = #{ftppath,jdbcType=VARCHAR},
+      cardissuenum = #{cardissuenum,jdbcType=INTEGER},
+      starttime = #{starttime,jdbcType=TIMESTAMP},
+      endtime = #{endtime,jdbcType=TIMESTAMP},
+      createtime = #{createtime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

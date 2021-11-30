@@ -244,6 +244,13 @@ public class CardController {
         cardService.downFromFTP();
     }
 
+    @RequestMapping("cardInfoSynFile")
+    @ResponseBody
+    public void cardInfoSynFile() throws Exception {
+        // 生成卡信息同步文件
+        cardService.cardInfoSynFile();
+    }
+
     @PostMapping("createCard")
     @ResponseBody
     public TsmBaseRes testCreateCard(@RequestBody CreatCardDataReq creatCardDataReq) {

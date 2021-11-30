@@ -6,16 +6,21 @@ registry:
 ## spring配置
 spring:
   datasource: #数据库配置
+    type: com.alibaba.druid.pool.DruidDataSource
     driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://192.168.99.100:3306/tsm_develop?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
-    username: root
-    password: 123456
+    url: jdbc:mysql://1.116.246.59:3306/tsm?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    username: tsm
+    password: fbR8XH2ZXm6RadRK
 
 mybatis:
   typeAliasesPackage: cn.com.heyue.model
   mapperLocations: classpath*:mapper/*.xml
-  configuration:
-      log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+#logback日志
+logging:
+  config: classpath:logback-spring.xml
+  level:
+    cn.com.heyue.mapper: debug
 #  jpa:
 #    generate-ddl: false
 #    hibernate:

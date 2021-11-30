@@ -12,11 +12,14 @@ public interface CardService {
     TsmBaseRes creatCardDataFile(CreatCardDataReq creatCardDataReq);
 
     // 读取ftp文件
-    void readFile(String filename);
+    void readFile(String filename) throws Exception;
 
     // 上传ftp
-    void toFTP(String filename) throws Exception;
+    void toFTP(String filename,String uploadPath,String localPath) throws Exception;
 
     // ftp下载并解析
     void downFromFTP();
+
+    // 每日生成发卡信息同步文件
+    void cardInfoSynFile();
 }
