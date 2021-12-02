@@ -1,5 +1,7 @@
 package cn.com.heyue.utils;
 
+import cn.hutool.core.date.DatePattern;
+import cn.hutool.core.date.DateTime;
 import org.apache.commons.lang.StringUtils;
 
 import java.text.DateFormat;
@@ -716,6 +718,16 @@ public class DateUtils {
             e.printStackTrace();
         }
         return null;
+    }
+
+    /**
+     * date转Sting(指定格式)
+     * @param date
+     * @param pattern
+     * @return
+     */
+    public static String dateToStr(Date date, String pattern) {
+        return new DateTime(date).toString(pattern);
     }
 
     public static void main(String[] args) throws Exception {

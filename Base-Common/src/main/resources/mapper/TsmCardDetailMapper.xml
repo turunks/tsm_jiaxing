@@ -40,6 +40,22 @@
     from `tsm_card_detail`
     where id = #{id,jdbcType=BIGINT}
   </select>
+  <select id="selectOneByServiceOrderId" resultType="cn.com.heyue.entity.TsmCardDetail">
+    select
+    <include refid="Base_Column_List" />
+    from `tsm_card _detail`
+    where service_order_id = #{serviceOrderId}
+    limit 1
+  </select>
+  <select id="selectOne" resultType="cn.com.heyue.entity.TsmCardDetail">
+    select
+    <include refid="Base_Column_List" />
+    from `tsm_card _detail`
+    where city_code = #{cityCode}
+    and area_code  = #{cityCode}
+    and card_status = 1
+    limit 1
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from `tsm_card_detail`
     where id = #{id,jdbcType=BIGINT}
@@ -289,6 +305,9 @@
       </if>
       <if test="merchantNo != null">
         merchant_no = #{merchantNo,jdbcType=VARCHAR},
+      </if>
+      <if test="serviceOrderId != null">
+        service_order_id = #{serviceOrderId,jdbcType=VARCHAR},
       </if>
     </set>
     where id = #{id,jdbcType=BIGINT}

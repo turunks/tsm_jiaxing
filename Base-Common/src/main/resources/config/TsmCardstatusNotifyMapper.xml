@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.com.heyue.mapper.TsmCardstatusNotifyMapper">
+  <resultMap id="BaseResultMap" type="cn.com.heyue.entity.TsmCardstatusNotify">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="service_order_id" jdbcType="VARCHAR" property="serviceOrderId" />
+    <result column="app_id" jdbcType="VARCHAR" property="appId" />
+    <result column="merchant_no" jdbcType="VARCHAR" property="merchantNo" />
+    <result column="city_code" jdbcType="VARCHAR" property="cityCode" />
+    <result column="area_code" jdbcType="VARCHAR" property="areaCode" />
+    <result column="card_species" jdbcType="VARCHAR" property="cardSpecies" />
+    <result column="card_no" jdbcType="VARCHAR" property="cardNo" />
+    <result column="opttype" jdbcType="VARCHAR" property="opttype" />
+    <result column="createtime" jdbcType="TIMESTAMP" property="createtime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, service_order_id, app_id, merchant_no, city_code, area_code, card_species, card_no, 
+    opttype, createtime
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tsm_cardstatus_notify
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="selectByCardNo" resultType="cn.com.heyue.entity.TsmCardstatusNotify">
+    select
+    <include refid="Base_Column_List" />
+    from tsm_cardstatus_notify
+    where card_no = #{cardNo}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from tsm_cardstatus_notify
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="cn.com.heyue.entity.TsmCardstatusNotify" useGeneratedKeys="true">
+    insert into tsm_cardstatus_notify (service_order_id, app_id, merchant_no, 
+      city_code, area_code, card_species, 
+      card_no, opttype, createtime
+      )
+    values (#{serviceOrderId,jdbcType=VARCHAR}, #{appId,jdbcType=VARCHAR}, #{merchantNo,jdbcType=VARCHAR}, 
+      #{cityCode,jdbcType=VARCHAR}, #{areaCode,jdbcType=VARCHAR}, #{cardSpecies,jdbcType=VARCHAR}, 
+      #{cardNo,jdbcType=VARCHAR}, #{opttype,jdbcType=VARCHAR}, #{createtime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="cn.com.heyue.entity.TsmCardstatusNotify" useGeneratedKeys="true">
+    insert into tsm_cardstatus_notify
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="serviceOrderId != null">
+        service_order_id,
+      </if>
+      <if test="appId != null">
+        app_id,
+      </if>
+      <if test="merchantNo != null">
+        merchant_no,
+      </if>
+      <if test="cityCode != null">
+        city_code,
+      </if>
+      <if test="areaCode != null">
+        area_code,
+      </if>
+      <if test="cardSpecies != null">
+        card_species,
+      </if>
+      <if test="cardNo != null">
+        card_no,
+      </if>
+      <if test="opttype != null">
+        opttype,
+      </if>
+      <if test="createtime != null">
+        createtime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="serviceOrderId != null">
+        #{serviceOrderId,jdbcType=VARCHAR},
+      </if>
+      <if test="appId != null">
+        #{appId,jdbcType=VARCHAR},
+      </if>
+      <if test="merchantNo != null">
+        #{merchantNo,jdbcType=VARCHAR},
+      </if>
+      <if test="cityCode != null">
+        #{cityCode,jdbcType=VARCHAR},
+      </if>
+      <if test="areaCode != null">
+        #{areaCode,jdbcType=VARCHAR},
+      </if>
+      <if test="cardSpecies != null">
+        #{cardSpecies,jdbcType=VARCHAR},
+      </if>
+      <if test="cardNo != null">
+        #{cardNo,jdbcType=VARCHAR},
+      </if>
+      <if test="opttype != null">
+        #{opttype,jdbcType=VARCHAR},
+      </if>
+      <if test="createtime != null">
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.com.heyue.entity.TsmCardstatusNotify">
+    update tsm_cardstatus_notify
+    <set>
+      <if test="serviceOrderId != null">
+        service_order_id = #{serviceOrderId,jdbcType=VARCHAR},
+      </if>
+      <if test="appId != null">
+        app_id = #{appId,jdbcType=VARCHAR},
+      </if>
+      <if test="merchantNo != null">
+        merchant_no = #{merchantNo,jdbcType=VARCHAR},
+      </if>
+      <if test="cityCode != null">
+        city_code = #{cityCode,jdbcType=VARCHAR},
+      </if>
+      <if test="areaCode != null">
+        area_code = #{areaCode,jdbcType=VARCHAR},
+      </if>
+      <if test="cardSpecies != null">
+        card_species = #{cardSpecies,jdbcType=VARCHAR},
+      </if>
+      <if test="cardNo != null">
+        card_no = #{cardNo,jdbcType=VARCHAR},
+      </if>
+      <if test="opttype != null">
+        opttype = #{opttype,jdbcType=VARCHAR},
+      </if>
+      <if test="createtime != null">
+        createtime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.com.heyue.entity.TsmCardstatusNotify">
+    update tsm_cardstatus_notify
+    set service_order_id = #{serviceOrderId,jdbcType=VARCHAR},
+      app_id = #{appId,jdbcType=VARCHAR},
+      merchant_no = #{merchantNo,jdbcType=VARCHAR},
+      city_code = #{cityCode,jdbcType=VARCHAR},
+      area_code = #{areaCode,jdbcType=VARCHAR},
+      card_species = #{cardSpecies,jdbcType=VARCHAR},
+      card_no = #{cardNo,jdbcType=VARCHAR},
+      opttype = #{opttype,jdbcType=VARCHAR},
+      createtime = #{createtime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

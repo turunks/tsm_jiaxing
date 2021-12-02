@@ -136,5 +136,10 @@ public class TsmCardDetail implements Serializable {
      */
     private String merchantNo;
 
+    /**
+     * 业务订单号
+     */
+    private String serviceOrderId;
+
     private static final long serialVersionUID = 1L;
 }
