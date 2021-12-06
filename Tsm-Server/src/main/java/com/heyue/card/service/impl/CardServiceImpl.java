@@ -10,6 +10,7 @@ import cn.com.heyue.mapper.TsmOpencardInfoMapper;
 import cn.com.heyue.mapper.TsmOpencardSyncfileMapper;
 import cn.com.heyue.utils.FileUtils;
 import cn.com.heyue.utils.FtpUtils;
+import cn.com.heyue.utils.HexStringUtils;
 import com.alibaba.fastjson.JSONObject;
 import com.heyue.bean.TsmBaseRes;
 import com.heyue.card.message.request.CreatCardDataReq;
@@ -106,23 +107,25 @@ public class CardServiceImpl implements CardService {
     //
     public String writeFile(CreatCardDataReq creatCardDataReq) throws Exception {
         String version = Constant.VERSION;// 版本号
-        String recordNum = creatCardDataReq.getRecordNum();// 2 长度
-        String city_code = creatCardDataReq.getCity_code();// 2
+        Integer recordNum = creatCardDataReq.getRecordNum();// 2 长度
+        String city_code = Constant.CITY_CODE;// 2
         String requestType = creatCardDataReq.getRequestType();// 1
-        String area_code = creatCardDataReq.getArea_code();// 1
-        String card_species = creatCardDataReq.getCard_species();// 2
+        String area_code = Constant.AREA_CODE;// 1
+        String card_species = Constant.CARD_SPECIES;// 2
         StringBuffer sb = new StringBuffer();
-        sb.append(recordNum);
+        String HexrecordNum = HexStringUtils.intToHexString(recordNum, 4);
+        sb.append(HexrecordNum);
         sb.append(city_code);
         sb.append(requestType);
         sb.append(area_code);
         sb.append(card_species);
+        sb.append("FFFFFFFFFFFFFFFFFFFF");
 
 
         SimpleDateFormat df = new SimpleDateFormat("yyMMddHHmmss");
         String date_2 = df.format(new Date().getTime());
         String serialno = IdUtil.get10Serialno();// 流水号
-        String filename = date_2 + city_code + serialno + ".SQ";
+        String filename = "SQ" + date_2 + city_code + serialno + ".dat";
         String path = Constant.CREATECARD_LOCAL_CATALOG + filename;
         List<String> accountList = new ArrayList<>();
         accountList.add(version);
@@ -139,7 +142,7 @@ public class CardServiceImpl implements CardService {
         tsmCardMakefile.setMakefileFtppath(Constant.CREATECARD_UPLOAD_CATALOG + filename);
         tsmCardMakefile.setMakefileCreatetime(new Date());
         tsmCardMakefile.setMakefileSerialno(serialno);
-        tsmCardMakefile.setCardnum(Integer.valueOf(recordNum));
+        tsmCardMakefile.setCardnum(recordNum);
         tsmCardMakefile.setCardtype(requestType);
         tsmCardMakefileMapper.insertSelective(tsmCardMakefile);
 

@@ -38,9 +38,11 @@ public class Constant {
 
     // 系统参数
     // TSM_ID
-    public static String TSM_ID = "TSM_ID";
-    public static String CITY_CODE = "CITY_CODE";
-    public static String VERSION = "1.0.0";
+    public static String TSM_ID;
+    public static String CITY_CODE;
+    public static String AREA_CODE;
+    public static String VERSION;
+    public static String CARD_SPECIES;
 
 
     @Value("${SEL_TRADEINFO_URL}")
@@ -134,6 +136,31 @@ public class Constant {
     @Value("${CARDINFO_SYNFILE_UPLOAD_CATALOG}")
     public void setcardInfoSynFileUploadCatalog(String cardInfoSynFileUploadCatalog) {
         CARDINFO_SYNFILE_UPLOAD_CATALOG = cardInfoSynFileUploadCatalog;
+    }
+
+    @Value("${TSM_ID}")
+    public void setTsmId(String tsmId) {
+        TSM_ID = tsmId;
+    }
+
+    @Value("${VERSION}")
+    public void setversion(String version) {
+        VERSION = version;
+    }
+
+    @Value("${CITY_CODE}")
+    public void setCityCode(String cityCode) {
+        CITY_CODE = cityCode;
+    }
+
+    @Value("${AREA_CODE}")
+    public void setAreaCode(String areaCode) {
+        AREA_CODE = areaCode;
+    }
+
+    @Value("${CARD_SPECIES}")
+    public void setCardSpecies(String cardSpecies) {
+        CARD_SPECIES = cardSpecies;
     }
 
 }

@@ -10,7 +10,7 @@ import lombok.Data;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class CreatCardDataReq {
 
-    private String recordNum; // 记录总数
+    private Integer recordNum; // 记录总数
 
     private String city_code; // 城市代码
 

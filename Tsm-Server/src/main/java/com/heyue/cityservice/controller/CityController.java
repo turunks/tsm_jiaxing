@@ -1,8 +1,6 @@
 package com.heyue.cityservice.controller;
 
 
-import cn.com.heyue.entity.TsmCardDetail;
-import cn.com.heyue.mapper.TsmCardDetailMapper;
 import com.heyue.bean.TsmBaseRes;
 import com.heyue.cityservice.message.request.*;
 import com.heyue.cityservice.message.response.CardActiveRes;
@@ -12,7 +10,10 @@ import com.heyue.cityservice.message.response.CardTrapSubmitRes;
 import com.heyue.cityservice.service.CityService;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 
 /**
@@ -25,18 +26,7 @@ import org.springframework.web.bind.annotation.*;
 public class CityController {
 
     @Autowired
-    private TsmCardDetailMapper tsmCardDetailMapper;
-
-    @Autowired
     private CityService cityService;
-
-
-    @RequestMapping("TsmCardDetail/get")
-    @ResponseBody
-    public TsmCardDetail getTsmCardDetail() {
-        TsmCardDetail tsmCardDetail = tsmCardDetailMapper.selectByPrimaryKey((long) 1);
-        return tsmCardDetail;
-    }
 
 
     // 向城市服务发送交易查询
@@ -78,6 +68,14 @@ public class CityController {
     public CardTrapSubmitRes cardTrapSubmit(@RequestBody CardTrapSubmitReq cardTrapSubmitReq) {
         CardTrapSubmitRes cardTrapSubmitRes = cityService.cardTrapSubmit(cardTrapSubmitReq);
         return cardTrapSubmitRes;
+    }
+
+    // 卡账户信息查询
+    @PostMapping("cardAccountInfo/get")
+    @ResponseBody
+    public TsmBaseRes cardAccountInfo(@RequestBody CardAccountInfoReq cardAccountInfoReq) {
+        TsmBaseRes result = cityService.cardAccountInfo(cardAccountInfoReq);
+        return result;
     }
 
     // 卡消费记录查询

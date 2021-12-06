@@ -328,13 +328,13 @@ public class FtpUtils
     public static void main(String[] args) throws Exception
     {
         FtpUtils ftpUtils = new FtpUtils();
-        ftpUtils.setServer("81.69.189.227");
-        ftpUtils.setPort("21");
-        ftpUtils.setUser("tsm");
-        ftpUtils.setPassword("~S;/mUh3Wz._j2");
+        ftpUtils.setServer("123.150.11.50");
+        ftpUtils.setPort("9001");
+        ftpUtils.setUser("test");
+        ftpUtils.setPassword("test");
         ftpUtils.setTimeout("30000");
         try {
-            ftpUtils.connectServer("/tsm_cardfile/upload");
+            ftpUtils.connectServer("/test/SQ/");
             System.out.println("登录成功。。。");
             ftpUtils.upload("D:/bak/upload.txt", "upload.txt");// 本地路径,ftp路径
 //            File f = new File("D:/bak", "tsmFTP用户.txt");
