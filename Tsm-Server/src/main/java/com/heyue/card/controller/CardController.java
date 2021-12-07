@@ -27,40 +27,6 @@ import java.nio.charset.StandardCharsets;
 @RequestMapping("/card")
 public class CardController {
 
-    // 城市平台服务反馈文件数据体下标位置
-    public static int card_no_index = 10;
-    public static int remark_index = card_no_index + 10;
-    public static int Card_sign_index = remark_index + 20;
-    public static int requestType_index = Card_sign_index + 2;
-    public static int area_code_index = requestType_index + 2;
-    public static int app_serial_no_index = area_code_index + 30;
-    public static int app_start_date_index = app_serial_no_index + 8;
-    public static int app_valid_date_index = app_start_date_index + 8;
-    public static int card_custom_fci_index = app_valid_date_index + 4;
-    public static int card_type_sign_index = card_custom_fci_index + 2;
-    public static int internate_code_index = card_type_sign_index + 8;
-    public static int province_code_index = internate_code_index + 4;
-    public static int city_code_index = province_code_index + 4;
-    public static int contact_card_type_index = city_code_index + 4;
-
-
-    // 数据域2
-    public static int userAppKey_index = contact_card_type_index + 2; // 用户卡主控密钥
-    public static int userCardMaintainKey_index = userAppKey_index + 2; // 用户卡维护密钥
-    public static int userAppMaintainKey_index = userCardMaintainKey_index + 2; // 用户卡应用主控密钥
-    public static int contactWalletSpareKey_index = userAppMaintainKey_index + 2;// 用户卡应用维护密钥
-    public static int consumeKey_index = contactWalletSpareKey_index + 2;// 消费密钥
-    public static int rechargeKey_index = consumeKey_index + 2;// 充值密钥
-    public static int tacKey_index = rechargeKey_index + 2;// TAC 密钥
-    public static int userLockAppMaintainKey_index = tacKey_index + 2;// 用户卡应用维护密钥
-    public static int pinKey_index = userLockAppMaintainKey_index + 2;// PIN 密钥
-    public static int contactEcashKey_index = pinKey_index + 2;// 互通记录保护密钥-电子现金
-    public static int contactEwalletKey_index = contactEcashKey_index + 2;// 互通记录保护密钥（现金备用）
-    public static int userUnlockAppMaintainKey_index = contactEwalletKey_index + 2;// 用户卡应用维护密钥（应用解锁
-    public static int reserveKey1_index = userUnlockAppMaintainKey_index + 2;// 预留密钥 1
-    public static int reserveKey2_index = reserveKey1_index + 2;// 预留密钥 2
-    public static int key2_index = reserveKey2_index + 2;// 充值密钥 2（国际）
-    public static int remark2_index = key2_index + 2;// // 预留
 
     private static Logger logger = LoggerFactory.getLogger(CardController.class);
 

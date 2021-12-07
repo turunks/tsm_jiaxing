@@ -10,10 +10,7 @@ import com.heyue.cityservice.message.response.CardTrapSubmitRes;
 import com.heyue.cityservice.service.CityService;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 /**
@@ -23,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Api(value = "", tags = {"操作接口"})
 //@EnableEurekaClient
 @RestController
+@RequestMapping("/city")
 public class CityController {
 
     @Autowired
@@ -30,7 +28,7 @@ public class CityController {
 
 
     // 向城市服务发送交易查询
-    @PostMapping("selTradeInfoR/get")
+    @PostMapping("selTradeInfoR")
     @ResponseBody
     public TsmBaseRes selTradeInfoR(@RequestBody TradeInfoReq tradeInfoReq) {
         TsmBaseRes tsmBaseRes = cityService.selTradeInfoR(tradeInfoReq);
@@ -38,7 +36,7 @@ public class CityController {
     }
 
     // 向城市服务发送卡激活请求
-    @PostMapping("cardActive/get")
+    @PostMapping("cardActive")
     @ResponseBody
     public CardActiveRes cardActive(@RequestBody CardActiveReq cardActiveReq) {
         CardActiveRes cardActiveRes = cityService.cardActive(cardActiveReq);
@@ -47,7 +45,7 @@ public class CityController {
 
 
     // 向城市服务发送卡激活请求提交
-    @PostMapping("cardActiveSubmit/get")
+    @PostMapping("cardActiveSubmit")
     @ResponseBody
     public CardActiveSubmitRes cardActiveSubmit(@RequestBody CardActiveSubmitReq cardActiveSubmitReq) {
         CardActiveSubmitRes cardActiveSubmitRes = cityService.cardActiveSubmit(cardActiveSubmitReq);
@@ -55,7 +53,7 @@ public class CityController {
     }
 
     // 向城市服务发送卡圈存请求
-    @PostMapping("cardTrap/get")
+    @PostMapping("cardTrap")
     @ResponseBody
     public CardTrapRes cardTrap(@RequestBody CardTrapReq cardTrapReq) {
         CardTrapRes cardTrapRes = cityService.cardTrap(cardTrapReq);
@@ -63,7 +61,7 @@ public class CityController {
     }
 
     // 卡圈存请求提交
-    @PostMapping("cardTrapSubmit/get")
+    @PostMapping("cardTrapSubmit")
     @ResponseBody
     public CardTrapSubmitRes cardTrapSubmit(@RequestBody CardTrapSubmitReq cardTrapSubmitReq) {
         CardTrapSubmitRes cardTrapSubmitRes = cityService.cardTrapSubmit(cardTrapSubmitReq);
@@ -71,7 +69,7 @@ public class CityController {
     }
 
     // 卡账户信息查询
-    @PostMapping("cardAccountInfo/get")
+    @PostMapping("cardAccountInfo")
     @ResponseBody
     public TsmBaseRes cardAccountInfo(@RequestBody CardAccountInfoReq cardAccountInfoReq) {
         TsmBaseRes result = cityService.cardAccountInfo(cardAccountInfoReq);
@@ -79,7 +77,7 @@ public class CityController {
     }
 
     // 卡消费记录查询
-    @PostMapping("cardConsumRecord/get")
+    @PostMapping("cardConsumRecord")
     @ResponseBody
     public TsmBaseRes cardConsumRecord(@RequestBody CardConsumRecordReq cardConsumRecordReq) {
         TsmBaseRes result = cityService.cardConsumRecord(cardConsumRecordReq);

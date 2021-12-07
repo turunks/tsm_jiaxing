@@ -27,6 +27,13 @@ public class Constant {
     public static String FTP_PORT;
     public static String FTP_USER_NAME;
     public static String FTP_PASSWORD;
+
+    // 城市服务FTP
+    public static String CITY_FTP_HOST;
+    public static String CITY_FTP_PORT;
+    public static String CITY_FTP_USER_NAME;
+    public static String CITY_FTP_PASSWORD;
+
     // 地址目录
     public static String CREATECARD_LOCAL_CATALOG;
     public static String CREATECARD_UPLOAD_CATALOG;
@@ -37,13 +44,13 @@ public class Constant {
     public static String CARDINFO_SYNFILE_UPLOAD_CATALOG;
 
     // 系统参数
-    // TSM_ID
     public static String TSM_ID;
     public static String CITY_CODE;
     public static String AREA_CODE;
     public static String VERSION;
     public static String CARD_SPECIES;
-
+    public static String APP_ID;
+    public static String MERCHANT_NO;
 
     @Value("${SEL_TRADEINFO_URL}")
     public void setselTradeInfoUrl(String selTradeInfoUrl) {
@@ -113,6 +120,28 @@ public class Constant {
         CREATECARD_LOCAL_CATALOG = createcardLocalCatalog;
     }
 
+    //FTP
+    @Value("${CITY_FTP_HOST}")
+    public void setCityFtpHost(String cityFtpHost) {
+        CITY_FTP_HOST = cityFtpHost;
+    }
+
+    @Value("${CITY_FTP_PORT}")
+    public void setCityFtpPort(String cityFtpPort) {
+        CITY_FTP_PORT = cityFtpPort;
+    }
+
+    @Value("${CITY_FTP_USER_NAME}")
+    public void setCityFtpUserName(String cityFtpUserName) {
+        CITY_FTP_USER_NAME = cityFtpUserName;
+    }
+
+    @Value("${CITY_FTP_PASSWORD}")
+    public void setCityFtpPassword(String cityFtpPassword) {
+        CITY_FTP_PASSWORD = cityFtpPassword;
+    }
+
+
     @Value("${CREATECARD_UPLOAD_CATALOG}")
     public void setCreatecardUploadCatalog(String createcardUploadCatalog) {
         CREATECARD_UPLOAD_CATALOG = createcardUploadCatalog;
@@ -161,6 +190,16 @@ public class Constant {
     @Value("${CARD_SPECIES}")
     public void setCardSpecies(String cardSpecies) {
         CARD_SPECIES = cardSpecies;
+    }
+
+    @Value("${APP_ID}")
+    public void setAppId(String appId) {
+        APP_ID = appId;
+    }
+
+    @Value("${MERCHANT_NO}")
+    public void setMerchantNo(String merchantNo) {
+        MERCHANT_NO = merchantNo;
     }
 
 }

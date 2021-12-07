@@ -49,39 +49,40 @@ public class CardServiceImpl implements CardService {
     private TsmOpencardSyncfileMapper tsmOpencardSyncfileMapper;
 
     // 城市平台服务反馈文件数据体下标位置
-    public static int card_no_index = 10;
-    public static int remark_index = card_no_index + 10;
-    public static int Card_sign_index = remark_index + 20;
-    public static int requestType_index = Card_sign_index + 2;
-    public static int area_code_index = requestType_index + 2;
-    public static int app_serial_no_index = area_code_index + 30;
-    public static int app_start_date_index = app_serial_no_index + 8;
-    public static int app_valid_date_index = app_start_date_index + 8;
-    public static int card_custom_fci_index = app_valid_date_index + 4;
-    public static int card_type_sign_index = card_custom_fci_index + 2;
-    public static int internate_code_index = card_type_sign_index + 8;
-    public static int province_code_index = internate_code_index + 4;
-    public static int city_code_index = province_code_index + 4;
-    public static int contact_card_type_index = city_code_index + 4;
+    public static int card_no_index = 10 * 2;
+    public static int retain_index = card_no_index + 10 * 2;
+    public static int card_sign_index = retain_index + 10 * 2;
+    public static int app_type_sign_index = card_sign_index + 1 * 2;
+    public static int card_app_version_index = app_type_sign_index + 1 * 2;
+    public static int app_serial_no_index = card_app_version_index + 10 * 2;
+    public static int app_start_date_index = app_serial_no_index + 4 * 2;
+    public static int app_valid_date_index = app_start_date_index + 4 * 2;
+    public static int card_custom_fci_index = app_valid_date_index + 2 * 2;
+    public static int card_type_sign_index = card_custom_fci_index + 1 * 2;
+    public static int internate_code_index = card_type_sign_index + 4 * 2;
+    public static int province_code_index = internate_code_index + 2 * 2;
+    public static int city_code_index = province_code_index + 2 * 2;
+    public static int contact_card_type_index = city_code_index + 2 * 2;
+    public static int reserve_index = contact_card_type_index + 50 * 2;
 
 
     // 数据域2
-    public static int userAppKey_index = contact_card_type_index + 2; // 用户卡主控密钥
-    public static int userCardMaintainKey_index = userAppKey_index + 2; // 用户卡维护密钥
-    public static int userAppMaintainKey_index = userCardMaintainKey_index + 2; // 用户卡应用主控密钥
-    public static int contactWalletSpareKey_index = userAppMaintainKey_index + 2;// 用户卡应用维护密钥
-    public static int consumeKey_index = contactWalletSpareKey_index + 2;// 消费密钥
-    public static int rechargeKey_index = consumeKey_index + 2;// 充值密钥
-    public static int tacKey_index = rechargeKey_index + 2;// TAC 密钥
-    public static int userLockAppMaintainKey_index = tacKey_index + 2;// 用户卡应用维护密钥
-    public static int pinKey_index = userLockAppMaintainKey_index + 2;// PIN 密钥
-    public static int contactEcashKey_index = pinKey_index + 2;// 互通记录保护密钥-电子现金
-    public static int contactEwalletKey_index = contactEcashKey_index + 2;// 互通记录保护密钥（现金备用）
-    public static int userUnlockAppMaintainKey_index = contactEwalletKey_index + 2;// 用户卡应用维护密钥（应用解锁
-    public static int reserveKey1_index = userUnlockAppMaintainKey_index + 2;// 预留密钥 1
-    public static int reserveKey2_index = reserveKey1_index + 2;// 预留密钥 2
-    public static int key2_index = reserveKey2_index + 2;// 充值密钥 2（国际）
-    public static int remark2_index = key2_index + 2;// // 预留
+    public static int userAppKey_index = reserve_index + 24 * 2; // 用户卡主控密钥
+    public static int userCardMaintainKey_index = userAppKey_index + 24 * 2; // 用户卡维护密钥
+    public static int userAppMaintainKey_index = userCardMaintainKey_index + 24 * 2; // 用户卡应用主控密钥
+    public static int contactWalletSpareKey_index = userAppMaintainKey_index + 24 * 2;// 用户卡应用维护密钥
+    public static int consumeKey_index = contactWalletSpareKey_index + 24 * 2;// 消费密钥
+    public static int rechargeKey_index = consumeKey_index + 24 * 2;// 充值密钥
+    public static int tacKey_index = rechargeKey_index + 24 * 2;// TAC 密钥
+    public static int userLockAppMaintainKey_index = tacKey_index + 24 * 2;// 用户卡应用维护密钥
+    public static int pinKey_index = userLockAppMaintainKey_index + 24 * 2;// PIN 密钥
+    public static int contactEcashKey_index = pinKey_index + 24 * 2;// 互通记录保护密钥-电子现金
+    public static int contactEwalletKey_index = contactEcashKey_index + 24 * 2;// 互通记录保护密钥（现金备用）
+    public static int userUnlockAppMaintainKey_index = contactEwalletKey_index + 24 * 2;// 用户卡应用维护密钥（应用解锁
+    public static int reserveKey1_index = userUnlockAppMaintainKey_index + 24 * 2;// 预留密钥 1
+    public static int reserveKey2_index = reserveKey1_index + 24 * 2;// 预留密钥 2
+    public static int key2_index = reserveKey2_index + 24 * 2;// 充值密钥 2（国际）
+    public static int reserve2_index = key2_index + 48 * 2;// // 预留
 
 
     // 制卡
@@ -106,7 +107,7 @@ public class CardServiceImpl implements CardService {
 
     //
     public String writeFile(CreatCardDataReq creatCardDataReq) throws Exception {
-        String version = Constant.VERSION;// 版本号
+        String version = "01";// 版本号
         Integer recordNum = creatCardDataReq.getRecordNum();// 2 长度
         String city_code = Constant.CITY_CODE;// 2
         String requestType = creatCardDataReq.getRequestType();// 1
@@ -129,8 +130,8 @@ public class CardServiceImpl implements CardService {
         String path = Constant.CREATECARD_LOCAL_CATALOG + filename;
         List<String> accountList = new ArrayList<>();
         accountList.add(version);
-        accountList.add("");
         accountList.add(sb.toString());
+        accountList.add("");
         FileUtils.writeFileContext(accountList, path);
 
         // 写入制卡数据文件表
@@ -153,45 +154,43 @@ public class CardServiceImpl implements CardService {
 
     public void readFile(String filename) throws Exception {
         String path = Constant.CREATECARD_LOCAL_CATALOG + filename;
-//            String path = "D:\\" + "211116110407001111.FS";
         String fileName = new File(path.trim()).getName();// 获取文件名
-        String serialno = fileName.substring(14, 18);
-
+        String serialno = fileName.substring(fileName.length() - 10, fileName.length());// 流水号
         List<String> list = FileUtils.getFile(path);
         String s = list.toString();
-        // 1.解析交易头
-        List<String> tradeHead = list.subList(2, 3);
-        String head = tradeHead.get(0);
-        String card_num = head.substring(0, 2);
-//            String city_code = head.substring(2, 4);
-        String card_type = head.substring(2, 4);
-        // 2.解析mac
-        int lastIndexOf = list.lastIndexOf("");
-        List<String> mac = list.subList(lastIndexOf, list.size());
-        // 获取数据体
-        List<String> body = list.subList(4, lastIndexOf);
-        // 解析数据体
-        body.removeIf(s1 -> s1.isEmpty());
+        // 1.版本号
+        String version = list.get(0);
+        // 2.交易头
+        String head = list.get(1);
+        String card_num = head.substring(0, 4); // 记录总数
+        String citycode = head.substring(4, 8); // 城市代码
+        String card_type = head.substring(8, 10); // 卡类型
+        String area_code = head.substring(10, 12);// 地区代码
+        String card_species = head.substring(12, 16);// 卡种类型
 
-        // 更新制卡数据文件表反馈相关参数
+        // 3.解析数据体
+        int size = Integer.parseInt(card_num, 16);
+        List<String> body = list.subList(2, 2 + size);
+
+//            // 更新制卡数据文件表反馈相关参数
         TsmCardMakefile tsmCardMakefile = new TsmCardMakefile();
-        tsmCardMakefile.setFeedbackFilename(fileName);//制卡文件名
-        tsmCardMakefile.setFeedbackfileCreatetime(path);//
-        tsmCardMakefile.setGettime(new Date());
-        tsmCardMakefile.setFeedbackfileSerialno(serialno);
-        tsmCardMakefile.setFeedbackfileCardnum(Integer.valueOf(card_num));
-        tsmCardMakefile.setMakefileSerialno(serialno);
-        tsmCardMakefileMapper.updateBySerialno(tsmCardMakefile);
+//            tsmCardMakefile.setFeedbackFilename(fileName);//制卡文件名
+//            tsmCardMakefile.setFeedbackfileCreatetime(path);//
+//            tsmCardMakefile.setGettime(new Date());
+//            tsmCardMakefile.setFeedbackfileSerialno(serialno);
+//            tsmCardMakefile.setFeedbackfileCardnum(Integer.valueOf(card_num));
+//            tsmCardMakefile.setMakefileSerialno(serialno);
+//            tsmCardMakefileMapper.updateBySerialno(tsmCardMakefile);
 
         // 解析用户卡号
         for (String data : body) {
             // 数据域1
             String card_no = data.substring(0, card_no_index); // 用户卡号1
-            String retain = data.substring(card_no_index, remark_index); // 保留域
-            String Card_sign = data.substring(remark_index, Card_sign_index);//发卡方标识
-            String requestType = data.substring(Card_sign_index, requestType_index);//应用类型标识
-            String card_app_version = data.substring(requestType_index, area_code_index);//发卡方应用版本
-            String app_serial_no = data.substring(area_code_index, app_serial_no_index);//应用序列号
+            String retain = data.substring(card_no_index, retain_index); // 保留域
+            String card_sign = data.substring(retain_index, card_sign_index);//发卡方标识
+            String app_type_sign = data.substring(card_sign_index, app_type_sign_index);//应用类型标识
+            String card_app_version = data.substring(app_type_sign_index, card_app_version_index);//发卡方应用版本
+            String app_serial_no = data.substring(card_app_version_index, app_serial_no_index);//应用序列号
             String app_start_date = data.substring(app_serial_no_index, app_start_date_index);//应用启用日期
             String app_valid_date = data.substring(app_start_date_index, app_valid_date_index);//应用失效日期
             String card_custom_fci = data.substring(app_valid_date_index, card_custom_fci_index);//发卡方自定义 FCI 数据
@@ -200,27 +199,26 @@ public class CardServiceImpl implements CardService {
             String province_code = data.substring(internate_code_index, province_code_index);//省际代码
             String city_code = data.substring(province_code_index, city_code_index);//城市代码
             String contact_card_type = data.substring(city_code_index, contact_card_type_index);//互通卡种
-            String remark1 = data.substring(city_code_index, contact_card_type_index);//预留
+            String reserve = data.substring(contact_card_type_index, reserve_index);//预留
             System.out.println(data);
 
             // 解析数据域2
             String domesticKey = formatSecretkey(data);
-
             // 写入卡数据明细表
             // 据流水号查询制卡文件表
             TsmCardMakefile tsmCardMakefile1 = tsmCardMakefileMapper.selBySerialno(tsmCardMakefile);
-            Long id = tsmCardMakefile1.getId();// 为制卡数据文件的id
-            String areaCode = tsmCardMakefile1.getAreaCode();// 地区代码
-            String cardSpecies = tsmCardMakefile1.getCardSpecies();// 卡种类型
-
+            Long id = null;
+            if (tsmCardMakefile1 != null) {
+                id = tsmCardMakefile1.getId();// 为制卡数据文件的id
+            }
             TsmCardDetail tsmCardDetail = new TsmCardDetail();
             tsmCardDetail.setCadfileId(id);//卡文件id
             tsmCardDetail.setCityCode(city_code);//城市代码
-            tsmCardDetail.setAreaCode(areaCode);//地区代码
-            tsmCardDetail.setCardSpecies(cardSpecies);//卡种类型
+            tsmCardDetail.setAreaCode(area_code);//地区代码
+            tsmCardDetail.setCardSpecies(card_species);//卡种类型
             tsmCardDetail.setCardNo(card_no);//卡片序列号
-            tsmCardDetail.setCardSign(Card_sign);//发卡方标识
-            tsmCardDetail.setCardAppVersion(requestType);//应用类型标识
+            tsmCardDetail.setCardSign(card_sign);//发卡方标识
+            tsmCardDetail.setCardAppVersion(card_app_version);//应用类型标识
             tsmCardDetail.setAppSerialNo(app_serial_no);//应用序列号
             tsmCardDetail.setAppStartDate(app_start_date);//应用启用日期
             tsmCardDetail.setAppValidDate(app_valid_date);//应用失效日期
@@ -231,14 +229,14 @@ public class CardServiceImpl implements CardService {
             tsmCardDetail.setCityCode(city_code);//城市代码
             tsmCardDetail.setContactCardType(contact_card_type);//互通卡种
             tsmCardDetail.setCardType(card_type);//卡类型
-            tsmCardDetail.setReserve(remark1);//预留
+            tsmCardDetail.setReserve(reserve);//预留
             tsmCardDetail.setInternationKey(domesticKey);//国际密钥 json
 //                tsmCardDetail.setDomesticKey("");//国密密钥
             tsmCardDetail.setCardStatus("1");//卡状态 1入库2出库
             tsmCardDetail.setInDepositTime(new Date());//入库时间
 //                tsmCardDetail.setOutDepositTime();//出库时间
-            tsmCardDetail.setAppId("");//应用id
-            tsmCardDetail.setMerchantNo("");//服务商号
+            tsmCardDetail.setAppId(Constant.APP_ID);//应用id
+            tsmCardDetail.setMerchantNo(Constant.MERCHANT_NO);//服务商号
             tsmCardDetailMapper.insertSelective(tsmCardDetail);
         }
     }
@@ -262,7 +260,7 @@ public class CardServiceImpl implements CardService {
         String reserveKey1 = data.substring(userUnlockAppMaintainKey_index, reserveKey1_index); // 预留密钥 1
         String reserveKey2 = data.substring(reserveKey1_index, reserveKey2_index); // 预留密钥 2
         String key2 = data.substring(reserveKey2_index, key2_index); // 充值密钥 2（国际）
-        String remark2 = data.substring(key2_index, remark2_index); // 预留
+//        String reserve2 = data.substring(key2_index, reserve2_index); // 预留
 
         // 国际密钥json
         Secretkey secretkey = new Secretkey();
@@ -318,10 +316,10 @@ public class CardServiceImpl implements CardService {
     public void toFTP(String filename, String uploadPath, String localPath) throws Exception {
         // 上传至ftp
         FtpUtils ftpUtils = new FtpUtils();
-        ftpUtils.setServer(Constant.FTP_HOST);
-        ftpUtils.setPort(Constant.FTP_PORT);
-        ftpUtils.setUser(Constant.FTP_USER_NAME);
-        ftpUtils.setPassword(Constant.FTP_PASSWORD);
+        ftpUtils.setServer(Constant.CITY_FTP_HOST);
+        ftpUtils.setPort(Constant.CITY_FTP_PORT);
+        ftpUtils.setUser(Constant.CITY_FTP_USER_NAME);
+        ftpUtils.setPassword(Constant.CITY_FTP_PASSWORD);
         ftpUtils.setTimeout("30000");
         ftpUtils.connectServer(uploadPath);
         logger.info("登陆成功，开始上传文件:{}", filename);
