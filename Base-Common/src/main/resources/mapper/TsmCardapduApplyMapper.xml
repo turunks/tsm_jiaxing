@@ -237,4 +237,12 @@
     where card_no = #{cardNo,jdbcType=VARCHAR}
   </update>
 
+  <!--根据卡号查询卡指令数据-->
+  <select id="selByCradNo" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from tsm_cardapdu_apply
+    where card_no = #{cardNo,jdbcType=VARCHAR}
+  </select>
+
 </mapper>

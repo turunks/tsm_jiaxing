@@ -22,9 +22,9 @@ public class TsmCardDetail implements Serializable {
     private Long cadfileId;
 
     /**
-     * 城市代码
+     * 卡申请城市代码
      */
-    private String cityCode;
+    private String applyCityCode;
 
     /**
      * 地区代码
@@ -85,6 +85,11 @@ public class TsmCardDetail implements Serializable {
      * 省际代码
      */
     private String provinceCode;
+
+    /**
+     * 城市代码
+     */
+    private String cityCode;
 
     /**
      * 互通卡种

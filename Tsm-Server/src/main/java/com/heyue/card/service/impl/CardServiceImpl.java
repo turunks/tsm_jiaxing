@@ -11,6 +11,7 @@ import cn.com.heyue.mapper.TsmOpencardSyncfileMapper;
 import cn.com.heyue.utils.FileUtils;
 import cn.com.heyue.utils.FtpUtils;
 import cn.com.heyue.utils.HexStringUtils;
+import cn.hutool.core.collection.CollectionUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.heyue.bean.TsmBaseRes;
 import com.heyue.card.message.request.CreatCardDataReq;
@@ -109,14 +110,14 @@ public class CardServiceImpl implements CardService {
     public String writeFile(CreatCardDataReq creatCardDataReq) throws Exception {
         String version = "01";// 版本号
         Integer recordNum = creatCardDataReq.getRecordNum();// 2 长度
-        String city_code = Constant.CITY_CODE;// 2
+        String applyCityCode = Constant.APPLY_CITY_CODE;// 2
         String requestType = creatCardDataReq.getRequestType();// 1
         String area_code = Constant.AREA_CODE;// 1
         String card_species = Constant.CARD_SPECIES;// 2
         StringBuffer sb = new StringBuffer();
         String HexrecordNum = HexStringUtils.intToHexString(recordNum, 4);
         sb.append(HexrecordNum);
-        sb.append(city_code);
+        sb.append(applyCityCode);
         sb.append(requestType);
         sb.append(area_code);
         sb.append(card_species);
@@ -126,17 +127,16 @@ public class CardServiceImpl implements CardService {
         SimpleDateFormat df = new SimpleDateFormat("yyMMddHHmmss");
         String date_2 = df.format(new Date().getTime());
         String serialno = IdUtil.get10Serialno();// 流水号
-        String filename = "SQ" + date_2 + city_code + serialno + ".dat";
+        String filename = "SQ" + date_2 + applyCityCode + serialno + ".dat";
         String path = Constant.CREATECARD_LOCAL_CATALOG + filename;
         List<String> accountList = new ArrayList<>();
         accountList.add(version);
         accountList.add(sb.toString());
-        accountList.add("");
         FileUtils.writeFileContext(accountList, path);
 
         // 写入制卡数据文件表
         TsmCardMakefile tsmCardMakefile = new TsmCardMakefile();
-        tsmCardMakefile.setCityCode(city_code);
+        tsmCardMakefile.setApplyCityCode(applyCityCode);
         tsmCardMakefile.setAreaCode(area_code);
         tsmCardMakefile.setCardSpecies(card_species);
         tsmCardMakefile.setMakefileName(filename);
@@ -152,93 +152,102 @@ public class CardServiceImpl implements CardService {
     }
 
 
-    public void readFile(String filename) throws Exception {
-        String path = Constant.CREATECARD_LOCAL_CATALOG + filename;
-        String fileName = new File(path.trim()).getName();// 获取文件名
-        String serialno = fileName.substring(fileName.length() - 10, fileName.length());// 流水号
-        List<String> list = FileUtils.getFile(path);
-        String s = list.toString();
-        // 1.版本号
-        String version = list.get(0);
-        // 2.交易头
-        String head = list.get(1);
-        String card_num = head.substring(0, 4); // 记录总数
-        String citycode = head.substring(4, 8); // 城市代码
-        String card_type = head.substring(8, 10); // 卡类型
-        String area_code = head.substring(10, 12);// 地区代码
-        String card_species = head.substring(12, 16);// 卡种类型
+    public boolean readFile(String filename) {
+        try {
+            String path = Constant.CREATECARD_LOCAL_CATALOG + filename;
+            String fileName = new File(path.trim()).getName();// 获取文件名
+            String serialno = fileName.substring(fileName.length() - 10, fileName.length());// 流水号
+            List<String> list = FileUtils.getFile(path);
+            String s = list.toString();
+            // 1.版本号
+            String version = list.get(0);
+            // 2.交易头
+            String head = list.get(1);
+            String card_num = head.substring(0, 4); // 记录总数
+            String applyCityCode = head.substring(4, 8); // 卡申请城市代码
+            String card_type = head.substring(8, 10); // 卡类型
+            String area_code = head.substring(10, 12);// 地区代码
+            String card_species = head.substring(12, 16);// 卡种类型
 
-        // 3.解析数据体
-        int size = Integer.parseInt(card_num, 16);
-        List<String> body = list.subList(2, 2 + size);
+            // 3.解析数据体
+            int size = Integer.parseInt(card_num, 16);
+            List<String> body = list.subList(2, 2 + size);
 
 //            // 更新制卡数据文件表反馈相关参数
-        TsmCardMakefile tsmCardMakefile = new TsmCardMakefile();
-//            tsmCardMakefile.setFeedbackFilename(fileName);//制卡文件名
-//            tsmCardMakefile.setFeedbackfileCreatetime(path);//
-//            tsmCardMakefile.setGettime(new Date());
-//            tsmCardMakefile.setFeedbackfileSerialno(serialno);
-//            tsmCardMakefile.setFeedbackfileCardnum(Integer.valueOf(card_num));
-//            tsmCardMakefile.setMakefileSerialno(serialno);
-//            tsmCardMakefileMapper.updateBySerialno(tsmCardMakefile);
+            TsmCardMakefile tsmCardMakefile = new TsmCardMakefile();
+            tsmCardMakefile.setFeedbackFilename(fileName);//制卡文件名
+            tsmCardMakefile.setFeedbackfileCreatetime(path);//
+            tsmCardMakefile.setGettime(new Date());
+            tsmCardMakefile.setFeedbackfileSerialno(serialno);
+            tsmCardMakefile.setFeedbackfileCardnum(Integer.valueOf(card_num));
+            tsmCardMakefile.setMakefileSerialno(serialno);
+            tsmCardMakefileMapper.updateBySerialno(tsmCardMakefile);
 
-        // 解析用户卡号
-        for (String data : body) {
-            // 数据域1
-            String card_no = data.substring(0, card_no_index); // 用户卡号1
-            String retain = data.substring(card_no_index, retain_index); // 保留域
-            String card_sign = data.substring(retain_index, card_sign_index);//发卡方标识
-            String app_type_sign = data.substring(card_sign_index, app_type_sign_index);//应用类型标识
-            String card_app_version = data.substring(app_type_sign_index, card_app_version_index);//发卡方应用版本
-            String app_serial_no = data.substring(card_app_version_index, app_serial_no_index);//应用序列号
-            String app_start_date = data.substring(app_serial_no_index, app_start_date_index);//应用启用日期
-            String app_valid_date = data.substring(app_start_date_index, app_valid_date_index);//应用失效日期
-            String card_custom_fci = data.substring(app_valid_date_index, card_custom_fci_index);//发卡方自定义 FCI 数据
-            String card_type_sign = data.substring(card_custom_fci_index, card_type_sign_index);//卡类型标识
-            String internate_code = data.substring(card_type_sign_index, internate_code_index);//国际代码
-            String province_code = data.substring(internate_code_index, province_code_index);//省际代码
-            String city_code = data.substring(province_code_index, city_code_index);//城市代码
-            String contact_card_type = data.substring(city_code_index, contact_card_type_index);//互通卡种
-            String reserve = data.substring(contact_card_type_index, reserve_index);//预留
-            System.out.println(data);
+            // 解析用户卡号
+            for (String data : body) {
+                // 数据域1
+                String card_no = data.substring(0, card_no_index); // 用户卡号1
+                // 105卡号去掉F左补0
+                card_no = "0" + card_no.substring(0, card_no.length() - 1);
+                String retain = data.substring(card_no_index, retain_index); // 保留域
+                String card_sign = data.substring(retain_index, card_sign_index);//发卡方标识
+                String app_type_sign = data.substring(card_sign_index, app_type_sign_index);//应用类型标识
+                String card_app_version = data.substring(app_type_sign_index, card_app_version_index);//发卡方应用版本
+                String app_serial_no = data.substring(card_app_version_index, app_serial_no_index);//应用序列号
+                String app_start_date = data.substring(app_serial_no_index, app_start_date_index);//应用启用日期
+                String app_valid_date = data.substring(app_start_date_index, app_valid_date_index);//应用失效日期
+                String card_custom_fci = data.substring(app_valid_date_index, card_custom_fci_index);//发卡方自定义 FCI 数据
+                String card_type_sign = data.substring(card_custom_fci_index, card_type_sign_index);//卡类型标识
+                String internate_code = data.substring(card_type_sign_index, internate_code_index);//国际代码
+                String province_code = data.substring(internate_code_index, province_code_index);//省际代码
+                String city_code = data.substring(province_code_index, city_code_index);//城市代码
+                String contact_card_type = data.substring(city_code_index, contact_card_type_index);//互通卡种
+                String reserve = data.substring(contact_card_type_index, reserve_index);//预留
+                System.out.println(data);
 
-            // 解析数据域2
-            String domesticKey = formatSecretkey(data);
-            // 写入卡数据明细表
-            // 据流水号查询制卡文件表
-            TsmCardMakefile tsmCardMakefile1 = tsmCardMakefileMapper.selBySerialno(tsmCardMakefile);
-            Long id = null;
-            if (tsmCardMakefile1 != null) {
-                id = tsmCardMakefile1.getId();// 为制卡数据文件的id
-            }
-            TsmCardDetail tsmCardDetail = new TsmCardDetail();
-            tsmCardDetail.setCadfileId(id);//卡文件id
-            tsmCardDetail.setCityCode(city_code);//城市代码
-            tsmCardDetail.setAreaCode(area_code);//地区代码
-            tsmCardDetail.setCardSpecies(card_species);//卡种类型
-            tsmCardDetail.setCardNo(card_no);//卡片序列号
-            tsmCardDetail.setCardSign(card_sign);//发卡方标识
-            tsmCardDetail.setCardAppVersion(card_app_version);//应用类型标识
-            tsmCardDetail.setAppSerialNo(app_serial_no);//应用序列号
-            tsmCardDetail.setAppStartDate(app_start_date);//应用启用日期
-            tsmCardDetail.setAppValidDate(app_valid_date);//应用失效日期
-            tsmCardDetail.setCardCustomFci(card_custom_fci);//fci数据
-            tsmCardDetail.setCardTypeSign(card_type_sign);//卡类型标识
-            tsmCardDetail.setInternateCode(internate_code);//国际代码
-            tsmCardDetail.setProvinceCode(province_code);//省际代码
-            tsmCardDetail.setCityCode(city_code);//城市代码
-            tsmCardDetail.setContactCardType(contact_card_type);//互通卡种
-            tsmCardDetail.setCardType(card_type);//卡类型
-            tsmCardDetail.setReserve(reserve);//预留
-            tsmCardDetail.setInternationKey(domesticKey);//国际密钥 json
+                // 解析数据域2
+                String domesticKey = formatSecretkey(data);
+                // 写入卡数据明细表
+                // 据流水号查询制卡文件表
+                TsmCardMakefile tsmCardMakefile1 = tsmCardMakefileMapper.selBySerialno(tsmCardMakefile);
+                Long id = null;
+                if (tsmCardMakefile1 != null) {
+                    id = tsmCardMakefile1.getId();// 为制卡数据文件的id
+                }
+                TsmCardDetail tsmCardDetail = new TsmCardDetail();
+                tsmCardDetail.setCadfileId(id);//卡文件id
+                tsmCardDetail.setApplyCityCode(applyCityCode);// 卡申请城市代码
+                tsmCardDetail.setAreaCode(area_code);//地区代码
+                tsmCardDetail.setCardSpecies(card_species);//卡种类型
+                tsmCardDetail.setCardNo(card_no);//卡片序列号
+                tsmCardDetail.setCardSign(card_sign);//发卡方标识
+                tsmCardDetail.setCardAppVersion(card_app_version);//应用类型标识
+                tsmCardDetail.setAppSerialNo(app_serial_no);//应用序列号
+                tsmCardDetail.setAppStartDate(app_start_date);//应用启用日期
+                tsmCardDetail.setAppValidDate(app_valid_date);//应用失效日期
+                tsmCardDetail.setCardCustomFci(card_custom_fci);//fci数据
+                tsmCardDetail.setCardTypeSign(card_type_sign);//卡类型标识
+                tsmCardDetail.setInternateCode(internate_code);//国际代码
+                tsmCardDetail.setProvinceCode(province_code);//省际代码
+                tsmCardDetail.setCityCode(city_code);//城市代码
+                tsmCardDetail.setContactCardType(contact_card_type);//互通卡种
+                tsmCardDetail.setCardType(card_type);//卡类型
+                tsmCardDetail.setReserve(reserve);//预留
+                tsmCardDetail.setInternationKey(domesticKey);//国际密钥 json
 //                tsmCardDetail.setDomesticKey("");//国密密钥
-            tsmCardDetail.setCardStatus("1");//卡状态 1入库2出库
-            tsmCardDetail.setInDepositTime(new Date());//入库时间
+                tsmCardDetail.setCardStatus("1");//卡状态 1入库2出库
+                tsmCardDetail.setInDepositTime(new Date());//入库时间
 //                tsmCardDetail.setOutDepositTime();//出库时间
-            tsmCardDetail.setAppId(Constant.APP_ID);//应用id
-            tsmCardDetail.setMerchantNo(Constant.MERCHANT_NO);//服务商号
-            tsmCardDetailMapper.insertSelective(tsmCardDetail);
+                tsmCardDetail.setAppId(Constant.APP_ID);//应用id
+                tsmCardDetail.setMerchantNo(Constant.MERCHANT_NO);//服务商号
+                tsmCardDetail.setServiceOrderId("");
+                tsmCardDetailMapper.insertSelective(tsmCardDetail);
+            }
+        } catch (Exception e) {
+            logger.error("解析卡文件{}异常:{}", filename, e);
+            return false;
         }
+        return true;
     }
 
 
@@ -260,7 +269,7 @@ public class CardServiceImpl implements CardService {
         String reserveKey1 = data.substring(userUnlockAppMaintainKey_index, reserveKey1_index); // 预留密钥 1
         String reserveKey2 = data.substring(reserveKey1_index, reserveKey2_index); // 预留密钥 2
         String key2 = data.substring(reserveKey2_index, key2_index); // 充值密钥 2（国际）
-//        String reserve2 = data.substring(key2_index, reserve2_index); // 预留
+        String reserve2 = data.substring(key2_index, reserve2_index); // 预留
 
         // 国际密钥json
         Secretkey secretkey = new Secretkey();
@@ -285,7 +294,7 @@ public class CardServiceImpl implements CardService {
 
     @Transactional
     public void downFromFTP() {
-        // 下载至ftp
+        // 下载至ftp并解析
         FtpUtils ftpUtils = new FtpUtils();
         ftpUtils.setServer(Constant.FTP_HOST);
         ftpUtils.setPort(Constant.FTP_PORT);
@@ -297,11 +306,20 @@ public class CardServiceImpl implements CardService {
             logger.info("登陆成功，开始下载文件:{}");
             // 获取指定ftp下目录的文件
             List<String> allFile = ftpUtils.getAllFile(Constant.CREATECARD_LOCAL_CATALOG);
-            for (String downloadfilename : allFile) {
-                // 解析下载的文件数据
-                readFile(downloadfilename);
-                // 解析完毕将反馈文件移动至历史文件夹;
-                ftpUtils.moveFile(downloadfilename, Constant.CREATECARD_DOWNLOAD_HISTORY + downloadfilename);
+            logger.info("获取文件:{}", allFile);
+            if (CollectionUtil.isNotEmpty(allFile)) {
+                for (String downloadfilename : allFile) {
+                    // 解析下载的文件数据
+                    boolean b = readFile(downloadfilename);
+                    // 解析完毕将反馈文件移动至历史文件夹;
+                    if (b) {
+                        ftpUtils.moveFile(downloadfilename, Constant.CREATECARD_DOWNLOAD_HISTORY + downloadfilename);
+                    } else {
+                        // 卡文件读取异常移动至error文件夹
+                        ftpUtils.moveFile(downloadfilename, Constant.CREATECARD_DOWNLOAD_ERROR_CATALOG + downloadfilename);
+                    }
+
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -361,7 +379,7 @@ public class CardServiceImpl implements CardService {
         String recordNum = cardInfoNum;// 记录总数
         String city_code = Constant.CITY_CODE;
         String requestType = "01";// 用户卡
-        String area_code = "";// 1
+        String area_code = Constant.AREA_CODE;// 1
         StringBuffer sb = new StringBuffer();
         sb.append(recordNum);
         sb.append(city_code);
@@ -371,26 +389,23 @@ public class CardServiceImpl implements CardService {
         SimpleDateFormat df = new SimpleDateFormat("yyMMddHHmmss");
         String date_2 = df.format(new Date().getTime());
         String serialno = IdUtil.get10Serialno();// 流水号
-        String filename = date_2 + city_code + serialno + ".QR";
+        String filename = "QR" + date_2 + city_code + serialno + ".dat";
         String path = Constant.CARDINFO_SYNFILE_LOCAL_CATALOG + filename;
         List<String> accountList = new ArrayList<>();
         accountList.add(version);
-        accountList.add("");
         accountList.add(sb.toString());
         accountList.add("FFFFFFFFFFFFFFFFFFFF");
-        accountList.add("");
         // 数据体
         tsmOpencardInfos.forEach(tsmOpencardInfo -> {
             StringBuffer body = new StringBuffer();
             String cardNo = tsmOpencardInfo.getCardNo();
             String cardSpecies = tsmOpencardInfo.getCardSpecies();
             body.append(cardNo);
-            String s = "999";
             body.append("01"); // 启用
             body.append(area_code);
             body.append(cardSpecies);
+            body.append("0000");// 押金
             accountList.add(body.toString());
-            accountList.add("");
         });
         FileUtils.writeFileContext(accountList, path);
         return filename;

@@ -17,9 +17,9 @@ public class TsmCardMakefile implements Serializable {
     private Long id;
 
     /**
-     * 城市代码
+     * 卡申请城市代码
      */
-    private String cityCode;
+    private String applyCityCode;
 
     /**
      * 地区代码

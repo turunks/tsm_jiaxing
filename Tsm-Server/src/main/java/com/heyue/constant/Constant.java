@@ -38,6 +38,7 @@ public class Constant {
     public static String CREATECARD_LOCAL_CATALOG;
     public static String CREATECARD_UPLOAD_CATALOG;
     public static String CREATECARD_DOWNLOAD_CATALOG;
+    public static String CREATECARD_DOWNLOAD_ERROR_CATALOG;
     public static String CREATECARD_DOWNLOAD_HISTORY;
     // 卡信息同步文件目录
     public static String CARDINFO_SYNFILE_LOCAL_CATALOG;
@@ -46,6 +47,7 @@ public class Constant {
     // 系统参数
     public static String TSM_ID;
     public static String CITY_CODE;
+    public static String APPLY_CITY_CODE;
     public static String AREA_CODE;
     public static String VERSION;
     public static String CARD_SPECIES;
@@ -152,6 +154,11 @@ public class Constant {
         CREATECARD_DOWNLOAD_CATALOG = createcardDownloadCatalog;
     }
 
+    @Value("${CREATECARD_DOWNLOAD_ERROR_CATALOG}")
+    public void setCreatecardDownloadErrorCatalog(String createcardDownloadErrorCatalog) {
+        CREATECARD_DOWNLOAD_ERROR_CATALOG = createcardDownloadErrorCatalog;
+    }
+
     @Value("${CREATECARD_DOWNLOAD_HISTORY}")
     public void setCreatecardDownloadHistory(String createcardDownloadHistory) {
         CREATECARD_DOWNLOAD_HISTORY = createcardDownloadHistory;
@@ -180,6 +187,11 @@ public class Constant {
     @Value("${CITY_CODE}")
     public void setCityCode(String cityCode) {
         CITY_CODE = cityCode;
+    }
+
+    @Value("${APPLY_CITY_CODE}")
+    public void setApplyCityCode(String applyCityCode) {
+        APPLY_CITY_CODE = applyCityCode;
     }
 
     @Value("${AREA_CODE}")

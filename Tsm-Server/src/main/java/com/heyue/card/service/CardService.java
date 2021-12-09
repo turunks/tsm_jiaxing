@@ -12,7 +12,7 @@ public interface CardService {
     TsmBaseRes creatCardDataFile(CreatCardDataReq creatCardDataReq);
 
     // 读取ftp文件
-    void readFile(String filename) throws Exception;
+    boolean readFile(String filename) throws Exception;
 
     // 上传ftp
     void toFTP(String filename,String uploadPath,String localPath) throws Exception;

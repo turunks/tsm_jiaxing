@@ -4,7 +4,7 @@
   <resultMap id="BaseResultMap" type="cn.com.heyue.entity.TsmCardDetail">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="cadFile_id" jdbcType="BIGINT" property="cadfileId" />
-    <result column="city_code" jdbcType="VARCHAR" property="cityCode" />
+    <result column="apply_city_code" jdbcType="VARCHAR" property="applyCityCode" />
     <result column="area_code" jdbcType="VARCHAR" property="areaCode" />
     <result column="card_species" jdbcType="VARCHAR" property="cardSpecies" />
     <result column="card_no" jdbcType="VARCHAR" property="cardNo" />
@@ -17,6 +17,7 @@
     <result column="card_type_sign" jdbcType="VARCHAR" property="cardTypeSign" />
     <result column="internate_code" jdbcType="VARCHAR" property="internateCode" />
     <result column="province_code" jdbcType="VARCHAR" property="provinceCode" />
+    <result column="city_code" jdbcType="VARCHAR" property="cityCode" />
     <result column="contact_card_type" jdbcType="VARCHAR" property="contactCardType" />
     <result column="card_type" jdbcType="VARCHAR" property="cardType" />
     <result column="reserve" jdbcType="VARCHAR" property="reserve" />
@@ -27,12 +28,13 @@
     <result column="out_deposit_time" jdbcType="TIMESTAMP" property="outDepositTime" />
     <result column="app_id" jdbcType="VARCHAR" property="appId" />
     <result column="merchant_no" jdbcType="VARCHAR" property="merchantNo" />
+    <result column="service_order_id" jdbcType="VARCHAR" property="serviceOrderId" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, cadFile_id, city_code, area_code, `card_species`, card_no, card_sign, card_app_version, 
+    id, cadFile_id, apply_city_code, area_code, `card_species`, card_no, card_sign, card_app_version,
     app_serial_no, app_start_date, app_valid_date, card_custom_fci, card_type_sign, internate_code, 
-    province_code, contact_card_type, card_type, reserve, internation_key, domestic_key, 
-    card_status, in_deposit_time, out_deposit_time, app_id, merchant_no
+    province_code,  city_code, contact_card_type, card_type, reserve, internation_key, domestic_key,
+    card_status, in_deposit_time, out_deposit_time, app_id, merchant_no, service_order_id
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -43,14 +45,14 @@
   <select id="selectOneByServiceOrderId" resultType="cn.com.heyue.entity.TsmCardDetail">
     select
     <include refid="Base_Column_List" />
-    from `tsm_card _detail`
+    from `tsm_card_detail`
     where service_order_id = #{serviceOrderId}
     limit 1
   </select>
   <select id="selectOne" resultType="cn.com.heyue.entity.TsmCardDetail">
     select
     <include refid="Base_Column_List" />
-    from `tsm_card _detail`
+    from `tsm_card_detail`
     where city_code = #{cityCode}
     and area_code  = #{cityCode}
     and card_status = 1
@@ -61,23 +63,23 @@
     where id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="insert" keyColumn="id" keyProperty="id" parameterType="cn.com.heyue.entity.TsmCardDetail" useGeneratedKeys="true">
-    insert into `tsm_card_detail` (cadFile_id, city_code, area_code, 
+    insert into `tsm_card_detail` (cadFile_id, apply_city_code, area_code,
       `card_species`, card_no, card_sign, 
       card_app_version, app_serial_no, app_start_date, 
       app_valid_date, card_custom_fci, card_type_sign, 
-      internate_code, province_code, contact_card_type, 
+      internate_code, province_code,  city_code,  contact_card_type,
       card_type, reserve, internation_key, 
       domestic_key, card_status, in_deposit_time, 
-      out_deposit_time, app_id, merchant_no
+      out_deposit_time, app_id, merchant_no,service_order_id
       )
-    values (#{cadfileId,jdbcType=BIGINT}, #{cityCode,jdbcType=VARCHAR}, #{areaCode,jdbcType=VARCHAR}, 
+    values (#{cadfileId,jdbcType=BIGINT}, #{applyCityCode,jdbcType=VARCHAR}, #{areaCode,jdbcType=VARCHAR},
       #{cardSpecies,jdbcType=VARCHAR}, #{cardNo,jdbcType=VARCHAR}, #{cardSign,jdbcType=VARCHAR}, 
       #{cardAppVersion,jdbcType=VARCHAR}, #{appSerialNo,jdbcType=VARCHAR}, #{appStartDate,jdbcType=VARCHAR}, 
       #{appValidDate,jdbcType=VARCHAR}, #{cardCustomFci,jdbcType=VARCHAR}, #{cardTypeSign,jdbcType=VARCHAR}, 
-      #{internateCode,jdbcType=VARCHAR}, #{provinceCode,jdbcType=VARCHAR}, #{contactCardType,jdbcType=VARCHAR}, 
+      #{internateCode,jdbcType=VARCHAR}, #{provinceCode,jdbcType=VARCHAR}, #{cityCode,jdbcType=VARCHAR}, #{contactCardType,jdbcType=VARCHAR},
       #{cardType,jdbcType=VARCHAR}, #{reserve,jdbcType=VARCHAR}, #{internationKey,jdbcType=VARCHAR}, 
       #{domesticKey,jdbcType=VARCHAR}, #{cardStatus,jdbcType=VARCHAR}, #{inDepositTime,jdbcType=TIMESTAMP}, 
-      #{outDepositTime,jdbcType=TIMESTAMP}, #{appId,jdbcType=VARCHAR}, #{merchantNo,jdbcType=VARCHAR}
+      #{outDepositTime,jdbcType=TIMESTAMP}, #{appId,jdbcType=VARCHAR}, #{merchantNo,jdbcType=VARCHAR},#{serviceOrderId,jdbcType=VARCHAR}
       )
   </insert>
   <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="cn.com.heyue.entity.TsmCardDetail" useGeneratedKeys="true">
@@ -86,8 +88,8 @@
       <if test="cadfileId != null">
         cadFile_id,
       </if>
-      <if test="cityCode != null">
-        city_code,
+      <if test="applyCityCode != null">
+        apply_city_code,
       </if>
       <if test="areaCode != null">
         area_code,
@@ -125,6 +127,9 @@
       <if test="provinceCode != null">
         province_code,
       </if>
+      <if test="cityCode != null">
+        city_code,
+      </if>
       <if test="contactCardType != null">
         contact_card_type,
       </if>
@@ -155,13 +160,16 @@
       <if test="merchantNo != null">
         merchant_no,
       </if>
+      <if test="serviceOrderId != null">
+        service_order_id,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="cadfileId != null">
         #{cadfileId,jdbcType=BIGINT},
       </if>
-      <if test="cityCode != null">
-        #{cityCode,jdbcType=VARCHAR},
+      <if test="applyCityCode != null">
+        #{applyCityCode,jdbcType=VARCHAR},
       </if>
       <if test="areaCode != null">
         #{areaCode,jdbcType=VARCHAR},
@@ -199,6 +207,9 @@
       <if test="provinceCode != null">
         #{provinceCode,jdbcType=VARCHAR},
       </if>
+      <if test="cityCode != null">
+        #{cityCode,jdbcType=VARCHAR},
+      </if>
       <if test="contactCardType != null">
         #{contactCardType,jdbcType=VARCHAR},
       </if>
@@ -229,6 +240,9 @@
       <if test="merchantNo != null">
         #{merchantNo,jdbcType=VARCHAR},
       </if>
+      <if test="serviceOrderId != null">
+        #{serviceOrderId,jdbcType=VARCHAR},
+      </if>
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="cn.com.heyue.entity.TsmCardDetail">
@@ -237,8 +251,8 @@
       <if test="cadfileId != null">
         cadFile_id = #{cadfileId,jdbcType=BIGINT},
       </if>
-      <if test="cityCode != null">
-        city_code = #{cityCode,jdbcType=VARCHAR},
+      <if test="applyCityCode != null">
+        apply_city_code = #{applyCityCode,jdbcType=VARCHAR},
       </if>
       <if test="areaCode != null">
         area_code = #{areaCode,jdbcType=VARCHAR},
@@ -275,6 +289,9 @@
       </if>
       <if test="provinceCode != null">
         province_code = #{provinceCode,jdbcType=VARCHAR},
+      </if>
+      <if test="cityCode != null">
+        city_code = #{cityCode,jdbcType=VARCHAR},
       </if>
       <if test="contactCardType != null">
         contact_card_type = #{contactCardType,jdbcType=VARCHAR},
@@ -315,7 +332,7 @@
   <update id="updateByPrimaryKey" parameterType="cn.com.heyue.entity.TsmCardDetail">
     update `tsm_card_detail`
     set cadFile_id = #{cadfileId,jdbcType=BIGINT},
-      city_code = #{cityCode,jdbcType=VARCHAR},
+      apply_city_code = #{applyCityCode,jdbcType=VARCHAR},
       area_code = #{areaCode,jdbcType=VARCHAR},
       `card_species` = #{cardSpecies,jdbcType=VARCHAR},
       card_no = #{cardNo,jdbcType=VARCHAR},
@@ -328,6 +345,7 @@
       card_type_sign = #{cardTypeSign,jdbcType=VARCHAR},
       internate_code = #{internateCode,jdbcType=VARCHAR},
       province_code = #{provinceCode,jdbcType=VARCHAR},
+      city_code = #{cityCode,jdbcType=VARCHAR},
       contact_card_type = #{contactCardType,jdbcType=VARCHAR},
       card_type = #{cardType,jdbcType=VARCHAR},
       reserve = #{reserve,jdbcType=VARCHAR},
@@ -337,7 +355,8 @@
       in_deposit_time = #{inDepositTime,jdbcType=TIMESTAMP},
       out_deposit_time = #{outDepositTime,jdbcType=TIMESTAMP},
       app_id = #{appId,jdbcType=VARCHAR},
-      merchant_no = #{merchantNo,jdbcType=VARCHAR}
+      merchant_no = #{merchantNo,jdbcType=VARCHAR},
+      service_order_id = #{serviceOrderId,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

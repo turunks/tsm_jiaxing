@@ -154,7 +154,7 @@ public class HexStringUtils {
     }
 
     public static void main(String[] args) {
-        System.out.println(HexStringUtils.intToHexString(1234567890, 20));
+        System.out.println(HexStringUtils.intToHexString(100, 8));
 //        System.out.println(HexStringUtils.intToHexString((int) DateUtils.getNowTimeStamp(), 8));
         System.out.println(Integer.parseInt("3104970710990000004",16));
 //        System.out.println(HexStringUtils.strToHexString("117E00"));
