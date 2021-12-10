@@ -85,13 +85,13 @@ FTP_USER_NAME: tsm
 FTP_PASSWORD: ~S;/mUh3Wz._j2
 
 #制卡目录
-CREATECARD_LOCAL_CATALOG: D:/bak/
+CREATECARD_LOCAL_CATALOG: /data/tsm_cardfile/createcard_loacl_catalog/
 CREATECARD_UPLOAD_CATALOG: /test/SQ/
 CREATECARD_DOWNLOAD_CATALOG: /data/tsm_cardfile/createcard_download_catalog/
 CREATECARD_DOWNLOAD_HISTORY: /data/tsm_cardfile/createcard_download_history_catalog/
 CREATECARD_DOWNLOAD_ERROR_CATALOG: /data/tsm_cardfile/createcard_download_error_catalog/
 #卡信息同步文件目录
-CARDINFO_SYNFILE_LOCAL_CATALOG: D:/synfile/
+CARDINFO_SYNFILE_LOCAL_CATALOG: /data/tsm_cardfile/cardinfo_synfile_local_catalog/
 CARDINFO_SYNFILE_UPLOAD_CATALOG: /data/tsm_cardfile/cardInfo_synfile_upload_catalog/
 
 #系统参数

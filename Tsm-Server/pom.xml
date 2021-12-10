@@ -83,14 +83,14 @@
         </dependency>
 
         <!--<dependency>-->
-            <!--<groupId>com.hisuntech</groupId>-->
-            <!--<artifactId>hiiposm_engine_simple</artifactId>-->
-            <!--<version>2.0.0.34</version>-->
+        <!--<groupId>com.hisuntech</groupId>-->
+        <!--<artifactId>hiiposm_engine_simple</artifactId>-->
+        <!--<version>2.0.0.34</version>-->
         <!--</dependency>-->
         <!--<dependency>-->
-            <!--<groupId>com.securityAPI</groupId>-->
-            <!--<artifactId>client</artifactId>-->
-            <!--<version>2.0.0</version>-->
+        <!--<groupId>com.securityAPI</groupId>-->
+        <!--<artifactId>client</artifactId>-->
+        <!--<version>2.0.0</version>-->
         <!--</dependency>-->
         <dependency>
             <groupId>dom4j</groupId>
@@ -172,12 +172,38 @@
         </dependencies>
     </dependencyManagement>
 
+    <profiles>
+        <profile>
+            <!-- 本地开发环境 -->
+            <id>dev</id>
+            <properties>
+                <!-- 这里的标签名会和resourse进行拼接 -->
+                <profiles.active>dev</profiles.active>
+            </properties>
+            <!--&lt;!&ndash; 这里配置为默认选项 &ndash;&gt;-->
+            <!--<activation>-->
+                <!--<activeByDefault>true</activeByDefault>-->
+            <!--</activation>-->
+        </profile>
+        <profile>
+            <!-- 生产环境 -->
+            <id>pro</id>
+            <properties>
+                <profiles.active>prod</profiles.active>
+            </properties>
+            <!-- 这里配置为默认选项 -->
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+        </profile>
+    </profiles>
+
     <build>
         <plugins>
-           <!--  <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin> -->
+            <!--  <plugin>
+                 <groupId>org.springframework.boot</groupId>
+                 <artifactId>spring-boot-maven-plugin</artifactId>
+             </plugin> -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
@@ -226,7 +252,7 @@
                 <directory>src/main/resources/${profiles.active}</directory>
             </resource>
         </resources>
-        
+
     </build>
-       
+
 </project>
