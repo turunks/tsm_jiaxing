@@ -23,7 +23,7 @@ public class TsmUserInfo implements Serializable {
     /**
      * 第三方用户id
      */
-    private String thirdUserIid;
+    private String thirdUserId;
 
     /**
      * 用户手机号

@@ -4,14 +4,14 @@
   <resultMap id="BaseResultMap" type="cn.com.heyue.entity.TsmUserInfo">
     <id column="user_id" jdbcType="VARCHAR" property="userId" />
     <result column="merchant_no" jdbcType="VARCHAR" property="merchantNo" />
-    <result column="third_user_iid" jdbcType="VARCHAR" property="thirdUserIid" />
+    <result column="third_user_id" jdbcType="VARCHAR" property="thirdUserId" />
     <result column="mobile" jdbcType="VARCHAR" property="mobile" />
     <result column="id_card" jdbcType="VARCHAR" property="idCard" />
     <result column="user_name" jdbcType="VARCHAR" property="userName" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
   </resultMap>
   <sql id="Base_Column_List">
-    user_id, merchant_no, third_user_iid, mobile, id_card, user_name, create_time
+    user_id, merchant_no, third_user_id, mobile, id_card, user_name, create_time
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
@@ -24,11 +24,12 @@
     where user_id = #{userId,jdbcType=VARCHAR}
   </delete>
   <insert id="insert" keyColumn="user_id" keyProperty="userId" parameterType="cn.com.heyue.entity.TsmUserInfo" useGeneratedKeys="true">
-    insert into tsm_user_info (merchant_no, third_user_iid, mobile, 
+    insert into tsm_user_info (user_id, merchant_no, third_user_id, mobile,
       id_card, user_name, create_time
       )
-    values (#{merchantNo,jdbcType=VARCHAR}, #{thirdUserIid,jdbcType=VARCHAR}, #{mobile,jdbcType=VARCHAR}, 
-      #{idCard,jdbcType=VARCHAR}, #{userName,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}
+    values (#{userId,jdbcType=VARCHAR},#{merchantNo,jdbcType=VARCHAR}, #{thirdUserId,jdbcType=VARCHAR},
+            #{mobile,jdbcType=VARCHAR}, #{idCard,jdbcType=VARCHAR}, #{userName,jdbcType=VARCHAR},
+            #{createTime,jdbcType=TIMESTAMP}
       )
   </insert>
   <insert id="insertSelective" keyColumn="user_id" keyProperty="userId" parameterType="cn.com.heyue.entity.TsmUserInfo" useGeneratedKeys="true">
@@ -37,8 +38,8 @@
       <if test="merchantNo != null">
         merchant_no,
       </if>
-      <if test="thirdUserIid != null">
-        third_user_iid,
+      <if test="thirdUserId != null">
+        third_user_id,
       </if>
       <if test="mobile != null">
         mobile,
@@ -57,8 +58,8 @@
       <if test="merchantNo != null">
         #{merchantNo,jdbcType=VARCHAR},
       </if>
-      <if test="thirdUserIid != null">
-        #{thirdUserIid,jdbcType=VARCHAR},
+      <if test="thirdUserId != null">
+        #{thirdUserId,jdbcType=VARCHAR},
       </if>
       <if test="mobile != null">
         #{mobile,jdbcType=VARCHAR},
@@ -80,8 +81,8 @@
       <if test="merchantNo != null">
         merchant_no = #{merchantNo,jdbcType=VARCHAR},
       </if>
-      <if test="thirdUserIid != null">
-        third_user_iid = #{thirdUserIid,jdbcType=VARCHAR},
+      <if test="thirdUserId != null">
+        third_user_id = #{thirdUserId,jdbcType=VARCHAR},
       </if>
       <if test="mobile != null">
         mobile = #{mobile,jdbcType=VARCHAR},
@@ -101,7 +102,7 @@
   <update id="updateByPrimaryKey" parameterType="cn.com.heyue.entity.TsmUserInfo">
     update tsm_user_info
     set merchant_no = #{merchantNo,jdbcType=VARCHAR},
-      third_user_iid = #{thirdUserIid,jdbcType=VARCHAR},
+      third_user_id = #{thirdUserId,jdbcType=VARCHAR},
       mobile = #{mobile,jdbcType=VARCHAR},
       id_card = #{idCard,jdbcType=VARCHAR},
       user_name = #{userName,jdbcType=VARCHAR},

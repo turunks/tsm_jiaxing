@@ -51,7 +51,7 @@ public class TsmOrderInfo implements Serializable {
     private String cardNo;
 
     /**
-     * 订单类型：1.支付+开卡+圈存  2.支付+圈存  3.退卡+退款
+     * 订单类型：1.支付+开卡+圈存  2.支付+圈存  3.退卡+退款 4.坏卡退卡
      */
     private Integer orderType;
 

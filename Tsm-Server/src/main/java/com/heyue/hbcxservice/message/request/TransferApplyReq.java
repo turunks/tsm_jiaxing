@@ -14,8 +14,6 @@ public class TransferApplyReq {
      */
     private String issue_inst;
 
-    private String terminal_code;// 终端编号
-
     private String card_no; // 卡应用序列号
 
     private String card_type; // 卡类型
