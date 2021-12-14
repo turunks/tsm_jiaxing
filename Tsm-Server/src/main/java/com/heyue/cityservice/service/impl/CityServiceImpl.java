@@ -5,6 +5,7 @@ import cn.com.heyue.entity.TsmCardapduApply;
 import cn.com.heyue.entity.TsmTerminalOrder;
 import cn.com.heyue.mapper.TsmCardapduApplyMapper;
 import cn.com.heyue.mapper.TsmTerminalOrderMapper;
+import cn.com.heyue.utils.HexStringUtils;
 import cn.com.heyue.utils.HttpRequestUtils;
 import cn.com.heyue.utils.RSAUtils;
 import cn.hutool.core.collection.CollectionUtil;
@@ -171,13 +172,14 @@ public class CityServiceImpl implements CityService {
             }
 //            TsmBaseRes<CardActiveSubmitRes> tsmBaseRes = JSON.parseObject(res, TsmBaseRes.class);
             CardActiveSubmitRes cardActiveSubmitRes = JSON.parseObject(JSON.parseObject(res).getString("data"), CardActiveSubmitRes.class);
-
-            // 提交成功后更新 卡指令请求记录表 的是否请求被提交 和 请求提交时间字段。
-            TsmCardapduApply record = new TsmCardapduApply();
-            record.setCardNo(card_no);
-            record.setIssubmit("01");
-            record.setSubmittime(new Date());
-            tsmCardapduApplyMapper.updateByCardNo(record);
+            if (cardActiveSubmitRes != null) {
+                // 提交成功后更新 卡指令请求记录表 的是否请求被提交 和 请求提交时间字段。
+                TsmCardapduApply record = new TsmCardapduApply();
+                record.setCardNo(card_no);
+                record.setIssubmit("01");
+                record.setSubmittime(new Date());
+                tsmCardapduApplyMapper.updateByCardNo(record);
+            }
             return cardActiveSubmitRes;
         } catch (Exception e) {
             logger.error("卡激活请求提交异常:{}", e);
@@ -191,13 +193,21 @@ public class CityServiceImpl implements CityService {
         // 向城市服务发送卡圈存请求
         try {
             // 参数二次封装
+            String card_balance = cardTrapReq.getCard_balance();
+            String money = cardTrapReq.getMoney();
+            card_balance = HexStringUtils.intToHexString(Integer.parseInt(card_balance), 8);
+            money = HexStringUtils.intToHexString(Integer.parseInt(money), 8);
+            cardTrapReq.setCard_balance(card_balance);
+            cardTrapReq.setMoney(money);
             String regionCode = cardTrapReq.getRegion_code();
             String cardSpecies = cardTrapReq.getCard_species();
             String cardNo = cardTrapReq.getCard_no();
             String terminalCode = cardTrapReq.getTerminal_code();
-            String transactionNum = IdUtil.getTransactionNum();
+            String transactionNum = cardTrapReq.getTransaction_num();
             String orderNo = selOrderNo(cardNo);
-            cardTrapReq.setTransaction_num(transactionNum);
+            cardTrapReq.setOrder_no(orderNo);
+            cardTrapReq.setCard_transaction_num("0000");
+            cardTrapReq.setMerchant_num(Constant.MERCHANT_NO);
             String signRet = RSAUtils.signWithRsa2(JSON.toJSONString(cardTrapReq).getBytes(StandardCharsets.UTF_8), Constant.TSM_LOC_PRI_KEY).replaceAll(System.getProperty("line.separator"), "");
             TsmBaseReq<CardTrapReq> tsmBaseReq = new TsmBaseReq<>(cardTrapReq, signRet);
             String req = JSON.toJSONString(tsmBaseReq);
@@ -254,9 +264,10 @@ public class CityServiceImpl implements CityService {
     public CardTrapSubmitRes cardTrapSubmit(CardTrapSubmitReq cardTrapSubmitReq) {
         // 向城市服务发送卡圈存请求提交
         try {
+            String card_no = cardTrapSubmitReq.getCard_no();
             String terminalCode = cardTrapSubmitReq.getTerminal_code();
             String transactionNum = IdUtil.getTransactionNum();
-            String orderNo = getOrderNo(terminalCode, transactionNum);
+            String orderNo = selOrderNo(card_no);
             cardTrapSubmitReq.setTransaction_num(transactionNum);
             cardTrapSubmitReq.setOrder_no(orderNo);
             String signRet = RSAUtils.signWithRsa2(JSON.toJSONString(cardTrapSubmitReq).getBytes(StandardCharsets.UTF_8), Constant.TSM_LOC_PRI_KEY).replaceAll(System.getProperty("line.separator"), "");
@@ -275,7 +286,7 @@ public class CityServiceImpl implements CityService {
             // 如果提交成功后更新 卡指令请求记录表 的是否请求被提交和 请求提交时间字段。
             TsmCardapduApply record = new TsmCardapduApply();
 
-            record.setCardNo(cardTrapSubmitReq.getCard_no());
+            record.setCardNo(card_no);
             record.setIssubmit("01");
             record.setSubmittime(new Date());
             tsmCardapduApplyMapper.updateByCardNo(record);
