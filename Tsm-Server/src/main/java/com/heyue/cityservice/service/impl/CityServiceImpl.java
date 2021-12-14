@@ -154,11 +154,11 @@ public class CityServiceImpl implements CityService {
 
             // 获取订单号
             // 卡指令表获取订单号
-//            String orderNo = selOrderNo(card_no);
+            String orderNo = selOrderNo(card_no);
             String transaction_datetime = sdf.format(new Date());
             cardActiveSubmitReq.setTransaction_datetime(transaction_datetime);
             cardActiveSubmitReq.setTransaction_num(transactionNum);
-//            cardActiveSubmitReq.setOrder_no(orderNo);
+            cardActiveSubmitReq.setOrder_no(orderNo);
             String signRet = RSAUtils.signWithRsa2(JSON.toJSONString(cardActiveSubmitReq).getBytes(StandardCharsets.UTF_8), Constant.TSM_LOC_PRI_KEY).replaceAll(System.getProperty("line.separator"), "");
             TsmBaseReq<CardActiveSubmitReq> tsmBaseReq = new TsmBaseReq<>(cardActiveSubmitReq, signRet);
             String req = JSON.toJSONString(tsmBaseReq);

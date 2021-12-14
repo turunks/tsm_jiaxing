@@ -17,7 +17,6 @@ import com.heyue.bean.TsmBaseRes;
 import com.heyue.card.message.request.CreatCardDataReq;
 import com.heyue.card.message.response.Secretkey;
 import com.heyue.card.service.CardService;
-import com.heyue.cityservice.service.impl.CityServiceImpl;
 import com.heyue.constant.Constant;
 import com.heyue.utils.IdUtil;
 import org.slf4j.Logger;
@@ -35,7 +34,7 @@ import java.util.List;
 @Service
 public class CardServiceImpl implements CardService {
 
-    private static Logger logger = LoggerFactory.getLogger(CityServiceImpl.class);
+    private static Logger logger = LoggerFactory.getLogger(CardServiceImpl.class);
 
     @Autowired
     private TsmCardMakefileMapper tsmCardMakefileMapper;
