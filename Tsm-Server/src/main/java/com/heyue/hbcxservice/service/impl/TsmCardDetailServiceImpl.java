@@ -57,13 +57,20 @@ public class TsmCardDetailServiceImpl implements TsmCardDetailService {
             if (tsmPayOrder == null || !tsmPayOrder.getPayRet().equals("01")) {
                 return Result.fail(null, "订单不存在或未完成支付");
             }
+            TsmOrderInfo orderInfo = tsmOrderInfoMapper.selectByPrimaryKey(req.getServiceOrderId());
+            if (orderInfo.getOrderType() == 1) {
+                return Result.fail(null, "该订单不是开卡订单");
+            }
             TsmCardDetail cardDetail = tsmCardDetailMapper.selectOneByServiceOrderId(req.getServiceOrderId());
             if (cardDetail == null) {
-                cardDetail = tsmCardDetailMapper.selectOne(req.getCityCode(), req.getAreaCode());
+                cardDetail = tsmCardDetailMapper.selectOne(orderInfo.getCityCode(), orderInfo.getAreaCode(),
+                        orderInfo.getCardSpecies());
                 if (cardDetail == null) {
                     return Result.fail(null, "无可用卡数据");
                 }
                 cardDetail.setServiceOrderId(req.getServiceOrderId());
+                cardDetail.setCardStatus("2");
+                cardDetail.setOutDepositTime(new Date());
                 tsmCardDetailMapper.updateByPrimaryKeySelective(cardDetail);
             }
             openCardFileRes.setCardOpeningData(Base64Utils.getBase64(JSON.toJSONString(cardDetail)));

@@ -26,7 +26,7 @@ public class TsmUserInfoServiceImpl implements TsmUserInfoService {
         if (count == 0) {
             return Result.fail();
         }
-        return Result.ok(TsmUserInfoRes.builder().userId(userId).thirdUserIid(userInfo.getThirdUserIid()).build());
+        return Result.ok(TsmUserInfoRes.builder().userId(userId).thirdUserIid(userInfo.getThirdUserId()).build());
     }
 
     @Override

@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.com.heyue.mapper.TsmRefundOrderMapper">
+  <resultMap id="BaseResultMap" type="cn.com.heyue.entity.TsmRefundOrder">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="service_order_id" jdbcType="VARCHAR" property="serviceOrderId" />
+    <result column="city_code" jdbcType="VARCHAR" property="cityCode" />
+    <result column="area_code" jdbcType="VARCHAR" property="areaCode" />
+    <result column="card_species" jdbcType="VARCHAR" property="cardSpecies" />
+    <result column="servicetype" jdbcType="VARCHAR" property="servicetype" />
+    <result column="mobile" jdbcType="VARCHAR" property="mobile" />
+    <result column="app_id" jdbcType="VARCHAR" property="appId" />
+    <result column="merchant_no" jdbcType="VARCHAR" property="merchantNo" />
+    <result column="pay_plat_no" jdbcType="VARCHAR" property="payPlatNo" />
+    <result column="refundamount" jdbcType="INTEGER" property="refundamount" />
+    <result column="refundret" jdbcType="VARCHAR" property="refundret" />
+    <result column="createtime" jdbcType="TIMESTAMP" property="createtime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, service_order_id, city_code, area_code, card_species, servicetype, mobile, app_id, 
+    merchant_no, pay_plat_no, refundamount, refundret, createtime
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tsm_refund_order
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from tsm_refund_order
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="cn.com.heyue.entity.TsmRefundOrder" useGeneratedKeys="true">
+    insert into tsm_refund_order (service_order_id, city_code, area_code, 
+      card_species, servicetype, mobile, 
+      app_id, merchant_no, pay_plat_no, 
+      refundamount, refundret, createtime
+      )
+    values (#{serviceOrderId,jdbcType=VARCHAR}, #{cityCode,jdbcType=VARCHAR}, #{areaCode,jdbcType=VARCHAR}, 
+      #{cardSpecies,jdbcType=VARCHAR}, #{servicetype,jdbcType=VARCHAR}, #{mobile,jdbcType=VARCHAR}, 
+      #{appId,jdbcType=VARCHAR}, #{merchantNo,jdbcType=VARCHAR}, #{payPlatNo,jdbcType=VARCHAR}, 
+      #{refundamount,jdbcType=INTEGER}, #{refundret,jdbcType=VARCHAR}, #{createtime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="cn.com.heyue.entity.TsmRefundOrder" useGeneratedKeys="true">
+    insert into tsm_refund_order
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="serviceOrderId != null">
+        service_order_id,
+      </if>
+      <if test="cityCode != null">
+        city_code,
+      </if>
+      <if test="areaCode != null">
+        area_code,
+      </if>
+      <if test="cardSpecies != null">
+        card_species,
+      </if>
+      <if test="servicetype != null">
+        servicetype,
+      </if>
+      <if test="mobile != null">
+        mobile,
+      </if>
+      <if test="appId != null">
+        app_id,
+      </if>
+      <if test="merchantNo != null">
+        merchant_no,
+      </if>
+      <if test="payPlatNo != null">
+        pay_plat_no,
+      </if>
+      <if test="refundamount != null">
+        refundamount,
+      </if>
+      <if test="refundret != null">
+        refundret,
+      </if>
+      <if test="createtime != null">
+        createtime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="serviceOrderId != null">
+        #{serviceOrderId,jdbcType=VARCHAR},
+      </if>
+      <if test="cityCode != null">
+        #{cityCode,jdbcType=VARCHAR},
+      </if>
+      <if test="areaCode != null">
+        #{areaCode,jdbcType=VARCHAR},
+      </if>
+      <if test="cardSpecies != null">
+        #{cardSpecies,jdbcType=VARCHAR},
+      </if>
+      <if test="servicetype != null">
+        #{servicetype,jdbcType=VARCHAR},
+      </if>
+      <if test="mobile != null">
+        #{mobile,jdbcType=VARCHAR},
+      </if>
+      <if test="appId != null">
+        #{appId,jdbcType=VARCHAR},
+      </if>
+      <if test="merchantNo != null">
+        #{merchantNo,jdbcType=VARCHAR},
+      </if>
+      <if test="payPlatNo != null">
+        #{payPlatNo,jdbcType=VARCHAR},
+      </if>
+      <if test="refundamount != null">
+        #{refundamount,jdbcType=INTEGER},
+      </if>
+      <if test="refundret != null">
+        #{refundret,jdbcType=VARCHAR},
+      </if>
+      <if test="createtime != null">
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.com.heyue.entity.TsmRefundOrder">
+    update tsm_refund_order
+    <set>
+      <if test="serviceOrderId != null">
+        service_order_id = #{serviceOrderId,jdbcType=VARCHAR},
+      </if>
+      <if test="cityCode != null">
+        city_code = #{cityCode,jdbcType=VARCHAR},
+      </if>
+      <if test="areaCode != null">
+        area_code = #{areaCode,jdbcType=VARCHAR},
+      </if>
+      <if test="cardSpecies != null">
+        card_species = #{cardSpecies,jdbcType=VARCHAR},
+      </if>
+      <if test="servicetype != null">
+        servicetype = #{servicetype,jdbcType=VARCHAR},
+      </if>
+      <if test="mobile != null">
+        mobile = #{mobile,jdbcType=VARCHAR},
+      </if>
+      <if test="appId != null">
+        app_id = #{appId,jdbcType=VARCHAR},
+      </if>
+      <if test="merchantNo != null">
+        merchant_no = #{merchantNo,jdbcType=VARCHAR},
+      </if>
+      <if test="payPlatNo != null">
+        pay_plat_no = #{payPlatNo,jdbcType=VARCHAR},
+      </if>
+      <if test="refundamount != null">
+        refundamount = #{refundamount,jdbcType=INTEGER},
+      </if>
+      <if test="refundret != null">
+        refundret = #{refundret,jdbcType=VARCHAR},
+      </if>
+      <if test="createtime != null">
+        createtime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.com.heyue.entity.TsmRefundOrder">
+    update tsm_refund_order
+    set service_order_id = #{serviceOrderId,jdbcType=VARCHAR},
+      city_code = #{cityCode,jdbcType=VARCHAR},
+      area_code = #{areaCode,jdbcType=VARCHAR},
+      card_species = #{cardSpecies,jdbcType=VARCHAR},
+      servicetype = #{servicetype,jdbcType=VARCHAR},
+      mobile = #{mobile,jdbcType=VARCHAR},
+      app_id = #{appId,jdbcType=VARCHAR},
+      merchant_no = #{merchantNo,jdbcType=VARCHAR},
+      pay_plat_no = #{payPlatNo,jdbcType=VARCHAR},
+      refundamount = #{refundamount,jdbcType=INTEGER},
+      refundret = #{refundret,jdbcType=VARCHAR},
+      createtime = #{createtime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

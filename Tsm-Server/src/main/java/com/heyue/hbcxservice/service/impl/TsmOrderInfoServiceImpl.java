@@ -5,12 +5,12 @@ import cn.com.heyue.entity.TsmPayOrder;
 import cn.com.heyue.entity.TsmUserInfo;
 import cn.com.heyue.mapper.TsmOrderInfoMapper;
 import cn.com.heyue.mapper.TsmPayOrderMapper;
-import com.heyue.hbcxservice.cmpay.CmpayService;
 import cn.com.heyue.utils.DateUtils;
 import cn.com.heyue.utils.Md5Encrypt;
 import cn.com.heyue.utils.OKHttpClientUtils;
 import com.alibaba.fastjson.JSON;
 import com.heyue.bean.Result;
+import com.heyue.hbcxservice.cmpay.CmpayService;
 import com.heyue.hbcxservice.message.request.CmpayNotifyReq;
 import com.heyue.hbcxservice.message.request.OrderApplyReq;
 import com.heyue.hbcxservice.message.response.OrderApplyRes;
@@ -27,6 +27,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.net.Inet4Address;
 import java.net.URLDecoder;
 import java.util.Date;
 import java.util.HashMap;
@@ -79,40 +80,46 @@ public class TsmOrderInfoServiceImpl implements TsmOrderInfoService {
             if (tsmUserInfo == null) {
                 return Result.fail(null, "用户不存在");
             }
-            Map<String, Object> cmPayMap = new HashMap<>();
-            cmPayMap.put("orderId", orderId);
-            cmPayMap.put("mobile", tsmUserInfo.getMobile());
-            cmPayMap.put("amount", tsmOrderInfo.getAmount());
-            cmPayMap.put("clientIp", orderId);
-
-            cmPayMap.put("orderDate", DateUtils.format(new Date(),DateUtils.FORMAT_DATE));
-            Map retMap = cmpayService.pay(cmPayMap);
-            String retCode = retMap.get("returnCode").toString();
-            String retMsg = retMap.get("message").toString();
             OrderApplyRes orderApplyRes = new OrderApplyRes();
-            orderApplyRes.setServiceOrderId(orderId);
-            orderApplyRes.setAmount(tsmOrderInfo.getAmount() + "");
-            if("000000".equals(retCode)){
-                orderApplyRes.setPayparm(retMap.get("payUrl").toString());
-                int count = tsmOrderInfoMapper.insertSelective(tsmOrderInfo);
-                TsmPayOrder tsmPayOrder = new TsmPayOrder();
-                BeanUtils.copyProperties(tsmOrderInfo, tsmPayOrder);
-                tsmPayOrder.setOrderType(orderApplyReq.getServiceType());
-                tsmPayOrder.setPayAmount(tsmOrderInfo.getAmount());
-                tsmPayOrder.setPayRet("03");
-                tsmPayOrder.setMobile(tsmUserInfo.getMobile());
-                tsmPayOrder.setCreateTime(new Date());
-                int payCount = tsmPayOrderMapper.insertSelective(tsmPayOrder);
-                if (count == 1 && payCount == 1) {
-                    return Result.ok(orderApplyRes);
+            if (tsmOrderInfo.getOrderType() == 1 || tsmOrderInfo.getOrderType() == 2) {
+                Map<String, Object> cmPayMap = new HashMap<>();
+                cmPayMap.put("orderId", orderId);
+                cmPayMap.put("mobile", tsmUserInfo.getMobile());
+                cmPayMap.put("amount", tsmOrderInfo.getAmount());
+                cmPayMap.put("clientIp", Inet4Address.getLocalHost().getHostAddress());
+
+                cmPayMap.put("orderDate", DateUtils.format(new Date(),DateUtils.FORMAT_DATE));
+                Map retMap = cmpayService.pay(cmPayMap);
+                String retCode = retMap.get("returnCode").toString();
+                String retMsg = retMap.get("message").toString();
+
+                orderApplyRes.setServiceOrderId(orderId);
+                orderApplyRes.setAmount(tsmOrderInfo.getAmount() + "");
+                if("000000".equals(retCode)){
+                    orderApplyRes.setPayparm(retMap.get("payUrl").toString());
+                    TsmPayOrder tsmPayOrder = new TsmPayOrder();
+                    BeanUtils.copyProperties(tsmOrderInfo, tsmPayOrder);
+                    tsmPayOrder.setOrderType(orderApplyReq.getServiceType());
+                    tsmPayOrder.setPayAmount(tsmOrderInfo.getAmount());
+                    tsmPayOrder.setPayRet("03");
+                    tsmPayOrder.setMobile(tsmUserInfo.getMobile());
+                    tsmPayOrder.setCreateTime(new Date());
+                    int payCount = tsmPayOrderMapper.insertSelective(tsmPayOrder);
+                    if (payCount != 1) {
+                        logger.error("下单失败，orderApplyReq={}", JSON.toJSONString(orderApplyReq));
+                        return Result.fail(null, "下单失败");
+                    }
                 } else {
-                    logger.error("下单失败，orderApplyReq={}", JSON.toJSONString(orderApplyReq));
-                    return Result.fail(null, "下单失败");
+                    logger.error(retMsg + "retMap={}", JSON.toJSONString(retMap));
+                    return Result.fail(null, retMsg);
                 }
-            } else {
-                logger.error(retMsg + "retMap={}", JSON.toJSONString(retMap));
-                return Result.fail(null, retMsg);
             }
+            int count = tsmOrderInfoMapper.insertSelective(tsmOrderInfo);
+            if (count != 1) {
+                logger.error("下单失败，orderApplyReq={}", JSON.toJSONString(orderApplyReq));
+                return Result.fail(null, "下单失败");
+            }
+            return Result.ok(orderApplyRes);
         } catch (Exception e) {
             logger.error("下单失败，orderApplyReq={}", JSON.toJSONString(orderApplyReq));
             return Result.fail(null, "下单失败");

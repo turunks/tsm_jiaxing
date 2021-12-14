@@ -47,7 +47,6 @@ public class OrderApplyReq {
 	 * 一卡通卡号
 	 * 圈存、退款相关操作时，必填
 	 */
-	@NotBlank(message = "一卡通卡号不能为空")
 	private String cardNo;
 
 	/**
