@@ -203,11 +203,12 @@ public class CityServiceImpl implements CityService {
             String cardSpecies = cardTrapReq.getCard_species();
             String cardNo = cardTrapReq.getCard_no();
             String terminalCode = cardTrapReq.getTerminal_code();
-            String transactionNum = cardTrapReq.getTransaction_num();
+            String transactionNum = IdUtil.getTransactionNum();
             String orderNo = selOrderNo(cardNo);
             cardTrapReq.setOrder_no(orderNo);
             cardTrapReq.setCard_transaction_num("0000");
             cardTrapReq.setMerchant_num(Constant.MERCHANT_NO);
+            cardTrapReq.setTransaction_num(transactionNum);
             String signRet = RSAUtils.signWithRsa2(JSON.toJSONString(cardTrapReq).getBytes(StandardCharsets.UTF_8), Constant.TSM_LOC_PRI_KEY).replaceAll(System.getProperty("line.separator"), "");
             TsmBaseReq<CardTrapReq> tsmBaseReq = new TsmBaseReq<>(cardTrapReq, signRet);
             String req = JSON.toJSONString(tsmBaseReq);
