@@ -42,18 +42,18 @@
     from `tsm_card_detail`
     where id = #{id,jdbcType=BIGINT}
   </select>
-  <select id="selectOneByServiceOrderId" resultType="cn.com.heyue.entity.TsmCardDetail">
+  <select id="selectOneByServiceOrderId" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from `tsm_card_detail`
     where service_order_id = #{serviceOrderId}
     limit 1
   </select>
-  <select id="selectOne" resultType="cn.com.heyue.entity.TsmCardDetail">
+  <select id="selectOne" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from `tsm_card_detail`
-    where apply_city_code = #{cityCode}
+    where city_code = #{cityCode}
     and area_code  = #{areaCode}
     and card_species  = #{cardSpecies}
     and card_status = 1

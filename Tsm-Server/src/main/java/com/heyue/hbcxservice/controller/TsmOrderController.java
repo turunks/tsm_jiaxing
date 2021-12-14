@@ -3,6 +3,7 @@ package com.heyue.hbcxservice.controller;
 import com.heyue.bean.Result;
 import com.heyue.hbcxservice.message.request.CmpayNotifyReq;
 import com.heyue.hbcxservice.message.request.OrderApplyReq;
+import com.heyue.hbcxservice.message.request.OrderQueryReq;
 import com.heyue.hbcxservice.message.response.OrderApplyRes;
 import com.heyue.hbcxservice.message.response.PayOrderRes;
 import com.heyue.hbcxservice.service.TsmOrderInfoService;
@@ -44,12 +45,12 @@ public class TsmOrderController {
     /**
      * 支付订单查询
      *
-     * @param serviceOrderId
+     * @param orderQueryReq
      * @return
      */
     @RequestMapping("/orderQuery")
-    public Result<PayOrderRes> getPayOrder(@RequestParam("serviceOrderId") String serviceOrderId) {
-        return tsmOrderInfoService.getPayOrder(serviceOrderId);
+    public Result<PayOrderRes> getPayOrder(@RequestBody OrderQueryReq orderQueryReq) {
+        return tsmOrderInfoService.getPayOrder(orderQueryReq.getServiceOrderId());
     }
 
 }

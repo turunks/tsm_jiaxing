@@ -58,7 +58,7 @@ public class TsmCardDetailServiceImpl implements TsmCardDetailService {
                 return Result.fail(null, "订单不存在或未完成支付");
             }
             TsmOrderInfo orderInfo = tsmOrderInfoMapper.selectByPrimaryKey(req.getServiceOrderId());
-            if (orderInfo.getOrderType() == 1) {
+            if (orderInfo.getOrderType() != 1) {
                 return Result.fail(null, "该订单不是开卡订单");
             }
             TsmCardDetail cardDetail = tsmCardDetailMapper.selectOneByServiceOrderId(req.getServiceOrderId());
@@ -105,7 +105,7 @@ public class TsmCardDetailServiceImpl implements TsmCardDetailService {
                 return Result.fail(null, "终端机编号不存在");
             }
             CardTrapReq cardTrapReq = new CardTrapReq();
-            cardTrapReq.setOrder_no(req.getServiceOrderId());
+//            cardTrapReq.setOrder_no(req.getServiceOrderId());
             cardTrapReq.setCard_no(req.getCard_no());
             cardTrapReq.setIssue_inst(req.getIssue_inst());
             cardTrapReq.setTerminal_code(tsmTerminal.getTerminalNo());
@@ -117,7 +117,7 @@ public class TsmCardDetailServiceImpl implements TsmCardDetailService {
             cardTrapReq.setMac(req.getMac());
             cardTrapReq.setMoney(orderInfo.getTopUpAmount() + "");
             cardTrapReq.setRandom(req.getRandom());
-            cardTrapReq.setMerchant_num(payOrder.getMerchantNo());
+//            cardTrapReq.setMerchant_num(payOrder.getMerchantNo());
             cardTrapReq.setTransaction_datetime(DateUtils.format(new Date(),DateUtils.FORMAT_TIME));
             CardTrapRes cardTrapRes = cityService.cardTrap(cardTrapReq);
             if (cardTrapRes == null) {
@@ -156,9 +156,9 @@ public class TsmCardDetailServiceImpl implements TsmCardDetailService {
                 return Result.fail(null, "终端机编号不存在");
             }
             CardTrapSubmitReq cardTrapSubmitReq = new CardTrapSubmitReq();
-            cardTrapSubmitReq.setOrder_no(req.getServiceOrderId());
+//            cardTrapSubmitReq.setOrder_no(req.getServiceOrderId());
             cardTrapSubmitReq.setCard_no(req.getCard_no());
-            cardTrapSubmitReq.setMerchant_num(payOrder.getMerchantNo());
+//            cardTrapSubmitReq.setMerchant_num(payOrder.getMerchantNo());
             cardTrapSubmitReq.setIssue_inst(req.getIssue_inst());
             cardTrapSubmitReq.setTerminal_code(tsmTerminal.getTerminalNo());
             cardTrapSubmitReq.setRet_status(req.getRet_status());
@@ -201,10 +201,10 @@ public class TsmCardDetailServiceImpl implements TsmCardDetailService {
                 return Result.fail(null, "终端机编号不存在");
             }
             CardActiveReq cardActiveReq = new CardActiveReq();
-            cardActiveReq.setOrder_no(req.getServiceOrderId());
+//            cardActiveReq.setOrder_no(req.getServiceOrderId());
             cardActiveReq.setCard_no(req.getCard_no());
             cardActiveReq.setIssue_inst(req.getIssue_inst());
-            cardActiveReq.setMerchant_num(payOrder.getMerchantNo());
+//            cardActiveReq.setMerchant_num(payOrder.getMerchantNo());
             cardActiveReq.setTerminal_code(tsmTerminal.getTerminalNo());
             cardActiveReq.setCard_species(cardstatusNotify.getCardSpecies());
             cardActiveReq.setRegion_code(cardstatusNotify.getAreaCode());
@@ -248,10 +248,10 @@ public class TsmCardDetailServiceImpl implements TsmCardDetailService {
                 return Result.fail(null, "终端机编号不存在");
             }
             CardActiveSubmitReq cardActiveSubmitReq = new CardActiveSubmitReq();
-            cardActiveSubmitReq.setOrder_no(req.getServiceOrderId());
+//            cardActiveSubmitReq.setOrder_no(req.getServiceOrderId());
             cardActiveSubmitReq.setCard_no(req.getCard_no());
             cardActiveSubmitReq.setIssue_inst(req.getIssue_inst());
-            cardActiveSubmitReq.setMerchant_num(payOrder.getMerchantNo());
+//            cardActiveSubmitReq.setMerchant_num(payOrder.getMerchantNo());
             cardActiveSubmitReq.setTerminal_code(tsmTerminal.getTerminalNo());
             cardActiveSubmitReq.setRet_status(req.getRet_status());
             cardActiveSubmitReq.setTransaction_datetime(DateUtils.format(new Date(),DateUtils.FORMAT_TIME));

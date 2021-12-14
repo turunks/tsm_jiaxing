@@ -52,6 +52,7 @@ public class TsmCardController {
      */
     @RequestMapping("/transferApply")
     Result<TransferApplyRes> transferApply(@RequestBody @Valid TransferApplyReq req) {
+        req.setCard_no("0" + req.getCard_no());
         return tsmCardDetailService.transferApply(req);
     }
 
@@ -62,6 +63,7 @@ public class TsmCardController {
      */
     @RequestMapping("/transferSubmit")
     Result<TransferSubmitRes> transferSubmit(@RequestBody @Valid TransferSubmitReq req) {
+        req.setCard_no("0" + req.getCard_no());
         return tsmCardDetailService.transferSubmit(req);
     }
 
@@ -72,6 +74,7 @@ public class TsmCardController {
      */
     @RequestMapping("/userCardActive")
     Result<UserCardActiveRes> userCardActive(@RequestBody @Valid UserCardActiveReq req) {
+        req.setCard_no("0" + req.getCard_no());
         return tsmCardDetailService.userCardActive(req);
     }
 
@@ -82,6 +85,7 @@ public class TsmCardController {
      */
     @RequestMapping("/userCardActiveSubmit")
     Result<UserCardActiveSubmitRes> userCardActiveSubmit(@RequestBody @Valid UserCardActiveSubmitReq req) {
+        req.setCard_no("0" + req.getCard_no());
         return tsmCardDetailService.userCardActiveSubmit(req);
     }
 }

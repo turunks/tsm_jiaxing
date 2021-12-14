@@ -38,14 +38,14 @@
     where service_order_id = #{serviceOrderId,jdbcType=VARCHAR}
   </delete>
   <insert id="insert" keyColumn="service_order_id" keyProperty="serviceOrderId" parameterType="cn.com.heyue.entity.TsmOrderInfo" useGeneratedKeys="true">
-    insert into tsm_order_info (app_id, merchant_no, city_code, 
+    insert into tsm_order_info (service_order_id,app_id, merchant_no, city_code,
       area_code, card_species, user_id, 
       card_no, order_type, pay_plat_no, 
       amount, card_price, top_up_amount, 
       market_amount, market_no, market_org, 
       cum_amount, pay_parm, create_time
       )
-    values (#{appId,jdbcType=VARCHAR}, #{merchantNo,jdbcType=VARCHAR}, #{cityCode,jdbcType=VARCHAR}, 
+    values (#{serviceOrderId,jdbcType=VARCHAR}, #{appId,jdbcType=VARCHAR}, #{merchantNo,jdbcType=VARCHAR}, #{cityCode,jdbcType=VARCHAR},
       #{areaCode,jdbcType=VARCHAR}, #{cardSpecies,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR}, 
       #{cardNo,jdbcType=VARCHAR}, #{orderType,jdbcType=TINYINT}, #{payPlatNo,jdbcType=VARCHAR}, 
       #{amount,jdbcType=INTEGER}, #{cardPrice,jdbcType=INTEGER}, #{topUpAmount,jdbcType=INTEGER}, 

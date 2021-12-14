@@ -23,7 +23,7 @@
     from tsm_terminal
     where id = #{id,jdbcType=BIGINT}
   </select>
-    <select id="selectByCityCode" resultType="cn.com.heyue.entity.TsmTerminal">
+    <select id="selectByCityCode" resultMap="BaseResultMap">
       select
       <include refid="Base_Column_List" />
       from tsm_terminal

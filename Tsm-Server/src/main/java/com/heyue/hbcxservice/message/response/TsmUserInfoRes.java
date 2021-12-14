@@ -15,5 +15,5 @@ public class TsmUserInfoRes {
     /**
      * 第三方用户id
      */
-    private String thirdUserIid;
+    private String thirdUserId;
 }

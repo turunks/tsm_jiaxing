@@ -30,7 +30,7 @@
     from tsm_pay_order
     where id = #{id,jdbcType=BIGINT}
   </select>
-  <select id="selectByServiceOrderId" resultType="cn.com.heyue.entity.TsmPayOrder">
+  <select id="selectByServiceOrderId" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from tsm_pay_order

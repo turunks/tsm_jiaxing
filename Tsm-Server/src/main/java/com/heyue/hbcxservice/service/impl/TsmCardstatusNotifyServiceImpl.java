@@ -56,7 +56,6 @@ public class TsmCardstatusNotifyServiceImpl implements TsmCardstatusNotifyServic
             BeanUtils.copyProperties(req, cardstatusNotify);
             BeanUtils.copyProperties(orderInfo, cardstatusNotify);
             cardstatusNotify.setCreatetime(new Date());
-            tsmCardstatusNotifyMapper.insert(cardstatusNotify);
             // 开卡通知
             if (req.getOptType().equals("01")) {
                 TsmCardDetail cardDetail = tsmCardDetailMapper.selectOneByServiceOrderId(req.getServiceOrderId());
@@ -64,7 +63,7 @@ public class TsmCardstatusNotifyServiceImpl implements TsmCardstatusNotifyServic
                     return Result.fail(null, "暂无开卡信息");
                 }
                 // 储存发卡信息
-                TsmTerminal tsmTerminal = tsmTerminalMpper.selectByCityCode(cardDetail.getApplyCityCode());
+                TsmTerminal tsmTerminal = tsmTerminalMpper.selectByCityCode(cardDetail.getCityCode());
                 TsmOpencardInfo tsmOpencardInfo = new TsmOpencardInfo();
                 tsmOpencardInfo.setMerchantNo(req.getMerchantNo());
                 tsmOpencardInfo.setCityCode(cardDetail.getCityCode());
@@ -77,7 +76,7 @@ public class TsmCardstatusNotifyServiceImpl implements TsmCardstatusNotifyServic
                 tsmOpencardInfo.setTerminalNo(tsmTerminal.getTerminalNo());
                 tsmOpencardInfo.setCreatetime(new Date());
                 tsmOpencardInfoMapper.insert(tsmOpencardInfo);
-                return Result.ok();
+                cardstatusNotify.setCardNo(cardDetail.getCardNo());
             } else if (req.getOptType().equals("02")) {
                 // 退卡通知
                 TsmOrderInfo tsmOrderInfo = tsmOrderInfoService.getOrder(req.getServiceOrderId());
@@ -110,12 +109,13 @@ public class TsmCardstatusNotifyServiceImpl implements TsmCardstatusNotifyServic
                     refundOrder.setRefundret("01");
                 }
                 tsmRefundOrderMapper.insert(refundOrder);
-                return Result.ok();
+                cardstatusNotify.setCardNo(orderInfo.getCardNo());
             }
+            tsmCardstatusNotifyMapper.insert(cardstatusNotify);
+            return Result.ok();
         } catch (Exception e) {
-            logger.error("应用通知失败 ，req={}", JSON.toJSONString(req));
+            logger.error("应用通知失败 ，req={}, e", JSON.toJSONString(req), e);
             return Result.fail(null, "应用通知失败");
         }
-        return Result.ok();
     }
 }

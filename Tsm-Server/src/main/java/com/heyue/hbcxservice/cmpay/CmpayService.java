@@ -2,6 +2,7 @@ package com.heyue.hbcxservice.cmpay;
 
 import cn.com.heyue.utils.DateUtils;
 import cn.com.heyue.utils.Md5Encrypt;
+import cn.com.heyue.utils.SpringContextUtil;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,32 +25,40 @@ public class CmpayService {
     /**
      * 支付地址
      */
-    @Value("${HEBAO_PAY_URL}")
-    private static String HEBAO_PAY_URL;
+//    @Value("${HEBAO_PAY_URL}")
+//    private static String HEBAO_PAY_URL;
+    private static String HEBAO_PAY_URL = "http://211.138.236.210/ips/cmpayService";
 
     /**
      * 支付回调地址
      */
-    @Value("${CMPAY_NOTIFY_URL}")
-    private static String CMPAY_NOTIFY_URL;
+//    @Value("${CMPAY_NOTIFY_URL}")
+//    private static String CMPAY_NOTIFY_URL;
+    private static String CMPAY_NOTIFY_URL = "http://81.69.189.227:800/tsm/hb/order/cmpayNotify";
 
     /**
      * 支付回调页面地址
      */
-    @Value("${CMPAY_CALLBACK_URL}")
-    private static String CMPAY_CALLBACK_URL;
+//    @Value("${CMPAY_CALLBACK_URL}")
+//    private static String CMPAY_CALLBACK_URL;
+
+    private static String CMPAY_CALLBACK_URL = "http://47.110.8.223:9013/payServer/cmpayCallBack";
 
     /**
      * 支付商户号
      */
-    @Value("${CMPAY_MERNO}")
-    private static String CMPAY_MERNO;
+//    @Value("${CMPAY_MERNO}")
+//    private static String CMPAY_MERNO;
+
+    private static String CMPAY_MERNO = "888073117000022";
 
     /**
      * 支付商户秘钥
      */
-    @Value("${CMPAY_MER_KEY}")
-    private static String CMPAY_MER_KEY;
+//    @Value("${CMPAY_MER_KEY}")
+//    private static String CMPAY_MER_KEY;
+
+    private static String CMPAY_MER_KEY = "0Joap12UKHcmwfhNdkepasRpfN2DInI6hlRUWlSQK7zhbzb1d6P3gjmhDRmoCWBR";
 
 
 
@@ -63,9 +72,13 @@ public class CmpayService {
         logger.info("【调用和包支付接口】");
         //logger.info("【商户编号及密钥{},{}】", mercnum, merckey);
         String mercnum = CMPAY_MERNO;
+        logger.info("mercnum={}", mercnum);
         String merckey = CMPAY_MER_KEY;
+        logger.info("merckey={}", merckey);
         String notifyUrl = CMPAY_NOTIFY_URL;
+        logger.info("notifyUrl={}", notifyUrl);
         String callbackUrl = CMPAY_CALLBACK_URL;
+        logger.info("callbackUrl={}", callbackUrl);
 
         Map<String, String> respMap = new HashMap<>();
         String characterSet = "00";
@@ -224,7 +237,7 @@ public class CmpayService {
             } else {
 //                getPayUrl(payUrl, respMap);
                 logger.info("【支付成功！！！】");
-                respMap.put("payparm", "payUrl");
+                respMap.put("payparm", payUrl);
                 respMap.put("returnCode", "000000");
                 respMap.put("message", "SUCCESS");
                 /*respMap.put("payUrl", newUrl);*/
@@ -251,6 +264,47 @@ public class CmpayService {
             respMap.put("message", message);
             return respMap;
         }
+    }
+
+    public static void getPayUrl(String payUrl, Map<String, String> respMap) {
+        // 得到响应的串，分三部分，第一部分是URL，第二部分是method，第三部分是SESSIONID
+        if (StringUtils.isNotBlank(payUrl)) {
+            payUrl = payUrl.replaceAll(">", "&gt;");
+            payUrl = payUrl.replaceAll("<", "&lt;");
+        }
+        // 得到响应的串，分三部分，第一部分是URL，第二部分是method，第三部分是SESSIONID
+        String[] resStr = payUrl.split("&lt;hi:\\$\\$&gt;");
+
+        String url = "";
+//        String activeProfile = SpringContextUtil.getActiveProfile();
+//        if ("pro".equals(activeProfile)) {
+//            url = resStr[0].split("&lt;hi:=&gt;")[1];
+//        } else {
+            url = "https://211.138.236.210/wap/index.xhtml";
+//        }
+
+        String method = resStr[1].split("&lt;hi:=&gt;")[1];
+        // TODO 只用用GET
+        method = "get";
+        String sessionId = resStr[2].split("&lt;hi:=&gt;")[1];
+
+        StringBuffer pageBuf = new StringBuffer();
+        pageBuf.append("<form id=\"payForm\" name=\"payForm\" action=\"" + url + "\" method=\"" + method + "\">");
+        pageBuf.append("<input type=\"hidden\" value=\"" + sessionId + "\" name=\"SESSIONID\">");
+        pageBuf.append("<input type=\"submit\" value=\"立即支付\" style=\"display:none;\">");
+        pageBuf.append("</form>");
+        pageBuf.append("<script>document.forms['payForm'].submit();</script>");
+
+        respMap.put("payUrl", url + "?method=" + method + "&sessionId=" + sessionId);
+        respMap.put("formBuffer", pageBuf.toString());
+        //return url+"?method="+method+"&sessionId="+sessionId;
+    }
+
+    public static void main(String[] args) {
+        String payUrl = "merchantId=888073117000022&requestId=SIMQ1639478760560&signType=MD5&type=WAPDirectPayConfirm&version=2.0.0&returnCode=000000&message=SUCCESS&payUrl=url<hi:=>https://uatipos.10086.cn/wap/index.xhtml<hi:$$>method<hi:=>POST<hi:$$>sessionId<hi:=>20520617205206171918317132<hi:$$>MERC_PAY_TPY<hi:=>&hmac=57bb58d8ae9987b82c36df224b3858ed";
+        payUrl = payUrl.replaceAll(">", "&gt;");
+        payUrl = payUrl.replaceAll("<", "&lt;");
+        System.out.println(payUrl);
     }
 
     /**

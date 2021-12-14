@@ -42,13 +42,16 @@ public class TsmOrderInfoServiceImpl implements TsmOrderInfoService {
      * 支付商户秘钥
      */
     @Value("${CMPAY_MER_KEY}")
-    private static String CMPAY_MER_KEY;
+    private static String CMPAY_MER_KEY = "0Joap12UKHcmwfhNdkepasRpfN2DInI6hlRUWlSQK7zhbzb1d6P3gjmhDRmoCWBR";
 
     /**
      * 和包出行支付回调地址
      */
-    @Value("${HBCX_PAY_NOTIFY_URL}")
-    private static String HBCX_PAY_NOTIFY_URL;
+//    @Value("${HBCX_PAY_NOTIFY_URL}")
+//    private static String HBCX_PAY_NOTIFY_URL;
+
+
+    private static String HBCX_PAY_NOTIFY_URL = "http://47.110.8.223:9013/payServer/hnTsm/notify/cmpayNotify";
 
     @Autowired
     private TsmOrderInfoMapper tsmOrderInfoMapper;
@@ -73,6 +76,11 @@ public class TsmOrderInfoServiceImpl implements TsmOrderInfoService {
             tsmOrderInfo.setCreateTime(new Date());
             tsmOrderInfo.setPayPlatNo(orderApplyReq.getPayChannel());
             tsmOrderInfo.setOrderType(getOrderType(orderApplyReq.getServiceType()));
+            tsmOrderInfo.setAmount(Integer.valueOf(orderApplyReq.getAmount()));
+            tsmOrderInfo.setCardPrice(orderApplyReq.getCardPrice() == null ? 0 : Integer.parseInt(orderApplyReq.getCardPrice()));
+            tsmOrderInfo.setCumAmount(Integer.valueOf(orderApplyReq.getCumAmount()));
+            tsmOrderInfo.setMarketAmount(Integer.valueOf(orderApplyReq.getMarketAmount()));
+            tsmOrderInfo.setTopUpAmount(Integer.valueOf(orderApplyReq.getTopUpAmount()));
             if (tsmOrderInfo.getOrderType() == 0) {
                 return Result.fail(null, "暂不支持的订单类型");
             }
@@ -86,17 +94,18 @@ public class TsmOrderInfoServiceImpl implements TsmOrderInfoService {
                 cmPayMap.put("orderId", orderId);
                 cmPayMap.put("mobile", tsmUserInfo.getMobile());
                 cmPayMap.put("amount", tsmOrderInfo.getAmount());
-                cmPayMap.put("clientIp", Inet4Address.getLocalHost().getHostAddress());
+                cmPayMap.put("clientIp", "81.69.189.227");
 
                 cmPayMap.put("orderDate", DateUtils.format(new Date(),DateUtils.FORMAT_DATE));
                 Map retMap = cmpayService.pay(cmPayMap);
+                logger.info("retMap={}", JSON.toJSONString(retMap));
                 String retCode = retMap.get("returnCode").toString();
                 String retMsg = retMap.get("message").toString();
 
                 orderApplyRes.setServiceOrderId(orderId);
                 orderApplyRes.setAmount(tsmOrderInfo.getAmount() + "");
                 if("000000".equals(retCode)){
-                    orderApplyRes.setPayparm(retMap.get("payUrl").toString());
+                    orderApplyRes.setPayparm(retMap.get("payparm").toString());
                     TsmPayOrder tsmPayOrder = new TsmPayOrder();
                     BeanUtils.copyProperties(tsmOrderInfo, tsmPayOrder);
                     tsmPayOrder.setOrderType(orderApplyReq.getServiceType());
@@ -114,14 +123,14 @@ public class TsmOrderInfoServiceImpl implements TsmOrderInfoService {
                     return Result.fail(null, retMsg);
                 }
             }
-            int count = tsmOrderInfoMapper.insertSelective(tsmOrderInfo);
+            int count = tsmOrderInfoMapper.insert(tsmOrderInfo);
             if (count != 1) {
                 logger.error("下单失败，orderApplyReq={}", JSON.toJSONString(orderApplyReq));
                 return Result.fail(null, "下单失败");
             }
             return Result.ok(orderApplyRes);
         } catch (Exception e) {
-            logger.error("下单失败，orderApplyReq={}", JSON.toJSONString(orderApplyReq));
+            logger.error("下单失败，orderApplyReq={}, {}", JSON.toJSONString(orderApplyReq), e);
             return Result.fail(null, "下单失败");
         }
 
@@ -228,6 +237,7 @@ public class TsmOrderInfoServiceImpl implements TsmOrderInfoService {
                 return "FAILED";
             }
             TsmPayOrder payOrder = tsmPayOrderMapper.selectByServiceOrderId(orderId);
+            logger.info("payOrder={}", JSON.toJSONString(payOrder));
             if (payOrder.getPayRet().equals("01")) {
                 logger.info("{}商户订单已支付成功", sign);
                 return "SUCCESS";
@@ -264,11 +274,11 @@ public class TsmOrderInfoServiceImpl implements TsmOrderInfoService {
 
             if (StringUtils.equals(returnCode, "000000")) {
                 if (StringUtils.equals(status, "SUCCESS")) {
-                    payOrder.setOrderType("01");
+                    payOrder.setPayRet("01");
                     payOrder.setTradeTime(new Date());
 
                 } else if (StringUtils.equals(status, "FAILED")) {
-                    payOrder.setPayOrderId("02");
+                    payOrder.setPayRet("02");
                 }
                 payOrder.setPayPlatNo(payNo);
                 payOrder.setPayNotifyTime(new Date());
@@ -277,7 +287,7 @@ public class TsmOrderInfoServiceImpl implements TsmOrderInfoService {
                 OKHttpClientUtils.postJson(HBCX_PAY_NOTIFY_URL, sign, JSON.toJSONString(notify));
             }
         } catch (Exception e) {
-            logger.error("支付通知异常，notify={}", JSON.toJSONString(notify));
+            logger.error("支付通知异常，notify={}, {}", JSON.toJSONString(notify), e);
         }
         return "FAILED";
     }

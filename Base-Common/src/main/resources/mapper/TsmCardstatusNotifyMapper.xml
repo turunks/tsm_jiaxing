@@ -23,7 +23,7 @@
     from tsm_cardstatus_notify
     where id = #{id,jdbcType=BIGINT}
   </select>
-  <select id="selectByCardNo" resultType="cn.com.heyue.entity.TsmCardstatusNotify">
+  <select id="selectByCardNo" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from tsm_cardstatus_notify

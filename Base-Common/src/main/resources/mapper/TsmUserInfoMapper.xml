@@ -24,7 +24,7 @@
     where user_id = #{userId,jdbcType=VARCHAR}
   </delete>
   <insert id="insert" keyColumn="user_id" keyProperty="userId" parameterType="cn.com.heyue.entity.TsmUserInfo" useGeneratedKeys="true">
-    insert into tsm_user_info (user_id, merchant_no, third_user_id, mobile,
+    insert IGNORE into tsm_user_info (user_id, merchant_no, third_user_id, mobile,
       id_card, user_name, create_time
       )
     values (#{userId,jdbcType=VARCHAR},#{merchantNo,jdbcType=VARCHAR}, #{thirdUserId,jdbcType=VARCHAR},
