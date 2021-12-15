@@ -20,6 +20,8 @@ public class TransferApplyReq {
 
     private String card_balance; // 卡片交易前余额
 
+    private String card_transaction_num; // 卡交易序号
+
     private String random; // 随机数：获取卡的4字节随机数
 
     private String mac; // MAC1

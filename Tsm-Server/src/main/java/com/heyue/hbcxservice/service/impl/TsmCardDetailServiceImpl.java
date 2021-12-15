@@ -116,6 +116,7 @@ public class TsmCardDetailServiceImpl implements TsmCardDetailService {
             cardTrapReq.setAlgorithm_id(req.getAlgorithm_id());
             cardTrapReq.setMac(req.getMac());
             cardTrapReq.setMoney(orderInfo.getTopUpAmount() + "");
+            cardTrapReq.setCard_transaction_num(req.getCard_transaction_num());
             cardTrapReq.setRandom(req.getRandom());
 //            cardTrapReq.setMerchant_num(payOrder.getMerchantNo());
             cardTrapReq.setTransaction_datetime(DateUtils.format(new Date(),DateUtils.FORMAT_TIME));

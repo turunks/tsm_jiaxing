@@ -2,6 +2,7 @@ package cn.com.heyue.mapper;
 
 import cn.com.heyue.entity.TsmCardapduApply;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -22,10 +23,10 @@ public interface TsmCardapduApplyMapper {
     int updateByCardNo(TsmCardapduApply record);
 
     /**
-     * 根据卡号查询卡指令记录
+     * 根据卡号和卡操作类型查询卡指令记录
      *
      * @param cardNo
      * @return
      */
-    List<TsmCardapduApply> selByCradNo(String cardNo);
+    List<TsmCardapduApply> selByCradNo(@Param("cardNo")String cardNo,@Param("card_optype")String card_optype);
 }

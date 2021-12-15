@@ -74,7 +74,8 @@ public class CityServiceImpl implements CityService {
             String terminalCode = cardActiveReq.getTerminal_code();
             String transactionNum = IdUtil.getTransactionNum();
             // 卡指令表获取订单号,无则创建
-            String orderNo = selOrderNo(card_no);
+            String card_optype="01";
+            String orderNo = selOrderNo(card_no,card_optype);
             if (StringUtils.isEmpty(orderNo)) {
                 orderNo = getOrderNo(terminalCode, transactionNum);
             }
@@ -155,7 +156,8 @@ public class CityServiceImpl implements CityService {
 
             // 获取订单号
             // 卡指令表获取订单号
-            String orderNo = selOrderNo(card_no);
+            String card_optype="01";
+            String orderNo = selOrderNo(card_no,card_optype);
             String transaction_datetime = sdf.format(new Date());
             cardActiveSubmitReq.setTransaction_datetime(transaction_datetime);
             cardActiveSubmitReq.setTransaction_num(transactionNum);
@@ -195,18 +197,26 @@ public class CityServiceImpl implements CityService {
             // 参数二次封装
             String card_balance = cardTrapReq.getCard_balance();
             String money = cardTrapReq.getMoney();
+            String card_transaction_num = cardTrapReq.getCard_transaction_num();
             card_balance = HexStringUtils.intToHexString(Integer.parseInt(card_balance), 8);
             money = HexStringUtils.intToHexString(Integer.parseInt(money), 8);
+            card_transaction_num = HexStringUtils.intToHexString(Integer.parseInt(card_transaction_num), 4);
             cardTrapReq.setCard_balance(card_balance);
             cardTrapReq.setMoney(money);
+            cardTrapReq.setCard_transaction_num(card_transaction_num);
+
             String regionCode = cardTrapReq.getRegion_code();
             String cardSpecies = cardTrapReq.getCard_species();
             String cardNo = cardTrapReq.getCard_no();
             String terminalCode = cardTrapReq.getTerminal_code();
             String transactionNum = IdUtil.getTransactionNum();
-            String orderNo = selOrderNo(cardNo);
+
+            String card_optype="02";
+            String orderNo = selOrderNo(cardNo,card_optype);
+            if (StringUtils.isEmpty(orderNo)) {
+                orderNo = getOrderNo(terminalCode, transactionNum);
+            }
             cardTrapReq.setOrder_no(orderNo);
-            cardTrapReq.setCard_transaction_num("0000");
             cardTrapReq.setMerchant_num(Constant.MERCHANT_NO);
             cardTrapReq.setTransaction_num(transactionNum);
             String signRet = RSAUtils.signWithRsa2(JSON.toJSONString(cardTrapReq).getBytes(StandardCharsets.UTF_8), Constant.TSM_LOC_PRI_KEY).replaceAll(System.getProperty("line.separator"), "");
@@ -228,9 +238,11 @@ public class CityServiceImpl implements CityService {
             if (cardTrapRes != null) {
                 apdu = cardTrapRes.getApdu();
                 TsmCardapduApply record = new TsmCardapduApply();
+                record.setCityCode(Constant.CITY_CODE);
                 record.setAreaCode(regionCode);
                 record.setCardSpecies(cardSpecies);
                 record.setTerminalNo(terminalCode);
+                record.setTsmNo(Constant.TSM_ID);
                 record.setCardNo(cardNo);
                 record.setCardOptype("02");
                 record.setTransactionNum(transactionNum);
@@ -268,9 +280,11 @@ public class CityServiceImpl implements CityService {
             String card_no = cardTrapSubmitReq.getCard_no();
             String terminalCode = cardTrapSubmitReq.getTerminal_code();
             String transactionNum = IdUtil.getTransactionNum();
-            String orderNo = selOrderNo(card_no);
+            String card_optype="02";
+            String orderNo = selOrderNo(card_no,card_optype);
             cardTrapSubmitReq.setTransaction_num(transactionNum);
             cardTrapSubmitReq.setOrder_no(orderNo);
+            cardTrapSubmitReq.setMerchant_num(Constant.MERCHANT_NO);
             String signRet = RSAUtils.signWithRsa2(JSON.toJSONString(cardTrapSubmitReq).getBytes(StandardCharsets.UTF_8), Constant.TSM_LOC_PRI_KEY).replaceAll(System.getProperty("line.separator"), "");
             TsmBaseReq<CardTrapSubmitReq> tsmBaseReq = new TsmBaseReq<>(cardTrapSubmitReq, signRet);
             String req = JSON.toJSONString(tsmBaseReq);
@@ -284,14 +298,14 @@ public class CityServiceImpl implements CityService {
 //            TsmBaseRes<CardTrapSubmitRes> tsmBaseRes = JSON.parseObject(res, TsmBaseRes.class);
             CardTrapSubmitRes cardTrapSubmitRes = JSON.parseObject(JSON.parseObject(res).getString("data"), CardTrapSubmitRes.class);
 
-            // 如果提交成功后更新 卡指令请求记录表 的是否请求被提交和 请求提交时间字段。
-            TsmCardapduApply record = new TsmCardapduApply();
-
-            record.setCardNo(card_no);
-            record.setIssubmit("01");
-            record.setSubmittime(new Date());
-            tsmCardapduApplyMapper.updateByCardNo(record);
-
+            if (cardTrapSubmitRes != null) {
+                // 如果提交成功后更新 卡指令请求记录表 的是否请求被提交和 请求提交时间字段。
+                TsmCardapduApply record = new TsmCardapduApply();
+                record.setCardNo(card_no);
+                record.setIssubmit("01");
+                record.setSubmittime(new Date());
+                tsmCardapduApplyMapper.updateByCardNo(record);
+            }
             return cardTrapSubmitRes;
         } catch (Exception e) {
             logger.error("卡圈存请求提交异常:{}", e);
@@ -361,8 +375,8 @@ public class CityServiceImpl implements CityService {
         return orderNo;
     }
 
-    private String selOrderNo(String cardNo) {
-        List<TsmCardapduApply> tsmCardapduApplies = tsmCardapduApplyMapper.selByCradNo(cardNo);
+    private String selOrderNo(String cardNo,String card_optype) {
+        List<TsmCardapduApply> tsmCardapduApplies = tsmCardapduApplyMapper.selByCradNo(cardNo,card_optype);
         String orderNo = "";
         if (CollectionUtil.isNotEmpty(tsmCardapduApplies)) {
             TsmCardapduApply tsmCardapduApply = tsmCardapduApplies.get(0);

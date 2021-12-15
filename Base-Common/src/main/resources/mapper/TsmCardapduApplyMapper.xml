@@ -213,7 +213,7 @@
         card_no = #{cardNo,jdbcType=VARCHAR},
       </if>
       <if test="cardOptype != null">
-        card_optype = #{cardOptype,jdbcType=VARCHAR},.189
+        card_optype = #{cardOptype,jdbcType=VARCHAR},
       </if>
       <if test="transactionNum != null">
         transaction_num = #{transactionNum,jdbcType=VARCHAR},
@@ -243,6 +243,7 @@
     <include refid="Base_Column_List" />
     from tsm_cardapdu_apply
     where card_no = #{cardNo,jdbcType=VARCHAR}
+    and card_optype = #{cardOptype,jdbcType=VARCHAR}
   </select>
 
 </mapper>
