@@ -20,6 +20,20 @@ eureka:
     preferIpAddress: true
     instanceId: ${spring.cloud.client.ip-address}:${server.port}
 
+ribbon:
+  ReadTimeout: 50000 # 请求处理的超时时间: 默认5000ms
+  ConnectTimeout: 50000 # 请求连接的超时时间: 默认50000ms
+  SocketTimeout: 50000 # SocketTimeout超时时间: 默认50000ms
+  MaxAutoRetries: 0 #最大重试次数，当Eureka中可以找到服务，但是服务连不上时将会重试
+  MaxAutoRetriesNextServer : 0 #切换实例的重试次数
+
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 60000 # hystrix超时时间设置 线程池隔离，默认超时时间1000ms
 
 zuul:
   add-host-header: true #webui重定向  请求头host显示为网关的（eg:localhost:9090）而非webui的
