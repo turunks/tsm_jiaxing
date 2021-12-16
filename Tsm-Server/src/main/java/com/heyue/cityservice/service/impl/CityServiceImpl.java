@@ -281,6 +281,9 @@ public class CityServiceImpl implements CityService {
         try {
             String card_no = cardTrapSubmitReq.getCard_no();
             String terminalCode = cardTrapSubmitReq.getTerminal_code();
+            String ret_status = cardTrapSubmitReq.getRet_status();
+            ret_status = HexStringUtils.intToHexString(Integer.parseInt(ret_status), 2);
+            cardTrapSubmitReq.setRet_status(ret_status);
             String transactionNum = IdUtil.getTransactionNum();
             String transaction_datetime = sdf.format(new Date());
             cardTrapSubmitReq.setTransaction_datetime(transaction_datetime);
