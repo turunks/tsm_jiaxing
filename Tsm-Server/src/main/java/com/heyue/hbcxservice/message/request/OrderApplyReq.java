@@ -28,19 +28,16 @@ public class OrderApplyReq {
 	/**
 	 * 城市代码
 	 */
-	@NotBlank(message = "城市代码不能为空")
 	private String cityCode;
 
 	/**
 	 * 地区代码
 	 */
-	@NotBlank(message = "地区代码不能为空")
 	private String areaCode;
 
 	/**
 	 * 卡种类型
 	 */
-	@NotBlank(message = "卡种类型不能为空")
 	private String cardSpecies;
 
 	/**
@@ -128,7 +125,6 @@ public class OrderApplyReq {
 	/**
 	 * 充值选择金额
 	 */
-	@NotBlank(message = "充值选择金额不能为空")
 	private String topUpAmount;
 
 	/**
