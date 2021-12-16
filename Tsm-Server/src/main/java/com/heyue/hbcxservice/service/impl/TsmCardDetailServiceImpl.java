@@ -163,7 +163,7 @@ public class TsmCardDetailServiceImpl implements TsmCardDetailService {
             cardTrapSubmitReq.setIssue_inst(req.getIssue_inst());
             cardTrapSubmitReq.setTerminal_code(tsmTerminal.getTerminalNo());
             cardTrapSubmitReq.setRet_status(req.getRet_status());
-            cardTrapSubmitReq.setTAC(req.getTAC());
+            cardTrapSubmitReq.setTAC(req.getTac());
             cardTrapSubmitReq.setTransaction_datetime(DateUtils.format(new Date(),DateUtils.FORMAT_TIME));
             CardTrapSubmitRes cardTrapSubmitRes = cityService.cardTrapSubmit(cardTrapSubmitReq);
             if (cardTrapSubmitRes == null) {

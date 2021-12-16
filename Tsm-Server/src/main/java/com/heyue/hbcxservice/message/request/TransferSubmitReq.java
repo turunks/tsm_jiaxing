@@ -20,7 +20,7 @@ public class TransferSubmitReq {
 
     private String ret_status; // 写卡状态
 
-    private String TAC; // 交易验证码
+    private String tac; // 交易验证码
 
 
 
