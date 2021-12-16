@@ -119,7 +119,7 @@ public class TsmCardDetailServiceImpl implements TsmCardDetailService {
             cardTrapReq.setCard_transaction_num(req.getCard_transaction_num());
             cardTrapReq.setRandom(req.getRandom());
 //            cardTrapReq.setMerchant_num(payOrder.getMerchantNo());
-            cardTrapReq.setTransaction_datetime(DateUtils.format(new Date(),DateUtils.FORMAT_TIME));
+            cardTrapReq.setTransaction_datetime(DateUtils.format(new Date(),DateUtils.FORMAT_FULL));
             CardTrapRes cardTrapRes = cityService.cardTrap(cardTrapReq);
             if (cardTrapRes == null) {
                 logger.error("调用城市圈存申请失败 ，cardTrapReq={}", JSON.toJSONString(cardTrapReq));
@@ -164,7 +164,7 @@ public class TsmCardDetailServiceImpl implements TsmCardDetailService {
             cardTrapSubmitReq.setTerminal_code(tsmTerminal.getTerminalNo());
             cardTrapSubmitReq.setRet_status(req.getRet_status());
             cardTrapSubmitReq.setTac(req.getTac());
-            cardTrapSubmitReq.setTransaction_datetime(DateUtils.format(new Date(),DateUtils.FORMAT_TIME));
+            cardTrapSubmitReq.setTransaction_datetime(DateUtils.format(new Date(),DateUtils.FORMAT_FULL));
             CardTrapSubmitRes cardTrapSubmitRes = cityService.cardTrapSubmit(cardTrapSubmitReq);
             if (cardTrapSubmitRes == null) {
                 logger.error("调用城市圈存申请提交失败 ，cardTrapSubmitReq={}", JSON.toJSONString(cardTrapSubmitReq));
@@ -255,7 +255,7 @@ public class TsmCardDetailServiceImpl implements TsmCardDetailService {
 //            cardActiveSubmitReq.setMerchant_num(payOrder.getMerchantNo());
             cardActiveSubmitReq.setTerminal_code(tsmTerminal.getTerminalNo());
             cardActiveSubmitReq.setRet_status(req.getRet_status());
-            cardActiveSubmitReq.setTransaction_datetime(DateUtils.format(new Date(),DateUtils.FORMAT_TIME));
+            cardActiveSubmitReq.setTransaction_datetime(DateUtils.format(new Date(),DateUtils.FORMAT_FULL));
             CardActiveSubmitRes cardActiveSubmitRes = cityService.cardActiveSubmit(cardActiveSubmitReq);
             if (cardActiveSubmitRes == null) {
                 logger.error("调用城市激活申请提交失败 ，cardActiveSubmitReq={}", JSON.toJSONString(cardActiveSubmitReq));

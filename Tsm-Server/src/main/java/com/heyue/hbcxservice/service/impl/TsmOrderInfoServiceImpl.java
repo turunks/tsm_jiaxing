@@ -78,9 +78,11 @@ public class TsmOrderInfoServiceImpl implements TsmOrderInfoService {
             tsmOrderInfo.setOrderType(getOrderType(orderApplyReq.getServiceType()));
             tsmOrderInfo.setAmount(Integer.valueOf(orderApplyReq.getAmount()));
             tsmOrderInfo.setCardPrice(orderApplyReq.getCardPrice() == null ? 0 : Integer.parseInt(orderApplyReq.getCardPrice()));
-            tsmOrderInfo.setCumAmount(Integer.valueOf(orderApplyReq.getCumAmount()));
-            tsmOrderInfo.setMarketAmount(Integer.valueOf(orderApplyReq.getMarketAmount()));
-            tsmOrderInfo.setTopUpAmount(Integer.valueOf(orderApplyReq.getTopUpAmount()));
+            tsmOrderInfo.setCumAmount(orderApplyReq.getCumAmount() == null ? 0 : Integer.parseInt(orderApplyReq.getCumAmount()));
+            tsmOrderInfo.setMarketAmount(orderApplyReq.getMarketAmount() == null ? 0 :
+                    Integer.parseInt(orderApplyReq.getMarketAmount()));
+            tsmOrderInfo.setTopUpAmount(orderApplyReq.getTopUpAmount() == null ? 0 :
+                    Integer.parseInt(orderApplyReq.getTopUpAmount()));
             if (tsmOrderInfo.getOrderType() == 0) {
                 return Result.fail(null, "暂不支持的订单类型");
             }
@@ -153,6 +155,7 @@ public class TsmOrderInfoServiceImpl implements TsmOrderInfoService {
             // 如果未支付，去和包查支付状态
             if (tsmPayOrder.getPayRet().equals("03")) {
                 Map<String, Object> paraMap = new HashMap<>();
+                paraMap.put("orderId", serviceOrderId);
                 Map retMap = CmpayService.query(paraMap);
                 String retCode = retMap.get("returnCode").toString();
                 String retMsg = retMap.get("message").toString();
