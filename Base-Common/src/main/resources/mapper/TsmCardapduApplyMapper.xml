@@ -244,6 +244,7 @@
     from tsm_cardapdu_apply
     where card_no = #{cardNo,jdbcType=VARCHAR}
     and card_optype = #{cardOptype,jdbcType=VARCHAR}
+    and issubmit = #{issubmit,jdbcType=VARCHAR}
   </select>
 
 </mapper>

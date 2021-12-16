@@ -75,7 +75,8 @@ public class CityServiceImpl implements CityService {
             String transactionNum = IdUtil.getTransactionNum();
             // 卡指令表获取订单号,无则创建
             String cardOptype="01";
-            String orderNo = selOrderNo(card_no,cardOptype);
+            String issubmit="00"; // 查询未提交的激活订单号
+            String orderNo = selOrderNo(card_no,cardOptype,issubmit);
             if (StringUtils.isEmpty(orderNo)) {
                 orderNo = getOrderNo(terminalCode, transactionNum);
             }
@@ -157,7 +158,8 @@ public class CityServiceImpl implements CityService {
             // 获取订单号
             // 卡指令表获取订单号
             String cardOptype="01";
-            String orderNo = selOrderNo(card_no,cardOptype);
+            String issubmit="00"; // 查询未提交的激活订单号
+            String orderNo = selOrderNo(card_no,cardOptype,issubmit);
             String transaction_datetime = sdf.format(new Date());
             cardActiveSubmitReq.setTransaction_datetime(transaction_datetime);
             cardActiveSubmitReq.setTransaction_num(transactionNum);
@@ -211,11 +213,11 @@ public class CityServiceImpl implements CityService {
             String terminalCode = cardTrapReq.getTerminal_code();
             String transactionNum = IdUtil.getTransactionNum();
 
-            String cardOptype="02";
-            String orderNo = selOrderNo(cardNo,cardOptype);
-            if (StringUtils.isEmpty(orderNo)) {
-                orderNo = getOrderNo(terminalCode, transactionNum);
-            }
+//            String cardOptype="02";
+//            String orderNo = selOrderNo(cardNo,cardOptype);
+//            if (StringUtils.isEmpty(orderNo)) {
+            String orderNo = getOrderNo(terminalCode, transactionNum);
+//            }
             cardTrapReq.setOrder_no(orderNo);
             cardTrapReq.setMerchant_num(Constant.MERCHANT_NO);
             cardTrapReq.setTransaction_num(transactionNum);
@@ -283,7 +285,8 @@ public class CityServiceImpl implements CityService {
             String transaction_datetime = sdf.format(new Date());
             cardTrapSubmitReq.setTransaction_datetime(transaction_datetime);
             String cardOptype="02";
-            String orderNo = selOrderNo(card_no,cardOptype);
+            String issubmit="00"; // 查询未提交的圈存订单号
+            String orderNo = selOrderNo(card_no,cardOptype,issubmit);
             cardTrapSubmitReq.setTransaction_num(transactionNum);
             cardTrapSubmitReq.setOrder_no(orderNo);
             cardTrapSubmitReq.setMerchant_num(Constant.MERCHANT_NO);
@@ -377,8 +380,8 @@ public class CityServiceImpl implements CityService {
         return orderNo;
     }
 
-    private String selOrderNo(String cardNo,String cardOptype) {
-        List<TsmCardapduApply> tsmCardapduApplies = tsmCardapduApplyMapper.selByCradNo(cardNo,cardOptype);
+    private String selOrderNo(String cardNo,String cardOptype,String issubmit) {
+        List<TsmCardapduApply> tsmCardapduApplies = tsmCardapduApplyMapper.selByCradNo(cardNo,cardOptype,issubmit);
         String orderNo = "";
         if (CollectionUtil.isNotEmpty(tsmCardapduApplies)) {
             TsmCardapduApply tsmCardapduApply = tsmCardapduApplies.get(0);
