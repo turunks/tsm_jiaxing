@@ -28,5 +28,5 @@ public interface TsmCardapduApplyMapper {
      * @param cardNo
      * @return
      */
-    List<TsmCardapduApply> selByCradNo(@Param("cardNo")String cardNo,@Param("card_optype")String card_optype);
+    List<TsmCardapduApply> selByCradNo(@Param("cardNo")String cardNo,@Param("cardOptype")String cardOptype);
 }

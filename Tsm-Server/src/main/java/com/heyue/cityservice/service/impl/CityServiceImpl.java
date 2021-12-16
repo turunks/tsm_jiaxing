@@ -74,8 +74,8 @@ public class CityServiceImpl implements CityService {
             String terminalCode = cardActiveReq.getTerminal_code();
             String transactionNum = IdUtil.getTransactionNum();
             // 卡指令表获取订单号,无则创建
-            String card_optype="01";
-            String orderNo = selOrderNo(card_no,card_optype);
+            String cardOptype="01";
+            String orderNo = selOrderNo(card_no,cardOptype);
             if (StringUtils.isEmpty(orderNo)) {
                 orderNo = getOrderNo(terminalCode, transactionNum);
             }
@@ -156,8 +156,8 @@ public class CityServiceImpl implements CityService {
 
             // 获取订单号
             // 卡指令表获取订单号
-            String card_optype="01";
-            String orderNo = selOrderNo(card_no,card_optype);
+            String cardOptype="01";
+            String orderNo = selOrderNo(card_no,cardOptype);
             String transaction_datetime = sdf.format(new Date());
             cardActiveSubmitReq.setTransaction_datetime(transaction_datetime);
             cardActiveSubmitReq.setTransaction_num(transactionNum);
@@ -211,8 +211,8 @@ public class CityServiceImpl implements CityService {
             String terminalCode = cardTrapReq.getTerminal_code();
             String transactionNum = IdUtil.getTransactionNum();
 
-            String card_optype="02";
-            String orderNo = selOrderNo(cardNo,card_optype);
+            String cardOptype="02";
+            String orderNo = selOrderNo(cardNo,cardOptype);
             if (StringUtils.isEmpty(orderNo)) {
                 orderNo = getOrderNo(terminalCode, transactionNum);
             }
@@ -280,8 +280,10 @@ public class CityServiceImpl implements CityService {
             String card_no = cardTrapSubmitReq.getCard_no();
             String terminalCode = cardTrapSubmitReq.getTerminal_code();
             String transactionNum = IdUtil.getTransactionNum();
-            String card_optype="02";
-            String orderNo = selOrderNo(card_no,card_optype);
+            String transaction_datetime = sdf.format(new Date());
+            cardTrapSubmitReq.setTransaction_datetime(transaction_datetime);
+            String cardOptype="02";
+            String orderNo = selOrderNo(card_no,cardOptype);
             cardTrapSubmitReq.setTransaction_num(transactionNum);
             cardTrapSubmitReq.setOrder_no(orderNo);
             cardTrapSubmitReq.setMerchant_num(Constant.MERCHANT_NO);
@@ -375,8 +377,8 @@ public class CityServiceImpl implements CityService {
         return orderNo;
     }
 
-    private String selOrderNo(String cardNo,String card_optype) {
-        List<TsmCardapduApply> tsmCardapduApplies = tsmCardapduApplyMapper.selByCradNo(cardNo,card_optype);
+    private String selOrderNo(String cardNo,String cardOptype) {
+        List<TsmCardapduApply> tsmCardapduApplies = tsmCardapduApplyMapper.selByCradNo(cardNo,cardOptype);
         String orderNo = "";
         if (CollectionUtil.isNotEmpty(tsmCardapduApplies)) {
             TsmCardapduApply tsmCardapduApply = tsmCardapduApplies.get(0);
