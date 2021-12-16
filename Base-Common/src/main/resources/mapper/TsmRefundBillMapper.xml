@@ -3,17 +3,22 @@
 <mapper namespace="cn.com.heyue.mapper.TsmRefundBillMapper">
   <resultMap id="BaseResultMap" type="cn.com.heyue.entity.TsmRefundBill">
     <id column="bill_id" jdbcType="BIGINT" property="billId" />
-    <result column="serviceOrderId" jdbcType="VARCHAR" property="serviceorderid" />
+    <result column="serviceorderid" jdbcType="VARCHAR" property="serviceorderid" />
     <result column="cardoperationstatus_notify" jdbcType="BIGINT" property="cardoperationstatusNotify" />
     <result column="app_id" jdbcType="VARCHAR" property="appId" />
     <result column="merchant_no" jdbcType="VARCHAR" property="merchantNo" />
+    <result column="city_code" jdbcType="VARCHAR" property="cityCode" />
+    <result column="area_code" jdbcType="VARCHAR" property="areaCode" />
+    <result column="card_species" jdbcType="VARCHAR" property="cardSpecies" />
     <result column="card_no" jdbcType="VARCHAR" property="cardNo" />
     <result column="ordertype" jdbcType="VARCHAR" property="ordertype" />
+    <result column="refund_type" jdbcType="VARCHAR" property="refundType" />
+    <result column="refundamount" jdbcType="INTEGER" property="refundamount" />
     <result column="createtime" jdbcType="TIMESTAMP" property="createtime" />
   </resultMap>
   <sql id="Base_Column_List">
-    bill_id, serviceOrderId, cardoperationstatus_notify, app_id, merchant_no, card_no, 
-    ordertype, createtime
+    bill_id, serviceorderid, cardoperationstatus_notify, app_id, merchant_no, city_code, 
+    area_code, card_species, card_no, ordertype, refund_type, refundamount, createtime
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -26,18 +31,22 @@
     where bill_id = #{billId,jdbcType=BIGINT}
   </delete>
   <insert id="insert" keyColumn="bill_id" keyProperty="billId" parameterType="cn.com.heyue.entity.TsmRefundBill" useGeneratedKeys="true">
-    insert into tsm_refund_bill (serviceOrderId, cardoperationstatus_notify, 
-      app_id, merchant_no, card_no, 
-      ordertype, createtime)
+    insert into tsm_refund_bill (serviceorderid, cardoperationstatus_notify, 
+      app_id, merchant_no, city_code, 
+      area_code, card_species, card_no, 
+      ordertype, refund_type, refundamount, 
+      createtime)
     values (#{serviceorderid,jdbcType=VARCHAR}, #{cardoperationstatusNotify,jdbcType=BIGINT}, 
-      #{appId,jdbcType=VARCHAR}, #{merchantNo,jdbcType=VARCHAR}, #{cardNo,jdbcType=VARCHAR}, 
-      #{ordertype,jdbcType=VARCHAR}, #{createtime,jdbcType=TIMESTAMP})
+      #{appId,jdbcType=VARCHAR}, #{merchantNo,jdbcType=VARCHAR}, #{cityCode,jdbcType=VARCHAR}, 
+      #{areaCode,jdbcType=VARCHAR}, #{cardSpecies,jdbcType=VARCHAR}, #{cardNo,jdbcType=VARCHAR}, 
+      #{ordertype,jdbcType=VARCHAR}, #{refundType,jdbcType=VARCHAR}, #{refundamount,jdbcType=INTEGER}, 
+      #{createtime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" keyColumn="bill_id" keyProperty="billId" parameterType="cn.com.heyue.entity.TsmRefundBill" useGeneratedKeys="true">
     insert into tsm_refund_bill
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="serviceorderid != null">
-        serviceOrderId,
+        serviceorderid,
       </if>
       <if test="cardoperationstatusNotify != null">
         cardoperationstatus_notify,
@@ -48,11 +57,26 @@
       <if test="merchantNo != null">
         merchant_no,
       </if>
+      <if test="cityCode != null">
+        city_code,
+      </if>
+      <if test="areaCode != null">
+        area_code,
+      </if>
+      <if test="cardSpecies != null">
+        card_species,
+      </if>
       <if test="cardNo != null">
         card_no,
       </if>
       <if test="ordertype != null">
         ordertype,
+      </if>
+      <if test="refundType != null">
+        refund_type,
+      </if>
+      <if test="refundamount != null">
+        refundamount,
       </if>
       <if test="createtime != null">
         createtime,
@@ -71,11 +95,26 @@
       <if test="merchantNo != null">
         #{merchantNo,jdbcType=VARCHAR},
       </if>
+      <if test="cityCode != null">
+        #{cityCode,jdbcType=VARCHAR},
+      </if>
+      <if test="areaCode != null">
+        #{areaCode,jdbcType=VARCHAR},
+      </if>
+      <if test="cardSpecies != null">
+        #{cardSpecies,jdbcType=VARCHAR},
+      </if>
       <if test="cardNo != null">
         #{cardNo,jdbcType=VARCHAR},
       </if>
       <if test="ordertype != null">
         #{ordertype,jdbcType=VARCHAR},
+      </if>
+      <if test="refundType != null">
+        #{refundType,jdbcType=VARCHAR},
+      </if>
+      <if test="refundamount != null">
+        #{refundamount,jdbcType=INTEGER},
       </if>
       <if test="createtime != null">
         #{createtime,jdbcType=TIMESTAMP},
@@ -86,7 +125,7 @@
     update tsm_refund_bill
     <set>
       <if test="serviceorderid != null">
-        serviceOrderId = #{serviceorderid,jdbcType=VARCHAR},
+        serviceorderid = #{serviceorderid,jdbcType=VARCHAR},
       </if>
       <if test="cardoperationstatusNotify != null">
         cardoperationstatus_notify = #{cardoperationstatusNotify,jdbcType=BIGINT},
@@ -97,11 +136,26 @@
       <if test="merchantNo != null">
         merchant_no = #{merchantNo,jdbcType=VARCHAR},
       </if>
+      <if test="cityCode != null">
+        city_code = #{cityCode,jdbcType=VARCHAR},
+      </if>
+      <if test="areaCode != null">
+        area_code = #{areaCode,jdbcType=VARCHAR},
+      </if>
+      <if test="cardSpecies != null">
+        card_species = #{cardSpecies,jdbcType=VARCHAR},
+      </if>
       <if test="cardNo != null">
         card_no = #{cardNo,jdbcType=VARCHAR},
       </if>
       <if test="ordertype != null">
         ordertype = #{ordertype,jdbcType=VARCHAR},
+      </if>
+      <if test="refundType != null">
+        refund_type = #{refundType,jdbcType=VARCHAR},
+      </if>
+      <if test="refundamount != null">
+        refundamount = #{refundamount,jdbcType=INTEGER},
       </if>
       <if test="createtime != null">
         createtime = #{createtime,jdbcType=TIMESTAMP},
@@ -111,12 +165,17 @@
   </update>
   <update id="updateByPrimaryKey" parameterType="cn.com.heyue.entity.TsmRefundBill">
     update tsm_refund_bill
-    set serviceOrderId = #{serviceorderid,jdbcType=VARCHAR},
+    set serviceorderid = #{serviceorderid,jdbcType=VARCHAR},
       cardoperationstatus_notify = #{cardoperationstatusNotify,jdbcType=BIGINT},
       app_id = #{appId,jdbcType=VARCHAR},
       merchant_no = #{merchantNo,jdbcType=VARCHAR},
+      city_code = #{cityCode,jdbcType=VARCHAR},
+      area_code = #{areaCode,jdbcType=VARCHAR},
+      card_species = #{cardSpecies,jdbcType=VARCHAR},
       card_no = #{cardNo,jdbcType=VARCHAR},
       ordertype = #{ordertype,jdbcType=VARCHAR},
+      refund_type = #{refundType,jdbcType=VARCHAR},
+      refundamount = #{refundamount,jdbcType=INTEGER},
       createtime = #{createtime,jdbcType=TIMESTAMP}
     where bill_id = #{billId,jdbcType=BIGINT}
   </update>

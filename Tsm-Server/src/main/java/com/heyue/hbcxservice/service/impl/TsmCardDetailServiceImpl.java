@@ -72,6 +72,8 @@ public class TsmCardDetailServiceImpl implements TsmCardDetailService {
                 cardDetail.setCardStatus("2");
                 cardDetail.setOutDepositTime(new Date());
                 tsmCardDetailMapper.updateByPrimaryKeySelective(cardDetail);
+                orderInfo.setCardNo(cardDetail.getCardNo());
+                tsmOrderInfoMapper.updateByPrimaryKeySelective(orderInfo);
             }
             openCardFileRes.setCardOpeningData(Base64Utils.getBase64(JSON.toJSONString(cardDetail)));
         } catch (Exception e) {

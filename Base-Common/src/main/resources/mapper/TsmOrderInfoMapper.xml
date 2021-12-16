@@ -33,6 +33,14 @@
     from tsm_order_info
     where service_order_id = #{serviceOrderId,jdbcType=VARCHAR}
   </select>
+  <select id="getRefund" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from tsm_order_info
+    where user_id = #{userId,jdbcType=VARCHAR}
+    and card_no = #{cardNo,jdbcType=VARCHAR}
+    and order_type in (1,2)
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
     delete from tsm_order_info
     where service_order_id = #{serviceOrderId,jdbcType=VARCHAR}

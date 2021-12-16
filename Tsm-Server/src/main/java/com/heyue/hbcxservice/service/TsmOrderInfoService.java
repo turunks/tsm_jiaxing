@@ -7,6 +7,9 @@ import com.heyue.hbcxservice.message.request.CmpayNotifyReq;
 import com.heyue.hbcxservice.message.request.OrderApplyReq;
 import com.heyue.hbcxservice.message.response.OrderApplyRes;
 import com.heyue.hbcxservice.message.response.PayOrderRes;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 public interface TsmOrderInfoService {
 
@@ -24,6 +27,14 @@ public interface TsmOrderInfoService {
      * @return
      */
     TsmOrderInfo getOrder(String serviceOrderId);
+
+    /**
+     * 查可退款订单列表
+     * @param userId
+     * @param cardNo
+     * @return
+     */
+    List<TsmOrderInfo> getRefund(String userId, String cardNo);
 
     /**
      * 查支付订单

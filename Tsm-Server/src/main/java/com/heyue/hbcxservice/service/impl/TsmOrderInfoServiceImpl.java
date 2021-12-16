@@ -31,6 +31,7 @@ import java.net.Inet4Address;
 import java.net.URLDecoder;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -91,6 +92,8 @@ public class TsmOrderInfoServiceImpl implements TsmOrderInfoService {
                 return Result.fail(null, "用户不存在");
             }
             OrderApplyRes orderApplyRes = new OrderApplyRes();
+            orderApplyRes.setServiceOrderId(orderId);
+            orderApplyRes.setAmount(tsmOrderInfo.getAmount() + "");
             if (tsmOrderInfo.getOrderType() == 1 || tsmOrderInfo.getOrderType() == 2) {
                 Map<String, Object> cmPayMap = new HashMap<>();
                 cmPayMap.put("orderId", orderId);
@@ -104,8 +107,6 @@ public class TsmOrderInfoServiceImpl implements TsmOrderInfoService {
                 String retCode = retMap.get("returnCode").toString();
                 String retMsg = retMap.get("message").toString();
 
-                orderApplyRes.setServiceOrderId(orderId);
-                orderApplyRes.setAmount(tsmOrderInfo.getAmount() + "");
                 if("000000".equals(retCode)){
                     orderApplyRes.setPayparm(retMap.get("payparm").toString());
                     TsmPayOrder tsmPayOrder = new TsmPayOrder();
@@ -141,6 +142,11 @@ public class TsmOrderInfoServiceImpl implements TsmOrderInfoService {
     @Override
     public TsmOrderInfo getOrder(String serviceOrderId) {
         return tsmOrderInfoMapper.selectByPrimaryKey(serviceOrderId);
+    }
+
+    @Override
+    public List<TsmOrderInfo> getRefund(String userId, String cardNo) {
+        return tsmOrderInfoMapper.getRefund(userId, cardNo);
     }
 
     @Override

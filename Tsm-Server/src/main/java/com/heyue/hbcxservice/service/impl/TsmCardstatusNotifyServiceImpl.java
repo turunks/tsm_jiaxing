@@ -12,10 +12,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -40,6 +42,9 @@ public class TsmCardstatusNotifyServiceImpl implements TsmCardstatusNotifyServic
 
     @Autowired
     private TsmUserInfoMapper tsmUserInfoMapper;
+
+    @Autowired
+    private TsmRefundBillMapper tsmRefundBillMapper;
 
     @Autowired
     private TsmOrderInfoService tsmOrderInfoService;
@@ -79,37 +84,23 @@ public class TsmCardstatusNotifyServiceImpl implements TsmCardstatusNotifyServic
                 cardstatusNotify.setCardNo(cardDetail.getCardNo());
             } else if (req.getOptType().equals("02")) {
                 // 退卡通知
-                TsmOrderInfo tsmOrderInfo = tsmOrderInfoService.getOrder(req.getServiceOrderId());
-                if (tsmOrderInfo == null || tsmOrderInfo.getOrderType() != 3) {
+                if (orderInfo == null || orderInfo.getOrderType() != 3) {
                     return Result.fail(null, "退卡订单不存在");
                 }
-                // 创建退款订单
-                TsmUserInfo userInfo = tsmUserInfoMapper.selectByPrimaryKey(orderInfo.getUserId());
-                TsmRefundOrder refundOrder = new TsmRefundOrder();
-                refundOrder.setServiceOrderId(req.getServiceOrderId());
-                refundOrder.setCityCode(orderInfo.getCityCode());
-                refundOrder.setAreaCode(orderInfo.getAreaCode());
-                refundOrder.setCardSpecies(orderInfo.getCardSpecies());
-                refundOrder.setServicetype("05");
-                refundOrder.setMobile(userInfo.getMobile());
-                refundOrder.setAppId(req.getAppId());
-                refundOrder.setMerchantNo(req.getMerchantNo());
-                refundOrder.setRefundamount(orderInfo.getAmount());
-                refundOrder.setCreatetime(new Date());
-                // 退款
-                Map paraMap = new HashMap();
-                paraMap.put("orderId",tsmOrderInfo.getServiceOrderId());
-                paraMap.put("amount",tsmOrderInfo.getAmount());
-                Map retMap = cmpayService.refund(paraMap);
-                String retCode = retMap.get("returnCode").toString();
-                String retMsg = retMap.get("message").toString();
-                if("000000".equals(retCode)){
-                    refundOrder.setRefundret("00");
-                } else {
-                    refundOrder.setRefundret("01");
-                }
-                tsmRefundOrderMapper.insert(refundOrder);
+                // 生成退款账单
+                TsmRefundBill refundBill = new TsmRefundBill();
+                refundBill.setServiceorderid(orderInfo.getServiceOrderId());
+                refundBill.setCardNo(orderInfo.getCardNo());
+                refundBill.setAppId(orderInfo.getAppId());
+                refundBill.setMerchantNo(orderInfo.getMerchantNo());
+                refundBill.setOrdertype("05");
+                refundBill.setRefundamount(orderInfo.getAmount());
+                refundBill.setRefundType("01");
+                refundBill.setCreatetime(new Date());
+                tsmRefundBillMapper.insertSelective(refundBill);
                 cardstatusNotify.setCardNo(orderInfo.getCardNo());
+                // 异步退款
+                asyncRefund(orderInfo, "05");
             }
             tsmCardstatusNotifyMapper.insert(cardstatusNotify);
             return Result.ok();
@@ -117,5 +108,50 @@ public class TsmCardstatusNotifyServiceImpl implements TsmCardstatusNotifyServic
             logger.error("应用通知失败 ，req={}, e", JSON.toJSONString(req), e);
             return Result.fail(null, "应用通知失败");
         }
+    }
+
+    /**
+     * 异步退款
+     */
+    @Async
+    void asyncRefund(TsmOrderInfo orderInfo, String ordertype) {
+        // 退款
+        List<TsmOrderInfo> orderInfos = tsmOrderInfoService.getRefund(orderInfo.getUserId(), orderInfo.getCardNo());
+        //待退款金额
+        Integer amountToBeRefund = orderInfo.getAmount();
+        for (TsmOrderInfo order : orderInfos) {
+            if (amountToBeRefund >0) {
+                Integer refundAmount = 0;
+                if (amountToBeRefund > order.getAmount()) {
+                    refundAmount = order.getAmount();
+                } else {
+                    refundAmount = amountToBeRefund;
+                }
+                Map paraMap = new HashMap();
+                paraMap.put("orderId",order.getServiceOrderId());
+                paraMap.put("amount",refundAmount);
+                Map retMap = cmpayService.refund(paraMap);
+                String retCode = retMap.get("returnCode").toString();
+                String retMsg = retMap.get("message").toString();
+                logger.info("退款返回数据retMap={}", JSON.toJSONString(retMap));
+                // 创建退款订单
+                TsmUserInfo userInfo = tsmUserInfoMapper.selectByPrimaryKey(orderInfo.getUserId());
+                TsmRefundOrder refundOrder = new TsmRefundOrder();
+                refundOrder.setServiceOrderId(order.getServiceOrderId());
+                refundOrder.setCityCode(orderInfo.getCityCode());
+                refundOrder.setAreaCode(orderInfo.getAreaCode());
+                refundOrder.setCardSpecies(orderInfo.getCardSpecies());
+                refundOrder.setServicetype(ordertype);
+                refundOrder.setMobile(userInfo.getMobile());
+                refundOrder.setAppId(order.getAppId());
+                refundOrder.setMerchantNo(order.getMerchantNo());
+                refundOrder.setRefundamount(refundAmount);
+                refundOrder.setCreatetime(new Date());
+                refundOrder.setRefundret(retCode.equals("000000") ? "00" : "01");
+                tsmRefundOrderMapper.insertSelective(refundOrder);
+                amountToBeRefund = amountToBeRefund - order.getAmount();
+            }
+        }
+
     }
 }
