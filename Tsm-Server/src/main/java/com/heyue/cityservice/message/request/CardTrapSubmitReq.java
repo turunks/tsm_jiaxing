@@ -24,7 +24,7 @@ public class CardTrapSubmitReq {
 
     private String ret_status; // 写卡状态
 
-    private String TAC; // 交易验证码
+    private String tac; // 交易验证码
 
     private String order_no;// 全局唯一。确定唯一一笔交易，业务幂等性判断
 
