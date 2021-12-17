@@ -115,6 +115,7 @@ public class TsmCardstatusNotifyServiceImpl implements TsmCardstatusNotifyServic
      */
     @Async
     void asyncRefund(TsmOrderInfo orderInfo, String ordertype) {
+        logger.info("开始异步退款， orderInfo={}", JSON.toJSONString(orderInfo));
         // 退款
         List<TsmOrderInfo> orderInfos = tsmOrderInfoService.getRefund(orderInfo.getUserId(), orderInfo.getCardNo());
         //待退款金额

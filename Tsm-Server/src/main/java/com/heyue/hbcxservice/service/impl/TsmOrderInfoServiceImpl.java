@@ -94,36 +94,46 @@ public class TsmOrderInfoServiceImpl implements TsmOrderInfoService {
             OrderApplyRes orderApplyRes = new OrderApplyRes();
             orderApplyRes.setServiceOrderId(orderId);
             orderApplyRes.setAmount(tsmOrderInfo.getAmount() + "");
+            // 开卡圈存订单 需要支付 退卡订单不需要支付
             if (tsmOrderInfo.getOrderType() == 1 || tsmOrderInfo.getOrderType() == 2) {
-                Map<String, Object> cmPayMap = new HashMap<>();
-                cmPayMap.put("orderId", orderId);
-                cmPayMap.put("mobile", tsmUserInfo.getMobile());
-                cmPayMap.put("amount", tsmOrderInfo.getAmount());
-                cmPayMap.put("clientIp", "81.69.189.227");
-
-                cmPayMap.put("orderDate", DateUtils.format(new Date(),DateUtils.FORMAT_DATE));
-                Map retMap = cmpayService.pay(cmPayMap);
-                logger.info("retMap={}", JSON.toJSONString(retMap));
-                String retCode = retMap.get("returnCode").toString();
-                String retMsg = retMap.get("message").toString();
-
-                if("000000".equals(retCode)){
-                    orderApplyRes.setPayparm(retMap.get("payparm").toString());
-                    TsmPayOrder tsmPayOrder = new TsmPayOrder();
-                    BeanUtils.copyProperties(tsmOrderInfo, tsmPayOrder);
-                    tsmPayOrder.setOrderType(orderApplyReq.getServiceType());
-                    tsmPayOrder.setPayAmount(tsmOrderInfo.getAmount());
+                if (tsmOrderInfo.getTopUpAmount() != tsmOrderInfo.getAmount() + tsmOrderInfo.getMarketAmount()) {
+                    logger.error("下单失败，充值金额不等于交易金额，orderApplyReq={}", JSON.toJSONString(orderApplyReq));
+                    return Result.fail(null, "充值金额错误");
+                }
+                TsmPayOrder tsmPayOrder = new TsmPayOrder();
+                // 全额权益金支付
+                if (tsmOrderInfo.getAmount() == 0 && tsmOrderInfo.getMarketAmount() > 0) {
                     tsmPayOrder.setPayRet("03");
-                    tsmPayOrder.setMobile(tsmUserInfo.getMobile());
-                    tsmPayOrder.setCreateTime(new Date());
-                    int payCount = tsmPayOrderMapper.insertSelective(tsmPayOrder);
-                    if (payCount != 1) {
-                        logger.error("下单失败，orderApplyReq={}", JSON.toJSONString(orderApplyReq));
-                        return Result.fail(null, "下单失败");
-                    }
                 } else {
-                    logger.error(retMsg + "retMap={}", JSON.toJSONString(retMap));
-                    return Result.fail(null, retMsg);
+                    // 需要现金支付，请求和包支付
+                    Map<String, Object> cmPayMap = new HashMap<>();
+                    cmPayMap.put("orderId", orderId);
+                    cmPayMap.put("mobile", tsmUserInfo.getMobile());
+                    cmPayMap.put("amount", tsmOrderInfo.getAmount());
+                    cmPayMap.put("clientIp", "81.69.189.227");
+                    cmPayMap.put("orderDate", DateUtils.format(new Date(),DateUtils.FORMAT_DATE));
+                    Map retMap = cmpayService.pay(cmPayMap);
+                    logger.info("retMap={}", JSON.toJSONString(retMap));
+                    String retCode = retMap.get("returnCode").toString();
+                    String retMsg = retMap.get("message").toString();
+                    if("000000".equals(retCode)){
+                        tsmOrderInfo.setPayParm(retMap.get("payparm").toString());
+                        orderApplyRes.setPayparm(retMap.get("payparm").toString());
+                    } else {
+                        logger.error("和包支付下单失败，retMap={}", JSON.toJSONString(retMap));
+//                        return Result.fail(null, retMsg);
+                    }
+                    tsmPayOrder.setPayRet("03");
+                }
+                BeanUtils.copyProperties(tsmOrderInfo, tsmPayOrder);
+                tsmPayOrder.setOrderType(orderApplyReq.getServiceType());
+                tsmPayOrder.setPayAmount(tsmOrderInfo.getAmount());
+                tsmPayOrder.setMobile(tsmUserInfo.getMobile());
+                tsmPayOrder.setCreateTime(new Date());
+                int payCount = tsmPayOrderMapper.insertSelective(tsmPayOrder);
+                if (payCount != 1) {
+                    logger.error("下单失败，orderApplyReq={}", JSON.toJSONString(orderApplyReq));
+                    return Result.fail(null, "下单失败");
                 }
             }
             int count = tsmOrderInfoMapper.insert(tsmOrderInfo);
