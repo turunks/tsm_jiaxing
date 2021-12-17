@@ -11,6 +11,8 @@ public interface TsmUserInfoMapper {
 
     TsmUserInfo selectByPrimaryKey(String userId);
 
+    TsmUserInfo selectByThirdUserId(String thirdUserId);
+
     int updateByPrimaryKeySelective(TsmUserInfo record);
 
     int updateByPrimaryKey(TsmUserInfo record);

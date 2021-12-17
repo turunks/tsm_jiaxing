@@ -27,6 +27,12 @@ public class TsmUserInfoServiceImpl implements TsmUserInfoService {
         String userId = null;
         int count = 0;
         try {
+            TsmUserInfo tsmUserInfo = tsmUserInfoMapper.selectByThirdUserId(userInfo.getThirdUserId());
+            if (tsmUserInfo != null) {
+                return Result.ok(TsmUserInfoRes.builder()
+                        .userId(tsmUserInfo.getUserId())
+                        .thirdUserId(tsmUserInfo.getThirdUserId()).build());
+            }
             userId = GenerateIdUtils.getUserId();
             userInfo.setUserId(userId);
             userInfo.setCreateTime(new Date());
