@@ -10,6 +10,7 @@ import cn.com.heyue.utils.Md5Encrypt;
 import cn.com.heyue.utils.OKHttpClientUtils;
 import com.alibaba.fastjson.JSON;
 import com.heyue.bean.Result;
+import com.heyue.constant.Constant;
 import com.heyue.hbcxservice.cmpay.CmpayService;
 import com.heyue.hbcxservice.message.request.CmpayNotifyReq;
 import com.heyue.hbcxservice.message.request.OrderApplyReq;
@@ -23,11 +24,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.net.Inet4Address;
 import java.net.URLDecoder;
 import java.util.Date;
 import java.util.HashMap;
@@ -38,18 +37,6 @@ import java.util.Map;
 public class TsmOrderInfoServiceImpl implements TsmOrderInfoService {
 
     protected final Logger logger = LoggerFactory.getLogger(this.getClass()); // 日志类
-
-    /**
-     * 支付商户秘钥
-     */
-    @Value("${CMPAY_MER_KEY}")
-    private static String CMPAY_MER_KEY;
-
-    /**
-     * 和包出行支付回调地址
-     */
-    @Value("${HBCX_PAY_NOTIFY_URL}")
-    private static String HBCX_PAY_NOTIFY_URL;
 
     @Autowired
     private TsmOrderInfoMapper tsmOrderInfoMapper;
@@ -119,7 +106,7 @@ public class TsmOrderInfoServiceImpl implements TsmOrderInfoService {
                         orderApplyRes.setPayparm(retMap.get("payparm").toString());
                     } else {
                         logger.error("和包支付下单失败，retMap={}", JSON.toJSONString(retMap));
-//                        return Result.fail(null, retMsg);
+                        return Result.fail(null, retMsg);
                     }
                     tsmPayOrder.setPayRet("03");
                 }
@@ -282,7 +269,7 @@ public class TsmOrderInfoServiceImpl implements TsmOrderInfoService {
             signBuf.append(StringUtils.isNotBlank(fee) ? fee : "");
             logger.info("{}签名源串:{}", sign, signBuf.toString());
 
-            String sign_succ = Md5Encrypt.md5_hisun(signBuf.toString(), CMPAY_MER_KEY);
+            String sign_succ = Md5Encrypt.md5_hisun(signBuf.toString(), Constant.CMPAY_MER_KEY);
             logger.info("生成的签名串：" + sign_succ);
             if (!org.apache.commons.lang.StringUtils.equals(sign_succ.toUpperCase(), hmac.toUpperCase())) {
                 logger.error("{}验签失败", sign);
@@ -301,7 +288,7 @@ public class TsmOrderInfoServiceImpl implements TsmOrderInfoService {
                 payOrder.setPayNotifyTime(new Date());
                 updatePayOrder(payOrder);
                 // 通知和包出行
-                OKHttpClientUtils.postJson(HBCX_PAY_NOTIFY_URL, sign, JSON.toJSONString(notify));
+                OKHttpClientUtils.postJson(Constant.HBCX_PAY_NOTIFY_URL, sign, JSON.toJSONString(notify));
             }
         } catch (Exception e) {
             logger.error("支付通知异常，notify={}, {}", JSON.toJSONString(notify), e);

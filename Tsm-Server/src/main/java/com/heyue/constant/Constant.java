@@ -54,6 +54,40 @@ public class Constant {
     public static String APP_ID;
     public static String MERCHANT_NO;
 
+
+    /**
+     * 支付地址
+     */
+    public static String HEBAO_PAY_URL;
+
+    /**
+     * 支付回调地址
+     */
+    public static String CMPAY_NOTIFY_URL;
+
+    /**
+     * 支付回调页面地址
+     */
+    public static String CMPAY_CALLBACK_URL;
+
+    /**
+     * 支付商户号
+     */
+    public static String CMPAY_MERNO;
+
+    /**
+     * 支付商户秘钥
+     */
+    public static String CMPAY_MER_KEY;
+
+    /**
+     * 和包出行支付回调地址
+     */
+    public static String HBCX_PAY_NOTIFY_URL;
+
+
+
+
     @Value("${SEL_TRADEINFO_URL}")
     public void setselTradeInfoUrl(String selTradeInfoUrl) {
         SEL_TRADEINFO_URL = selTradeInfoUrl;
@@ -212,6 +246,31 @@ public class Constant {
     @Value("${MERCHANT_NO}")
     public void setMerchantNo(String merchantNo) {
         MERCHANT_NO = merchantNo;
+    }
+
+    @Value("${HEBAO_PAY_URL}")
+    public void setHebaoPayUrl(String hebaoPayUrl) {
+        HEBAO_PAY_URL = hebaoPayUrl;
+    }
+    @Value("${CMPAY_NOTIFY_URL}")
+    public void setCmpayNotifyUrl(String cmpayNotifyUrl) {
+        CMPAY_NOTIFY_URL = cmpayNotifyUrl;
+    }
+    @Value("${CMPAY_CALLBACK_URL}")
+    public void setCmpayCallbackUrl(String cmpayCallbackUrl) {
+        CMPAY_CALLBACK_URL = cmpayCallbackUrl;
+    }
+    @Value("${CMPAY_MERNO}")
+    public void setCmpayMerno(String cmpayMerno) {
+        CMPAY_MERNO = cmpayMerno;
+    }
+    @Value("${CMPAY_MER_KEY}")
+    public void setCmpayMerKey(String cmpayMerKey) {
+        CMPAY_MER_KEY = cmpayMerKey;
+    }
+    @Value("${HBCX_PAY_NOTIFY_URL}")
+    public void setHbcxPayNotifyUrl(String hbcxPayNotifyUrl) {
+        HBCX_PAY_NOTIFY_URL = hbcxPayNotifyUrl;
     }
 
 }
