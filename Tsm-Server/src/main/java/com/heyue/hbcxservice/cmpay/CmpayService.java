@@ -25,42 +25,32 @@ public class CmpayService {
     /**
      * 支付地址
      */
-//    @Value("${HEBAO_PAY_URL}")
-//    private static String HEBAO_PAY_URL;
-    private static String HEBAO_PAY_URL = "http://211.138.236.210/ips/cmpayService";
+    @Value("${HEBAO_PAY_URL}")
+    private static String HEBAO_PAY_URL;
 
     /**
      * 支付回调地址
      */
-//    @Value("${CMPAY_NOTIFY_URL}")
-//    private static String CMPAY_NOTIFY_URL;
-    private static String CMPAY_NOTIFY_URL = "http://81.69.189.227:800/tsm/hb/order/cmpayNotify";
+    @Value("${CMPAY_NOTIFY_URL}")
+    private static String CMPAY_NOTIFY_URL;
 
     /**
      * 支付回调页面地址
      */
-//    @Value("${CMPAY_CALLBACK_URL}")
-//    private static String CMPAY_CALLBACK_URL;
-
-    private static String CMPAY_CALLBACK_URL = "http://47.110.8.223:9013/payServer/cmpayCallBack";
+    @Value("${CMPAY_CALLBACK_URL}")
+    private static String CMPAY_CALLBACK_URL;
 
     /**
      * 支付商户号
      */
-//    @Value("${CMPAY_MERNO}")
-//    private static String CMPAY_MERNO;
-
-    private static String CMPAY_MERNO = "888073117000022";
+    @Value("${CMPAY_MERNO}")
+    private static String CMPAY_MERNO;
 
     /**
      * 支付商户秘钥
      */
-//    @Value("${CMPAY_MER_KEY}")
-//    private static String CMPAY_MER_KEY;
-
-    private static String CMPAY_MER_KEY = "0Joap12UKHcmwfhNdkepasRpfN2DInI6hlRUWlSQK7zhbzb1d6P3gjmhDRmoCWBR";
-
-
+    @Value("${CMPAY_MER_KEY}")
+    private static String CMPAY_MER_KEY;
 
     /**
      * 和包支付

@@ -51,10 +51,3 @@ sysconfig:
   isDebug: true  #是否Debug
   swagger: true  #开启swagger
 
-# 和包支付参数
-HEBAO_PAY_URL: http://211.138.236.210/ips/cmpayService
-CMPAY_MERNO: 888073117000022
-CMPAY_MER_KEY: 0Joap12UKHcmwfhNdkepasRpfN2DInI6hlRUWlSQK7zhbzb1d6P3gjmhDRmoCWBR
-CMPAY_NOTIFY_URL:
-CMPAY_CALLBACK_URL:
-HBCX_PAY_NOTIFY_URL: http://211.138.236.210/ips/cmpayService

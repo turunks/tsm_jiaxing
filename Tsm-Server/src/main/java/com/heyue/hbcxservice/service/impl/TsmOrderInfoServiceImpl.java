@@ -43,16 +43,13 @@ public class TsmOrderInfoServiceImpl implements TsmOrderInfoService {
      * 支付商户秘钥
      */
     @Value("${CMPAY_MER_KEY}")
-    private static String CMPAY_MER_KEY = "0Joap12UKHcmwfhNdkepasRpfN2DInI6hlRUWlSQK7zhbzb1d6P3gjmhDRmoCWBR";
+    private static String CMPAY_MER_KEY;
 
     /**
      * 和包出行支付回调地址
      */
-//    @Value("${HBCX_PAY_NOTIFY_URL}")
-//    private static String HBCX_PAY_NOTIFY_URL;
-
-
-    private static String HBCX_PAY_NOTIFY_URL = "http://47.110.8.223:9013/payServer/hnTsm/notify/cmpayNotify";
+    @Value("${HBCX_PAY_NOTIFY_URL}")
+    private static String HBCX_PAY_NOTIFY_URL;
 
     @Autowired
     private TsmOrderInfoMapper tsmOrderInfoMapper;
@@ -103,6 +100,7 @@ public class TsmOrderInfoServiceImpl implements TsmOrderInfoService {
                 TsmPayOrder tsmPayOrder = new TsmPayOrder();
                 // 全额权益金支付
                 if (tsmOrderInfo.getAmount() == 0 && tsmOrderInfo.getMarketAmount() > 0) {
+                    logger.info("全额权益金支付，不需要调用和包支付");
                     tsmPayOrder.setPayRet("03");
                 } else {
                     // 需要现金支付，请求和包支付
