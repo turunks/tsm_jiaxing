@@ -185,6 +185,7 @@ public class CardServiceImpl implements CardService {
             // 解析用户卡号
             for (String data : body) {
                 // 数据域1
+                logger.info("读卡数据体:{}", data);
                 String card_no = data.substring(0, card_no_index); // 用户卡号1
                 // 105卡号去掉F左补0
                 card_no = "0" + card_no.substring(0, card_no.length() - 1);
@@ -202,7 +203,7 @@ public class CardServiceImpl implements CardService {
                 String city_code = data.substring(province_code_index, city_code_index);//城市代码
                 String contact_card_type = data.substring(city_code_index, contact_card_type_index);//互通卡种
                 String reserve = data.substring(contact_card_type_index, reserve_index);//预留
-                System.out.println(data);
+
 
                 // 解析数据域2
                 String domesticKey = formatSecretkey(data);
@@ -219,6 +220,8 @@ public class CardServiceImpl implements CardService {
                 tsmCardDetail.setAreaCode(area_code);//地区代码
                 tsmCardDetail.setCardSpecies(card_species);//卡种类型
                 tsmCardDetail.setCardNo(card_no);//卡片序列号
+                // 实际入库卡标识去掉多余的空格
+                card_sign = card_sign.replaceAll(" ", "");
                 tsmCardDetail.setCardSign(card_sign);//发卡方标识
                 tsmCardDetail.setCardAppVersion(card_app_version);//应用类型标识
                 tsmCardDetail.setAppSerialNo(app_serial_no);//应用序列号
@@ -231,6 +234,8 @@ public class CardServiceImpl implements CardService {
                 tsmCardDetail.setCityCode(city_code);//城市代码
                 tsmCardDetail.setContactCardType(contact_card_type);//互通卡种
                 tsmCardDetail.setCardType(card_type);//卡类型
+                // 预留只取49*2=96
+                reserve = reserve.substring(0, reserve.length() - 2);
                 tsmCardDetail.setReserve(reserve);//预留
                 tsmCardDetail.setInternationKey(domesticKey);//国际密钥 json
 //                tsmCardDetail.setDomesticKey("");//国密密钥

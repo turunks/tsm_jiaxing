@@ -154,6 +154,9 @@ public class HexStringUtils {
     }
 
     public static void main(String[] args) {
+        String card_sign = "01493350ff00";
+        String s = card_sign.substring(0,card_sign.length()-2);
+
         System.out.println(HexStringUtils.intToHexString(100, 8));
 //        System.out.println(HexStringUtils.intToHexString((int) DateUtils.getNowTimeStamp(), 8));
         System.out.println(Integer.parseInt("3104970710990000004",16));
