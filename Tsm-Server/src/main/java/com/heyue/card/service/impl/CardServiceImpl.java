@@ -108,11 +108,11 @@ public class CardServiceImpl implements CardService {
     //
     public String writeFile(CreatCardDataReq creatCardDataReq) throws Exception {
         String version = "01";// 版本号
-        Integer recordNum = creatCardDataReq.getRecordNum();// 2 长度
-        String applyCityCode = Constant.APPLY_CITY_CODE;// 2
-        String requestType = creatCardDataReq.getRequestType();// 1
-        String area_code = Constant.AREA_CODE;// 1
-        String card_species = Constant.CARD_SPECIES;// 2
+        Integer recordNum = creatCardDataReq.getRecordNum();// 长度
+        String applyCityCode = creatCardDataReq.getCity_code();// 卡申请城市代码
+        String requestType = creatCardDataReq.getRequestType();// 请求类型
+        String area_code = creatCardDataReq.getArea_code();// 地区
+        String card_species = creatCardDataReq.getCard_species();// 卡种类型
         StringBuffer sb = new StringBuffer();
         String HexrecordNum = HexStringUtils.intToHexString(recordNum, 4);
         sb.append(HexrecordNum);
