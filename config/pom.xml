@@ -56,6 +56,35 @@
 		</dependencies>
 	</dependencyManagement>
 
+	<profiles>
+		<profile>
+			<!-- 本地开发环境 -->
+			<id>dev</id>
+			<properties>
+				<!-- 这里的标签名会和resourse进行拼接 -->
+				<profiles.active>dev</profiles.active>
+			</properties>
+			<!-- 这里配置为默认选项 -->
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+		</profile>
+		<profile>
+			<!-- 测试环境 -->
+			<id>test</id>
+			<properties>
+				<profiles.active>test</profiles.active>
+			</properties>
+		</profile>
+		<profile>
+			<!-- 生产环境 -->
+			<id>prod</id>
+			<properties>
+				<profiles.active>prod</profiles.active>
+			</properties>
+		</profile>
+	</profiles>
+
 	<build>
 		<plugins>
 			<!--  <plugin>
@@ -103,7 +132,7 @@
 				<excludes>
 					<exclude>dev/*</exclude>
 					<exclude>test/*</exclude>
-					<exclude>pro/*</exclude>
+					<exclude>prod/*</exclude>
 				</excludes>
 			</resource>
 			<resource>

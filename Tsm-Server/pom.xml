@@ -186,8 +186,15 @@
             </activation>
         </profile>
         <profile>
+            <!-- 测试环境 -->
+            <id>test</id>
+            <properties>
+                <profiles.active>test</profiles.active>
+            </properties>
+        </profile>
+        <profile>
             <!-- 生产环境 -->
-            <id>pro</id>
+            <id>prod</id>
             <properties>
                 <profiles.active>prod</profiles.active>
             </properties>
@@ -241,7 +248,7 @@
                 <excludes>
                     <exclude>dev/*</exclude>
                     <exclude>test/*</exclude>
-                    <exclude>pro/*</exclude>
+                    <exclude>prod/*</exclude>
                 </excludes>
             </resource>
             <resource>

@@ -99,7 +99,7 @@
 				<excludes>
 					<exclude>dev/*</exclude>
 					<exclude>test/*</exclude>
-					<exclude>pro/*</exclude>
+					<exclude>prod/*</exclude>
 				</excludes>
 			</resource>
 			<resource>
