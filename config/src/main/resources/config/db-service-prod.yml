@@ -8,9 +8,9 @@ spring:
   datasource: #数据库配置
     type: com.alibaba.druid.pool.DruidDataSource
     driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://1.116.246.59:3306/tsm?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
-    username: tsm
-    password: fbR8XH2ZXm6RadRK
+    url: jdbc:mysql://172.17.16.5:3306/hntsm?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    username: cx_hntsm
+    password: Te$2mT38NxTen&20ne
 
 mybatis:
   typeAliasesPackage: cn.com.heyue.model
