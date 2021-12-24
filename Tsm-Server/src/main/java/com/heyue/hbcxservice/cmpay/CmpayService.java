@@ -43,7 +43,7 @@ public class CmpayService {
 
         Map<String, String> respMap = new HashMap<>();
         String characterSet = "00";
-        String clientIp = reqMap.get("clientIp") == null ? "" : reqMap.get("clientIp").toString();
+        String clientIp = Constant.SERVICE_IP;
         String requestId = "SIMQ" + System.currentTimeMillis();
         String merchantCert = "";
         String signType = "MD5";

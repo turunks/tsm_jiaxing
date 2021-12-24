@@ -95,7 +95,6 @@ public class TsmOrderInfoServiceImpl implements TsmOrderInfoService {
                     cmPayMap.put("orderId", orderId);
                     cmPayMap.put("mobile", tsmUserInfo.getMobile());
                     cmPayMap.put("amount", tsmOrderInfo.getAmount());
-                    cmPayMap.put("clientIp", "81.69.189.227");
                     cmPayMap.put("orderDate", DateUtils.format(new Date(),DateUtils.FORMAT_DATE));
                     Map retMap = cmpayService.pay(cmPayMap);
                     logger.info("retMap={}", JSON.toJSONString(retMap));

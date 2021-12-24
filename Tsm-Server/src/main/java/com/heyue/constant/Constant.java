@@ -85,8 +85,10 @@ public class Constant {
      */
     public static String HBCX_PAY_NOTIFY_URL;
 
-
-
+    /**
+     * ip
+     */
+    public static String SERVICE_IP;
 
     @Value("${SEL_TRADEINFO_URL}")
     public void setselTradeInfoUrl(String selTradeInfoUrl) {
@@ -271,6 +273,10 @@ public class Constant {
     @Value("${HBCX_PAY_NOTIFY_URL}")
     public void setHbcxPayNotifyUrl(String hbcxPayNotifyUrl) {
         HBCX_PAY_NOTIFY_URL = hbcxPayNotifyUrl;
+    }
+    @Value("${SERVICE_IP}")
+    public void setServiceIp(String serviceIp) {
+        SERVICE_IP = serviceIp;
     }
 
 }
