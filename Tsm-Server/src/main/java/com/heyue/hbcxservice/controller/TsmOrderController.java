@@ -8,6 +8,7 @@ import com.heyue.hbcxservice.message.request.OrderQueryReq;
 import com.heyue.hbcxservice.message.response.OrderApplyRes;
 import com.heyue.hbcxservice.message.response.PayOrderRes;
 import com.heyue.hbcxservice.service.TsmOrderInfoService;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +35,9 @@ public class TsmOrderController {
     @ResponseBody
     public Result<OrderApplyRes> orderApply(@RequestBody @Valid OrderApplyReq orderApplyReq) {
         logger.info("【下单支付】请求参数{}", JSON.toJSONString(orderApplyReq));
+        if (StringUtils.isNotBlank(orderApplyReq.getCardNo())) {
+            orderApplyReq.setCardNo("0" + orderApplyReq.getCardNo());
+        }
         Result<OrderApplyRes> result = tsmOrderInfoService.orderApply(orderApplyReq);
         logger.info("【下单支付】返回参数{}", JSON.toJSONString(result));
         return result;
