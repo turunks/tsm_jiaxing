@@ -169,6 +169,7 @@ public class CardServiceImpl implements CardService {
             String card_species = head.substring(12, 16);// 卡种类型
 
             // 3.解析数据体
+//            转换10进制
             int size = Integer.parseInt(card_num, 16);
             List<String> body = list.subList(2, 2 + size);
 
@@ -178,7 +179,7 @@ public class CardServiceImpl implements CardService {
             tsmCardMakefile.setFeedbackfileCreatetime(path);//
             tsmCardMakefile.setGettime(new Date());
             tsmCardMakefile.setFeedbackfileSerialno(serialno);
-            tsmCardMakefile.setFeedbackfileCardnum(Integer.valueOf(card_num));
+            tsmCardMakefile.setFeedbackfileCardnum(size);
             tsmCardMakefile.setMakefileSerialno(serialno);
             tsmCardMakefileMapper.updateBySerialno(tsmCardMakefile);
 

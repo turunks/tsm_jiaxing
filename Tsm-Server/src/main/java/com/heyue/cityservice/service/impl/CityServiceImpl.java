@@ -80,6 +80,7 @@ public class CityServiceImpl implements CityService {
             if (StringUtils.isEmpty(orderNo)) {
                 orderNo = getOrderNo(terminalCode, transactionNum);
             }
+            cardActiveReq.setMerchant_num(Constant.MERCHANT_NO);
             cardActiveReq.setTransaction_num(transactionNum);
             cardActiveReq.setOrder_no(orderNo);
             String signRet = RSAUtils.signWithRsa2(JSON.toJSONString(cardActiveReq).getBytes(StandardCharsets.UTF_8), Constant.TSM_LOC_PRI_KEY).replaceAll(System.getProperty("line.separator"), "");
@@ -154,6 +155,8 @@ public class CityServiceImpl implements CityService {
             String card_no = cardActiveSubmitReq.getCard_no();
             String terminalCode = cardActiveSubmitReq.getTerminal_code();
             String transactionNum = IdUtil.getTransactionNum();
+            String ret_status = cardActiveSubmitReq.getRet_status();
+
 
             // 获取订单号
             // 卡指令表获取订单号
@@ -164,6 +167,11 @@ public class CityServiceImpl implements CityService {
             cardActiveSubmitReq.setTransaction_datetime(transaction_datetime);
             cardActiveSubmitReq.setTransaction_num(transactionNum);
             cardActiveSubmitReq.setOrder_no(orderNo);
+            cardActiveSubmitReq.setMerchant_num(Constant.MERCHANT_NO);
+            // 写卡状态转16进制
+            ret_status = HexStringUtils.intToHexString(Integer.parseInt(ret_status), 2);
+            cardActiveSubmitReq.setRet_status(ret_status);
+
             String signRet = RSAUtils.signWithRsa2(JSON.toJSONString(cardActiveSubmitReq).getBytes(StandardCharsets.UTF_8), Constant.TSM_LOC_PRI_KEY).replaceAll(System.getProperty("line.separator"), "");
             TsmBaseReq<CardActiveSubmitReq> tsmBaseReq = new TsmBaseReq<>(cardActiveSubmitReq, signRet);
             String req = JSON.toJSONString(tsmBaseReq);
@@ -281,6 +289,7 @@ public class CityServiceImpl implements CityService {
         try {
             String card_no = cardTrapSubmitReq.getCard_no();
             String terminalCode = cardTrapSubmitReq.getTerminal_code();
+            // 写卡状态转16进制
             String ret_status = cardTrapSubmitReq.getRet_status();
             ret_status = HexStringUtils.intToHexString(Integer.parseInt(ret_status), 2);
             cardTrapSubmitReq.setRet_status(ret_status);
