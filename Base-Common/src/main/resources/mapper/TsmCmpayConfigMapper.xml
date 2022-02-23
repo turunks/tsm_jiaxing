@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.com.heyue.mapper.TsmCmpayConfigMapper">
+  <resultMap id="BaseResultMap" type="cn.com.heyue.entity.TsmCmpayConfig">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="apply_city_code" jdbcType="VARCHAR" property="applyCityCode" />
+    <result column="cmpay_url" jdbcType="VARCHAR" property="cmpayUrl" />
+    <result column="cmpay_mer_no" jdbcType="VARCHAR" property="cmpayMerNo" />
+    <result column="cmpay_mer_key" jdbcType="VARCHAR" property="cmpayMerKey" />
+    <result column="cmpay_notify_url" jdbcType="VARCHAR" property="cmpayNotifyUrl" />
+    <result column="cmpay_callback_url" jdbcType="VARCHAR" property="cmpayCallbackUrl" />
+    <result column="third_notify_url" jdbcType="VARCHAR" property="thirdNotifyUrl" />
+    <result column="service_ip" jdbcType="VARCHAR" property="serviceIp" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, apply_city_code, cmpay_url, cmpay_mer_no, cmpay_mer_key, cmpay_notify_url, cmpay_callback_url, 
+    third_notify_url, service_ip
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tsm_cmpay_config
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectByApplyCityCode" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from tsm_cmpay_config
+    where apply_city_code = #{applyCityCode}
+    limit 1
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from tsm_cmpay_config
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="cn.com.heyue.entity.TsmCmpayConfig" useGeneratedKeys="true">
+    insert into tsm_cmpay_config (apply_city_code, cmpay_url, cmpay_mer_no, 
+      cmpay_mer_key, cmpay_notify_url, cmpay_callback_url, 
+      third_notify_url, service_ip)
+    values (#{applyCityCode,jdbcType=VARCHAR}, #{cmpayUrl,jdbcType=VARCHAR}, #{cmpayMerNo,jdbcType=VARCHAR}, 
+      #{cmpayMerKey,jdbcType=VARCHAR}, #{cmpayNotifyUrl,jdbcType=VARCHAR}, #{cmpayCallbackUrl,jdbcType=VARCHAR}, 
+      #{thirdNotifyUrl,jdbcType=VARCHAR}, #{serviceIp,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="cn.com.heyue.entity.TsmCmpayConfig" useGeneratedKeys="true">
+    insert into tsm_cmpay_config
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="applyCityCode != null">
+        apply_city_code,
+      </if>
+      <if test="cmpayUrl != null">
+        cmpay_url,
+      </if>
+      <if test="cmpayMerNo != null">
+        cmpay_mer_no,
+      </if>
+      <if test="cmpayMerKey != null">
+        cmpay_mer_key,
+      </if>
+      <if test="cmpayNotifyUrl != null">
+        cmpay_notify_url,
+      </if>
+      <if test="cmpayCallbackUrl != null">
+        cmpay_callback_url,
+      </if>
+      <if test="thirdNotifyUrl != null">
+        third_notify_url,
+      </if>
+      <if test="serviceIp != null">
+        service_ip,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="applyCityCode != null">
+        #{applyCityCode,jdbcType=VARCHAR},
+      </if>
+      <if test="cmpayUrl != null">
+        #{cmpayUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="cmpayMerNo != null">
+        #{cmpayMerNo,jdbcType=VARCHAR},
+      </if>
+      <if test="cmpayMerKey != null">
+        #{cmpayMerKey,jdbcType=VARCHAR},
+      </if>
+      <if test="cmpayNotifyUrl != null">
+        #{cmpayNotifyUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="cmpayCallbackUrl != null">
+        #{cmpayCallbackUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="thirdNotifyUrl != null">
+        #{thirdNotifyUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="serviceIp != null">
+        #{serviceIp,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.com.heyue.entity.TsmCmpayConfig">
+    update tsm_cmpay_config
+    <set>
+      <if test="applyCityCode != null">
+        apply_city_code = #{applyCityCode,jdbcType=VARCHAR},
+      </if>
+      <if test="cmpayUrl != null">
+        cmpay_url = #{cmpayUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="cmpayMerNo != null">
+        cmpay_mer_no = #{cmpayMerNo,jdbcType=VARCHAR},
+      </if>
+      <if test="cmpayMerKey != null">
+        cmpay_mer_key = #{cmpayMerKey,jdbcType=VARCHAR},
+      </if>
+      <if test="cmpayNotifyUrl != null">
+        cmpay_notify_url = #{cmpayNotifyUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="cmpayCallbackUrl != null">
+        cmpay_callback_url = #{cmpayCallbackUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="thirdNotifyUrl != null">
+        third_notify_url = #{thirdNotifyUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="serviceIp != null">
+        service_ip = #{serviceIp,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.com.heyue.entity.TsmCmpayConfig">
+    update tsm_cmpay_config
+    set apply_city_code = #{applyCityCode,jdbcType=VARCHAR},
+      cmpay_url = #{cmpayUrl,jdbcType=VARCHAR},
+      cmpay_mer_no = #{cmpayMerNo,jdbcType=VARCHAR},
+      cmpay_mer_key = #{cmpayMerKey,jdbcType=VARCHAR},
+      cmpay_notify_url = #{cmpayNotifyUrl,jdbcType=VARCHAR},
+      cmpay_callback_url = #{cmpayCallbackUrl,jdbcType=VARCHAR},
+      third_notify_url = #{thirdNotifyUrl,jdbcType=VARCHAR},
+      service_ip = #{serviceIp,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

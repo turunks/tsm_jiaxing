@@ -5,6 +5,7 @@ import cn.com.heyue.entity.TsmPayOrder;
 import com.heyue.bean.Result;
 import com.heyue.hbcxservice.message.request.CmpayNotifyReq;
 import com.heyue.hbcxservice.message.request.OrderApplyReq;
+import com.heyue.hbcxservice.message.request.OrderReFundReq;
 import com.heyue.hbcxservice.message.response.OrderApplyRes;
 import com.heyue.hbcxservice.message.response.PayOrderRes;
 import org.apache.ibatis.annotations.Param;
@@ -20,6 +21,13 @@ public interface TsmOrderInfoService {
      * @return
      */
     Result<OrderApplyRes> orderApply(OrderApplyReq orderApplyReq);
+
+    /**
+     * 订单退款
+     * @param orderReFundReq
+     * @return
+     */
+    Result<String> orderRefund(OrderReFundReq orderReFundReq);
 
     /**
      * 查询订单

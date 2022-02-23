@@ -53,7 +53,7 @@
     select
     <include refid="Base_Column_List" />
     from `tsm_card_detail`
-    where city_code = #{cityCode}
+    where apply_city_code = #{cityCode}
     and area_code  = #{areaCode}
     and card_species  = #{cardSpecies}
     and card_status = 1
