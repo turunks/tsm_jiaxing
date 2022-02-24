@@ -5,6 +5,7 @@ import com.heyue.bean.Result;
 import com.heyue.hbcxservice.message.request.CmpayNotifyReq;
 import com.heyue.hbcxservice.message.request.OrderApplyReq;
 import com.heyue.hbcxservice.message.request.OrderQueryReq;
+import com.heyue.hbcxservice.message.request.OrderReFundReq;
 import com.heyue.hbcxservice.message.response.OrderApplyRes;
 import com.heyue.hbcxservice.message.response.PayOrderRes;
 import com.heyue.hbcxservice.service.TsmOrderInfoService;
@@ -65,6 +66,20 @@ public class TsmOrderController {
         logger.info("【支付订单查询】请求参数{}", JSON.toJSONString(orderQueryReq));
         Result<PayOrderRes> result = tsmOrderInfoService.getPayOrder(orderQueryReq.getServiceOrderId());
         logger.info("【支付订单查询】返回参数{}", JSON.toJSONString(result));
+        return result;
+    }
+
+    /**
+     * 订单退款申请
+     *
+     * @param orderQueryReq
+     * @return
+     */
+    @RequestMapping("/orderRefund")
+    public Result<String> orderRefund(@RequestBody OrderReFundReq orderQueryReq) {
+        logger.info("【订单退款申请】请求参数{}", JSON.toJSONString(orderQueryReq));
+        Result<String> result = tsmOrderInfoService.orderRefund(orderQueryReq);
+        logger.info("【订单退款申请】返回参数{}", JSON.toJSONString(result));
         return result;
     }
 

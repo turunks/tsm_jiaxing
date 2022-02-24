@@ -1,11 +1,14 @@
 package com.heyue.hbcxservice.cmpay;
 
+import cn.com.heyue.entity.TsmCmpayConfig;
+import cn.com.heyue.mapper.TsmCmpayConfigMapper;
 import cn.com.heyue.utils.DateUtils;
 import cn.com.heyue.utils.Md5Encrypt;
 import com.heyue.constant.Constant;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
@@ -21,6 +24,13 @@ import java.util.*;
 public class CmpayService {
     private static Logger logger = LoggerFactory.getLogger("CmpayService"); // 日志类
 
+    @Autowired
+    private TsmCmpayConfigMapper tsmCmpayConfigMapper;
+
+    public TsmCmpayConfig getPayConfig(String applyCityCode) {
+        return tsmCmpayConfigMapper.selectByApplyCityCode(applyCityCode);
+    }
+
 
     /**
      * 和包支付
@@ -28,22 +38,27 @@ public class CmpayService {
      * @param reqMap 订单业务参数
      * @return
      */
-    public static Map<String, String> pay(Map<String, Object> reqMap) throws UnsupportedEncodingException {
+    public Map<String, String> pay(Map<String, Object> reqMap) throws UnsupportedEncodingException {
         logger.info("【调用和包支付接口】");
-        //logger.info("【商户编号及密钥{},{}】", mercnum, merckey);
-        String mercnum = Constant.CMPAY_MERNO;
-
-        logger.info("mercnum={}", mercnum);
-        String merckey = Constant.CMPAY_MER_KEY;
-        logger.info("merckey={}", merckey);
-        String notifyUrl = Constant.CMPAY_NOTIFY_URL;
-        logger.info("notifyUrl={}", notifyUrl);
-        String callbackUrl = Constant.CMPAY_CALLBACK_URL;
-        logger.info("callbackUrl={}", callbackUrl);
-
         Map<String, String> respMap = new HashMap<>();
+        String applyCityCode = reqMap.get("applyCityCode").toString();
+        TsmCmpayConfig tsmCmpayConfig = getPayConfig(applyCityCode);
+        if (tsmCmpayConfig == null) {
+            logger.info("未找到对应支付参数信息，applyCityCode={}", applyCityCode);
+            respMap.put("returnCode", "999999");
+            respMap.put("message", "和包支付下单失败");
+            return respMap;
+        }
+        String mercnum = tsmCmpayConfig.getCmpayMerNo();
+        logger.info("mercnum={}", mercnum);
+        String merckey = tsmCmpayConfig.getCmpayMerKey();
+        logger.info("merckey={}", merckey);
+        String notifyUrl = tsmCmpayConfig.getCmpayNotifyUrl();
+        logger.info("notifyUrl={}", notifyUrl);
+        String callbackUrl = tsmCmpayConfig.getCmpayCallbackUrl();
+        logger.info("callbackUrl={}", callbackUrl);
         String characterSet = "00";
-        String clientIp = Constant.SERVICE_IP;
+        String clientIp = tsmCmpayConfig.getServiceIp();
         String requestId = "SIMQ" + System.currentTimeMillis();
         String merchantCert = "";
         String signType = "MD5";
@@ -149,7 +164,7 @@ public class CmpayService {
             /*HiCASignUtil2 rsa = new HiCASignUtil2(merckey,"");
             String sign =  rsa.sign(signBuf.toString());*/
             reqData.put("hmac", sign);
-            responseText = sendPost(Constant.HEBAO_PAY_URL, reqData, "GBK");
+            responseText = sendPost(tsmCmpayConfig.getCmpayUrl(), reqData, "GBK");
         } catch (Exception e) {
             logger.error("{}", e);
             respMap.put("returnCode", "999999");
@@ -234,11 +249,19 @@ public class CmpayService {
      * @param reqMap
      * @return
      */
-    public static Map<String, String> query(Map<String, Object> reqMap) {
+    public Map<String, String> query(Map<String, Object> reqMap) {
         logger.info("【调用和包订单查询接口】");
-        String mercnum =  Constant.CMPAY_MERNO;
-        String merckey =  Constant.CMPAY_MER_KEY;
         Map<String, String> respMap = new HashMap<>();
+        String applyCityCode = reqMap.get("applyCityCode").toString();
+        TsmCmpayConfig tsmCmpayConfig = getPayConfig(applyCityCode);
+        if (tsmCmpayConfig == null) {
+            logger.info("未找到对应支付参数信息，applyCityCode={}", applyCityCode);
+            respMap.put("returnCode", "999999");
+            respMap.put("message", "查询失败");
+            return respMap;
+        }
+        String mercnum =  tsmCmpayConfig.getCmpayMerNo();
+        String merckey =  tsmCmpayConfig.getCmpayMerKey();
         logger.info("【商户编号及密钥{},{}】", mercnum, merckey);
         String requestId = "SIMQ" + System.currentTimeMillis();
         String signType = "MD5";
@@ -272,7 +295,7 @@ public class CmpayService {
             /*HiCASignUtil2 rsa = new HiCASignUtil2(merckey,"");
             String sign =  rsa.sign(signBuf.toString());*/
             reqData.put("hmac", sign);
-            responseText = sendPost(Constant.HEBAO_PAY_URL, reqData, "GBK");
+            responseText = sendPost(tsmCmpayConfig.getCmpayUrl(), reqData, "GBK");
         } catch (Exception e) {
             logger.error("{}", e);
             respMap.put("returnCode", "999999");
@@ -308,11 +331,19 @@ public class CmpayService {
      * @param reqMap
      * @return
      */
-    public static Map<String, String> refund(Map<String, Object> reqMap) {
+    public Map<String, String> refund(Map<String, Object> reqMap) {
         logger.info("【线上：调用和包退款接口】");
-        String mercnum = Constant.CMPAY_MERNO;
-        String merckey =  Constant.CMPAY_MER_KEY;
         Map<String, String> respMap = new HashMap<>();
+        String applyCityCode = reqMap.get("applyCityCode").toString();
+        TsmCmpayConfig tsmCmpayConfig = getPayConfig(applyCityCode);
+        if (tsmCmpayConfig == null) {
+            logger.info("未找到对应支付参数信息，applyCityCode={}", applyCityCode);
+            respMap.put("returnCode", "999999");
+            respMap.put("message", "未找到对应支付参数信息");
+            return respMap;
+        }
+        String mercnum = tsmCmpayConfig.getCmpayMerNo();
+        String merckey = tsmCmpayConfig.getCmpayMerKey();
         String requestId = "SIMQ" + System.currentTimeMillis();
         String merchantCert = "";
         String signType = "MD5";
@@ -351,7 +382,7 @@ public class CmpayService {
             String sign =  rsa.sign(signBuf.toString());*/
 
             reqData.put("hmac", sign);
-            responseText = sendPost(Constant.HEBAO_PAY_URL, reqData, "GBK");
+            responseText = sendPost(tsmCmpayConfig.getCmpayUrl(), reqData, "GBK");
         } catch (Exception e) {
             logger.error("{}", e);
             respMap.put("returnCode", "999999");

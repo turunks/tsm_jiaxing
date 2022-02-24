@@ -17,9 +17,9 @@ public interface TsmTerminalMpper {
     int updateByPrimaryKey(TsmTerminal record);
 
     /**
-     * 根据城市代码查终端机
-     * @param cityCode
+     * 根据申请城市代码查终端机
+     * @param applyCityCode
      * @return
      */
-    TsmTerminal selectByCityCode(@Param("cityCode") String cityCode);
+    TsmTerminal selectByCityCode(@Param("applyCityCode") String applyCityCode);
 }

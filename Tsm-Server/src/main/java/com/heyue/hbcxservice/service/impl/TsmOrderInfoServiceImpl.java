@@ -1,19 +1,18 @@
 package com.heyue.hbcxservice.service.impl;
 
-import cn.com.heyue.entity.TsmOrderInfo;
-import cn.com.heyue.entity.TsmPayOrder;
-import cn.com.heyue.entity.TsmUserInfo;
+import cn.com.heyue.entity.*;
 import cn.com.heyue.mapper.TsmOrderInfoMapper;
 import cn.com.heyue.mapper.TsmPayOrderMapper;
+import cn.com.heyue.mapper.TsmRefundOrderMapper;
 import cn.com.heyue.utils.DateUtils;
 import cn.com.heyue.utils.Md5Encrypt;
 import cn.com.heyue.utils.OKHttpClientUtils;
 import com.alibaba.fastjson.JSON;
 import com.heyue.bean.Result;
-import com.heyue.constant.Constant;
 import com.heyue.hbcxservice.cmpay.CmpayService;
 import com.heyue.hbcxservice.message.request.CmpayNotifyReq;
 import com.heyue.hbcxservice.message.request.OrderApplyReq;
+import com.heyue.hbcxservice.message.request.OrderReFundReq;
 import com.heyue.hbcxservice.message.response.OrderApplyRes;
 import com.heyue.hbcxservice.message.response.PayOrderRes;
 import com.heyue.hbcxservice.service.TsmOrderInfoService;
@@ -50,9 +49,12 @@ public class TsmOrderInfoServiceImpl implements TsmOrderInfoService {
     @Autowired
     private TsmUserInfoService tsmUserInfoService;
 
+    @Autowired
+    private TsmRefundOrderMapper tsmRefundOrderMapper;
+
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Result<OrderApplyRes> orderApply( OrderApplyReq orderApplyReq) {
+    public Result<OrderApplyRes> orderApply(OrderApplyReq orderApplyReq) {
         try {
             TsmOrderInfo tsmOrderInfo = new TsmOrderInfo();
             BeanUtils.copyProperties(orderApplyReq, tsmOrderInfo);
@@ -95,12 +97,13 @@ public class TsmOrderInfoServiceImpl implements TsmOrderInfoService {
                     cmPayMap.put("orderId", orderId);
                     cmPayMap.put("mobile", tsmUserInfo.getMobile());
                     cmPayMap.put("amount", tsmOrderInfo.getAmount());
-                    cmPayMap.put("orderDate", DateUtils.format(new Date(),DateUtils.FORMAT_DATE));
+                    cmPayMap.put("orderDate", DateUtils.format(new Date(), DateUtils.FORMAT_DATE));
+                    cmPayMap.put("applyCityCode", tsmOrderInfo.getCityCode());
                     Map retMap = cmpayService.pay(cmPayMap);
                     logger.info("retMap={}", JSON.toJSONString(retMap));
                     String retCode = retMap.get("returnCode").toString();
                     String retMsg = retMap.get("message").toString();
-                    if("000000".equals(retCode)){
+                    if ("000000".equals(retCode)) {
                         tsmOrderInfo.setPayParm(retMap.get("payparm").toString());
                         orderApplyRes.setPayparm(retMap.get("payparm").toString());
                     } else {
@@ -134,6 +137,39 @@ public class TsmOrderInfoServiceImpl implements TsmOrderInfoService {
     }
 
     @Override
+    public Result<String> orderRefund(OrderReFundReq req) {
+        TsmOrderInfo orderInfo = getOrder(req.getServiceOrderId());
+        Map paraMap = new HashMap();
+        paraMap.put("orderId",req.getServiceOrderId());
+        paraMap.put("amount",req.getAmount());
+        paraMap.put("applyCityCode", orderInfo.getCityCode());
+        Map retMap = cmpayService.refund(paraMap);
+        String retCode = retMap.get("returnCode").toString();
+        String retMsg = retMap.get("message").toString();
+        logger.info("退款返回数据retMap={}", JSON.toJSONString(retMap));
+        // 创建退款订单
+        TsmUserInfo userInfo = tsmUserInfoService.getUserInfo(orderInfo.getUserId());
+        TsmRefundOrder refundOrder = new TsmRefundOrder();
+        refundOrder.setServiceOrderId(orderInfo.getServiceOrderId());
+        refundOrder.setCityCode(orderInfo.getCityCode());
+        refundOrder.setAreaCode(orderInfo.getAreaCode());
+        refundOrder.setCardSpecies(orderInfo.getCardSpecies());
+        refundOrder.setServicetype("05");
+        refundOrder.setMobile(userInfo.getMobile());
+        refundOrder.setAppId(orderInfo.getAppId());
+        refundOrder.setMerchantNo(orderInfo.getMerchantNo());
+        refundOrder.setRefundamount(req.getAmount());
+        refundOrder.setCreatetime(new Date());
+        refundOrder.setRefundret(retCode.equals("000000") ? "00" : "01");
+        tsmRefundOrderMapper.insertSelective(refundOrder);
+        if (retCode.equals("000000")) {
+            return Result.ok();
+        } else {
+            return Result.fail(null, retMsg);
+        }
+    }
+
+    @Override
     public TsmOrderInfo getOrder(String serviceOrderId) {
         return tsmOrderInfoMapper.selectByPrimaryKey(serviceOrderId);
     }
@@ -156,7 +192,8 @@ public class TsmOrderInfoServiceImpl implements TsmOrderInfoService {
             if (tsmPayOrder.getPayRet().equals("03")) {
                 Map<String, Object> paraMap = new HashMap<>();
                 paraMap.put("orderId", serviceOrderId);
-                Map retMap = CmpayService.query(paraMap);
+                paraMap.put("applyCityCode", tsmOrderInfo.getCityCode());
+                Map retMap = cmpayService.query(paraMap);
                 String retCode = retMap.get("returnCode").toString();
                 String retMsg = retMap.get("message").toString();
                 // 查到支付成功，更新支付状态
@@ -268,7 +305,8 @@ public class TsmOrderInfoServiceImpl implements TsmOrderInfoService {
             signBuf.append(StringUtils.isNotBlank(fee) ? fee : "");
             logger.info("{}签名源串:{}", sign, signBuf.toString());
 
-            String sign_succ = Md5Encrypt.md5_hisun(signBuf.toString(), Constant.CMPAY_MER_KEY);
+            TsmCmpayConfig tsmCmpayConfig = cmpayService.getPayConfig(order.getCityCode());
+            String sign_succ = Md5Encrypt.md5_hisun(signBuf.toString(), tsmCmpayConfig.getCmpayMerKey());
             logger.info("生成的签名串：" + sign_succ);
             if (!org.apache.commons.lang.StringUtils.equals(sign_succ.toUpperCase(), hmac.toUpperCase())) {
                 logger.error("{}验签失败", sign);
@@ -287,7 +325,7 @@ public class TsmOrderInfoServiceImpl implements TsmOrderInfoService {
                 payOrder.setPayNotifyTime(new Date());
                 updatePayOrder(payOrder);
                 // 通知和包出行
-                OKHttpClientUtils.postJson(Constant.HBCX_PAY_NOTIFY_URL, sign, JSON.toJSONString(notify));
+                OKHttpClientUtils.postJson(tsmCmpayConfig.getThirdNotifyUrl(), sign, JSON.toJSONString(notify));
             }
         } catch (Exception e) {
             logger.error("支付通知异常，notify={}, {}", JSON.toJSONString(notify), e);
@@ -297,13 +335,13 @@ public class TsmOrderInfoServiceImpl implements TsmOrderInfoService {
 
     private Integer getOrderType(String payChannel) {
         switch (payChannel) {
-            case "01" :
+            case "01":
                 return 1;
-            case "02" :
+            case "02":
                 return 2;
-            case "05" :
+            case "05":
                 return 3;
-            case "06" :
+            case "06":
                 return 4;
             default:
                 return 0;

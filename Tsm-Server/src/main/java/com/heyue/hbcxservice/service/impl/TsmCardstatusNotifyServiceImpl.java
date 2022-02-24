@@ -131,6 +131,7 @@ public class TsmCardstatusNotifyServiceImpl implements TsmCardstatusNotifyServic
                 Map paraMap = new HashMap();
                 paraMap.put("orderId",order.getServiceOrderId());
                 paraMap.put("amount",refundAmount);
+                paraMap.put("applyCityCode", order.getCityCode());
                 Map retMap = cmpayService.refund(paraMap);
                 String retCode = retMap.get("returnCode").toString();
                 String retMsg = retMap.get("message").toString();
