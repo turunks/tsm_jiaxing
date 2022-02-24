@@ -358,6 +358,12 @@ public class CityServiceImpl implements CityService {
     public TsmBaseRes cardConsumRecord(CardConsumRecordReq cardConsumRecordReq) {
         // 向城市服务发送卡消费记录查询
         try {
+            String terminalCode = "6a787a640001";
+            String transactionNum = IdUtil.getTransactionNum();
+            cardConsumRecordReq.setIssue_inst("31048803");
+            cardConsumRecordReq.setTerminal_code(terminalCode);
+            cardConsumRecordReq.setTransaction_num(transactionNum);
+
             String signRet = RSAUtils.signWithRsa2(JSON.toJSONString(cardConsumRecordReq).getBytes(StandardCharsets.UTF_8), Constant.TSM_LOC_PRI_KEY).replaceAll(System.getProperty("line.separator"), "");
             TsmBaseReq<CardConsumRecordReq> tsmBaseReq = new TsmBaseReq<>(cardConsumRecordReq, signRet);
             String req = JSON.toJSONString(tsmBaseReq);
