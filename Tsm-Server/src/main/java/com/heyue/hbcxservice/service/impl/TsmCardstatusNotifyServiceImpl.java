@@ -68,7 +68,7 @@ public class TsmCardstatusNotifyServiceImpl implements TsmCardstatusNotifyServic
                     return Result.fail(null, "暂无开卡信息");
                 }
                 // 储存发卡信息
-                TsmTerminal tsmTerminal = tsmTerminalMpper.selectByCityCode(cardDetail.getCityCode());
+                TsmTerminal tsmTerminal = tsmTerminalMpper.selectByCityCode(cardDetail.getApplyCityCode());
                 TsmOpencardInfo tsmOpencardInfo = new TsmOpencardInfo();
                 tsmOpencardInfo.setMerchantNo(req.getMerchantNo());
                 tsmOpencardInfo.setCityCode(cardDetail.getCityCode());
