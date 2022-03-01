@@ -3,10 +3,7 @@ package com.heyue.cityservice.service;
 
 import com.heyue.bean.TsmBaseRes;
 import com.heyue.cityservice.message.request.*;
-import com.heyue.cityservice.message.response.CardActiveRes;
-import com.heyue.cityservice.message.response.CardActiveSubmitRes;
-import com.heyue.cityservice.message.response.CardTrapRes;
-import com.heyue.cityservice.message.response.CardTrapSubmitRes;
+import com.heyue.cityservice.message.response.*;
 
 /**
  * 城市服务
@@ -33,4 +30,7 @@ public interface CityService {
 
     // 7.卡消费记录查询
     TsmBaseRes cardConsumRecord(CardConsumRecordReq cardConsumRecordReq);
+
+    // 8.退卡通知
+    CardReturnRes cardReturn(CardReturnReq cardReturnReq);
 }

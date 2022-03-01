@@ -328,15 +328,16 @@ public class FtpUtils
     public static void main(String[] args) throws Exception
     {
         FtpUtils ftpUtils = new FtpUtils();
-        ftpUtils.setServer("110.42.198.165");
+        ftpUtils.setServer("36.134.58.59");
         ftpUtils.setPort("21");
         ftpUtils.setUser("tsm");
         ftpUtils.setPassword("~S;/mUh3Wz._j2");
         ftpUtils.setTimeout("30000");
         try {
-            ftpUtils.connectServer("/data/tsm_cardfile/createcard_loacl_catalog/");
+            ftpUtils.connectServer("/data");
             System.out.println("登录成功。。。");
-//            ftpUtils.upload("D:/bak/upload.txt", "upload.txt");// 本地路径,ftp路径
+            ftpUtils.upload("D:/bak/test.xls", "test.xls");// 本地路径,ftp路径
+            System.out.println("上传成功。。。");
 //            File f = new File("D:/bak", "tsmFTP用户.txt");
 //            ftpUtils.download("tsmFTP用户.txt", f.getPath());
         } catch (IOException e) {

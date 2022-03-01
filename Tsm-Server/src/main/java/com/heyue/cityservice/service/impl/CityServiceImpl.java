@@ -74,9 +74,9 @@ public class CityServiceImpl implements CityService {
             String terminalCode = cardActiveReq.getTerminal_code();
             String transactionNum = IdUtil.getTransactionNum();
             // 卡指令表获取订单号,无则创建
-            String cardOptype="01";
-            String issubmit="00"; // 查询未提交的激活订单号
-            String orderNo = selOrderNo(card_no,cardOptype,issubmit);
+            String cardOptype = "01";
+            String issubmit = "00"; // 查询未提交的激活订单号
+            String orderNo = selOrderNo(card_no, cardOptype, issubmit);
             if (StringUtils.isEmpty(orderNo)) {
                 orderNo = getOrderNo(terminalCode, transactionNum);
             }
@@ -160,9 +160,9 @@ public class CityServiceImpl implements CityService {
 
             // 获取订单号
             // 卡指令表获取订单号
-            String cardOptype="01";
-            String issubmit="00"; // 查询未提交的激活订单号
-            String orderNo = selOrderNo(card_no,cardOptype,issubmit);
+            String cardOptype = "01";
+            String issubmit = "00"; // 查询未提交的激活订单号
+            String orderNo = selOrderNo(card_no, cardOptype, issubmit);
             String transaction_datetime = sdf.format(new Date());
             cardActiveSubmitReq.setTransaction_datetime(transaction_datetime);
             cardActiveSubmitReq.setTransaction_num(transactionNum);
@@ -296,9 +296,9 @@ public class CityServiceImpl implements CityService {
             String transactionNum = IdUtil.getTransactionNum();
             String transaction_datetime = sdf.format(new Date());
             cardTrapSubmitReq.setTransaction_datetime(transaction_datetime);
-            String cardOptype="02";
-            String issubmit="00"; // 查询未提交的圈存订单号
-            String orderNo = selOrderNo(card_no,cardOptype,issubmit);
+            String cardOptype = "02";
+            String issubmit = "00"; // 查询未提交的圈存订单号
+            String orderNo = selOrderNo(card_no, cardOptype, issubmit);
             cardTrapSubmitReq.setTransaction_num(transactionNum);
             cardTrapSubmitReq.setOrder_no(orderNo);
             cardTrapSubmitReq.setMerchant_num(Constant.MERCHANT_NO);
@@ -384,6 +384,39 @@ public class CityServiceImpl implements CityService {
         }
     }
 
+    // 8.退卡通知
+    @Override
+    public CardReturnRes cardReturn(CardReturnReq cardReturnReq) {
+        try {
+            String transactionNum = IdUtil.getTransactionNum();
+            String transaction_datetime = sdf.format(new Date());
+            String terminalCode = cardReturnReq.getTerminal_code();
+
+            String orderNo = getOrderNo(terminalCode, transactionNum);
+            cardReturnReq.setTransaction_num(transactionNum);
+            cardReturnReq.setTransaction_datetime(transaction_datetime);
+            cardReturnReq.setMerchant_num(Constant.MERCHANT_NO);
+            cardReturnReq.setTransaction_num(orderNo);
+
+            String signRet = RSAUtils.signWithRsa2(JSON.toJSONString(cardReturnReq).getBytes(StandardCharsets.UTF_8), Constant.TSM_LOC_PRI_KEY).replaceAll(System.getProperty("line.separator"), "");
+            TsmBaseReq<CardReturnReq> tsmBaseReq = new TsmBaseReq<>(cardReturnReq, signRet);
+            String req = JSON.toJSONString(tsmBaseReq);
+            logger.info("发送退卡通知报文:{}", req);
+            String res = HttpRequestUtils.doPost(Constant.CARD_RETURN_URL, req);
+            logger.info("返回退卡通知报文:{}", res);
+            if (StringUtils.isBlank(res)) {
+                logger.warn("{}返回退卡通知为空");
+                return null;
+            }
+            TsmBaseRes tsmBaseRes = JSON.parseObject(res, TsmBaseRes.class);
+            CardReturnRes cardReturnRes = JSON.parseObject(JSON.parseObject(res).getString("data"), CardReturnRes.class);
+            return cardReturnRes;
+        } catch (Exception e) {
+            logger.error("返回退卡通知异常:{}", e);
+            return null;
+        }
+    }
+
     // 生成唯一的order_no
 
     /**
@@ -398,8 +431,8 @@ public class CityServiceImpl implements CityService {
         return orderNo;
     }
 
-    private String selOrderNo(String cardNo,String cardOptype,String issubmit) {
-        List<TsmCardapduApply> tsmCardapduApplies = tsmCardapduApplyMapper.selByCradNo(cardNo,cardOptype,issubmit);
+    private String selOrderNo(String cardNo, String cardOptype, String issubmit) {
+        List<TsmCardapduApply> tsmCardapduApplies = tsmCardapduApplyMapper.selByCradNo(cardNo, cardOptype, issubmit);
         String orderNo = "";
         if (CollectionUtil.isNotEmpty(tsmCardapduApplies)) {
             TsmCardapduApply tsmCardapduApply = tsmCardapduApplies.get(0);
