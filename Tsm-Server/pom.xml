@@ -180,10 +180,6 @@
                 <!-- 这里的标签名会和resourse进行拼接 -->
                 <profiles.active>dev</profiles.active>
             </properties>
-            <!-- 这里配置为默认选项 -->
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
         </profile>
         <profile>
             <!-- 测试环境 -->
@@ -198,6 +194,10 @@
             <properties>
                 <profiles.active>prod</profiles.active>
             </properties>
+            <!-- 这里配置为默认选项 -->
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
         </profile>
     </profiles>
 
