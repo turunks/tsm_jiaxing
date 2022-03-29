@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.com.heyue.mapper.TsmCardConsumedetailMapper">
+  <resultMap id="BaseResultMap" type="cn.com.heyue.entity.TsmCardConsumedetail">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="consumecadfile_id" jdbcType="BIGINT" property="consumecadfileId" />
+    <result column="local_serial_number" jdbcType="VARCHAR" property="localSerialNumber" />
+    <result column="unit_code" jdbcType="VARCHAR" property="unitCode" />
+    <result column="city_code_transaction" jdbcType="VARCHAR" property="cityCodeTransaction" />
+    <result column="terminal_no" jdbcType="VARCHAR" property="terminalNo" />
+    <result column="card_no" jdbcType="VARCHAR" property="cardNo" />
+    <result column="card_consume_counter" jdbcType="VARCHAR" property="cardConsumeCounter" />
+    <result column="beforeconsume_cardbalance" jdbcType="VARCHAR" property="beforeconsumeCardbalance" />
+    <result column="transaction_amout" jdbcType="VARCHAR" property="transactionAmout" />
+    <result column="transaction_date" jdbcType="VARCHAR" property="transactionDate" />
+    <result column="transaction_time" jdbcType="VARCHAR" property="transactionTime" />
+    <result column="company_no" jdbcType="VARCHAR" property="companyNo" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, consumecadfile_id, local_serial_number, unit_code, city_code_transaction, terminal_no, 
+    card_no, card_consume_counter, beforeconsume_cardbalance, transaction_amout, transaction_date, 
+    transaction_time, company_no
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tsm_card_consumedetail
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from tsm_card_consumedetail
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="cn.com.heyue.entity.TsmCardConsumedetail" useGeneratedKeys="true">
+    insert into tsm_card_consumedetail (consumecadfile_id, local_serial_number, 
+      unit_code, city_code_transaction, terminal_no, 
+      card_no, card_consume_counter, beforeconsume_cardbalance, 
+      transaction_amout, transaction_date, transaction_time, 
+      company_no)
+    values (#{consumecadfileId,jdbcType=BIGINT}, #{localSerialNumber,jdbcType=VARCHAR}, 
+      #{unitCode,jdbcType=VARCHAR}, #{cityCodeTransaction,jdbcType=VARCHAR}, #{terminalNo,jdbcType=VARCHAR}, 
+      #{cardNo,jdbcType=VARCHAR}, #{cardConsumeCounter,jdbcType=VARCHAR}, #{beforeconsumeCardbalance,jdbcType=VARCHAR}, 
+      #{transactionAmout,jdbcType=VARCHAR}, #{transactionDate,jdbcType=VARCHAR}, #{transactionTime,jdbcType=VARCHAR}, 
+      #{companyNo,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="cn.com.heyue.entity.TsmCardConsumedetail" useGeneratedKeys="true">
+    insert into tsm_card_consumedetail
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="consumecadfileId != null">
+        consumecadfile_id,
+      </if>
+      <if test="localSerialNumber != null">
+        local_serial_number,
+      </if>
+      <if test="unitCode != null">
+        unit_code,
+      </if>
+      <if test="cityCodeTransaction != null">
+        city_code_transaction,
+      </if>
+      <if test="terminalNo != null">
+        terminal_no,
+      </if>
+      <if test="cardNo != null">
+        card_no,
+      </if>
+      <if test="cardConsumeCounter != null">
+        card_consume_counter,
+      </if>
+      <if test="beforeconsumeCardbalance != null">
+        beforeconsume_cardbalance,
+      </if>
+      <if test="transactionAmout != null">
+        transaction_amout,
+      </if>
+      <if test="transactionDate != null">
+        transaction_date,
+      </if>
+      <if test="transactionTime != null">
+        transaction_time,
+      </if>
+      <if test="companyNo != null">
+        company_no,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="consumecadfileId != null">
+        #{consumecadfileId,jdbcType=BIGINT},
+      </if>
+      <if test="localSerialNumber != null">
+        #{localSerialNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="unitCode != null">
+        #{unitCode,jdbcType=VARCHAR},
+      </if>
+      <if test="cityCodeTransaction != null">
+        #{cityCodeTransaction,jdbcType=VARCHAR},
+      </if>
+      <if test="terminalNo != null">
+        #{terminalNo,jdbcType=VARCHAR},
+      </if>
+      <if test="cardNo != null">
+        #{cardNo,jdbcType=VARCHAR},
+      </if>
+      <if test="cardConsumeCounter != null">
+        #{cardConsumeCounter,jdbcType=VARCHAR},
+      </if>
+      <if test="beforeconsumeCardbalance != null">
+        #{beforeconsumeCardbalance,jdbcType=VARCHAR},
+      </if>
+      <if test="transactionAmout != null">
+        #{transactionAmout,jdbcType=VARCHAR},
+      </if>
+      <if test="transactionDate != null">
+        #{transactionDate,jdbcType=VARCHAR},
+      </if>
+      <if test="transactionTime != null">
+        #{transactionTime,jdbcType=VARCHAR},
+      </if>
+      <if test="companyNo != null">
+        #{companyNo,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.com.heyue.entity.TsmCardConsumedetail">
+    update tsm_card_consumedetail
+    <set>
+      <if test="consumecadfileId != null">
+        consumecadfile_id = #{consumecadfileId,jdbcType=BIGINT},
+      </if>
+      <if test="localSerialNumber != null">
+        local_serial_number = #{localSerialNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="unitCode != null">
+        unit_code = #{unitCode,jdbcType=VARCHAR},
+      </if>
+      <if test="cityCodeTransaction != null">
+        city_code_transaction = #{cityCodeTransaction,jdbcType=VARCHAR},
+      </if>
+      <if test="terminalNo != null">
+        terminal_no = #{terminalNo,jdbcType=VARCHAR},
+      </if>
+      <if test="cardNo != null">
+        card_no = #{cardNo,jdbcType=VARCHAR},
+      </if>
+      <if test="cardConsumeCounter != null">
+        card_consume_counter = #{cardConsumeCounter,jdbcType=VARCHAR},
+      </if>
+      <if test="beforeconsumeCardbalance != null">
+        beforeconsume_cardbalance = #{beforeconsumeCardbalance,jdbcType=VARCHAR},
+      </if>
+      <if test="transactionAmout != null">
+        transaction_amout = #{transactionAmout,jdbcType=VARCHAR},
+      </if>
+      <if test="transactionDate != null">
+        transaction_date = #{transactionDate,jdbcType=VARCHAR},
+      </if>
+      <if test="transactionTime != null">
+        transaction_time = #{transactionTime,jdbcType=VARCHAR},
+      </if>
+      <if test="companyNo != null">
+        company_no = #{companyNo,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.com.heyue.entity.TsmCardConsumedetail">
+    update tsm_card_consumedetail
+    set consumecadfile_id = #{consumecadfileId,jdbcType=BIGINT},
+      local_serial_number = #{localSerialNumber,jdbcType=VARCHAR},
+      unit_code = #{unitCode,jdbcType=VARCHAR},
+      city_code_transaction = #{cityCodeTransaction,jdbcType=VARCHAR},
+      terminal_no = #{terminalNo,jdbcType=VARCHAR},
+      card_no = #{cardNo,jdbcType=VARCHAR},
+      card_consume_counter = #{cardConsumeCounter,jdbcType=VARCHAR},
+      beforeconsume_cardbalance = #{beforeconsumeCardbalance,jdbcType=VARCHAR},
+      transaction_amout = #{transactionAmout,jdbcType=VARCHAR},
+      transaction_date = #{transactionDate,jdbcType=VARCHAR},
+      transaction_time = #{transactionTime,jdbcType=VARCHAR},
+      company_no = #{companyNo,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+  <insert id="insertBatch" parameterType="cn.com.heyue.entity.TsmCardConsumedetail" >
+    insert into tsm_card_consumedetail
+    (consumecadfile_id,local_serial_number, unit_code, city_code_transaction, terminal_no,
+    card_no, card_consume_counter, beforeconsume_cardbalance, transaction_amout, transaction_date,
+    transaction_time, company_no)
+    values
+    <foreach collection="list" item="item" index="index" separator=",">
+      (#{item.consumecadfileId},#{item.localSerialNumber},#{item.unitCode},#{item.cityCodeTransaction},#{item.terminalNo}
+      ,#{item.cardNo},#{item.cardConsumeCounter},#{item.beforeconsumeCardbalance},#{item.transactionAmout},#{item.transactionDate}
+      ,#{item.transactionTime},#{item.companyNo})
+    </foreach>
+  </insert>
+</mapper>

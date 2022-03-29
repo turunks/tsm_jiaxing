@@ -359,6 +359,7 @@ public class CityServiceImpl implements CityService {
         // 向城市服务发送卡消费记录查询
         try {
             String terminalCode = "6a787a640001";
+            logger.info("terminalCode:{}", "222");
             String transactionNum = IdUtil.getTransactionNum();
             cardConsumRecordReq.setIssue_inst("31048803");
             cardConsumRecordReq.setTerminal_code(terminalCode);

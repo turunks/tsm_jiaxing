@@ -1,7 +1,6 @@
 package com.heyue.card.controller;
 
 
-import cn.com.heyue.utils.QRCodeUtil;
 import com.heyue.bean.TsmBaseRes;
 import com.heyue.card.message.request.CreatCardDataReq;
 import com.heyue.card.service.CardService;
@@ -9,9 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 
 @RestController
@@ -45,13 +41,10 @@ public class CardController {
         return cardService.creatCardDataFile(creatCardDataReq);
     }
 
-    @GetMapping("testQrcode")
+    @RequestMapping("analysisCardConsumRecord")
     @ResponseBody
-    public void testQrcode(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        // 二维码的内容
-        String content = "二维码存储信息";
-        QRCodeUtil.encode(content, response.getOutputStream());
+    public void analysisCardConsumRecord() {
+        cardService.analysisCardConsumRecord();
     }
-
 
 }

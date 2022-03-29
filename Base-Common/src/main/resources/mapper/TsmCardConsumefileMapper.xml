@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.com.heyue.mapper.TsmCardConsumefileMapper">
+  <resultMap id="BaseResultMap" type="cn.com.heyue.entity.TsmCardConsumefile">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="consumefile_name" jdbcType="VARCHAR" property="consumefileName" />
+    <result column="consumefile_ftppath" jdbcType="VARCHAR" property="consumefileFtppath" />
+    <result column="record_num" jdbcType="INTEGER" property="recordNum" />
+    <result column="consumefile_createtime" jdbcType="TIMESTAMP" property="consumefileCreatetime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, consumefile_name, consumefile_ftppath, record_num, consumefile_createtime
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tsm_card_consumefile
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from tsm_card_consumefile
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="cn.com.heyue.entity.TsmCardConsumefile" useGeneratedKeys="true">
+    insert into tsm_card_consumefile (consumefile_name, consumefile_ftppath, 
+      record_num, consumefile_createtime)
+    values (#{consumefileName,jdbcType=VARCHAR}, #{consumefileFtppath,jdbcType=VARCHAR}, 
+      #{recordNum,jdbcType=INTEGER}, #{consumefileCreatetime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="cn.com.heyue.entity.TsmCardConsumefile" useGeneratedKeys="true">
+    insert into tsm_card_consumefile
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="consumefileName != null">
+        consumefile_name,
+      </if>
+      <if test="consumefileFtppath != null">
+        consumefile_ftppath,
+      </if>
+      <if test="recordNum != null">
+        record_num,
+      </if>
+      <if test="consumefileCreatetime != null">
+        consumefile_createtime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="consumefileName != null">
+        #{consumefileName,jdbcType=VARCHAR},
+      </if>
+      <if test="consumefileFtppath != null">
+        #{consumefileFtppath,jdbcType=VARCHAR},
+      </if>
+      <if test="recordNum != null">
+        #{recordNum,jdbcType=INTEGER},
+      </if>
+      <if test="consumefileCreatetime != null">
+        #{consumefileCreatetime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.com.heyue.entity.TsmCardConsumefile">
+    update tsm_card_consumefile
+    <set>
+      <if test="consumefileName != null">
+        consumefile_name = #{consumefileName,jdbcType=VARCHAR},
+      </if>
+      <if test="consumefileFtppath != null">
+        consumefile_ftppath = #{consumefileFtppath,jdbcType=VARCHAR},
+      </if>
+      <if test="recordNum != null">
+        record_num = #{recordNum,jdbcType=INTEGER},
+      </if>
+      <if test="consumefileCreatetime != null">
+        consumefile_createtime = #{consumefileCreatetime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.com.heyue.entity.TsmCardConsumefile">
+    update tsm_card_consumefile
+    set consumefile_name = #{consumefileName,jdbcType=VARCHAR},
+      consumefile_ftppath = #{consumefileFtppath,jdbcType=VARCHAR},
+      record_num = #{recordNum,jdbcType=INTEGER},
+      consumefile_createtime = #{consumefileCreatetime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+  <select id="selectByfilename" parameterType="cn.com.heyue.entity.TsmCardConsumefile" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from tsm_card_consumefile
+    where consumefile_name = #{consumefileName,jdbcType=BIGINT}
+  </select>
+</mapper>

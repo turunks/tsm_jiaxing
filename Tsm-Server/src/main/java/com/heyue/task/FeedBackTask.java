@@ -27,6 +27,15 @@ public class FeedBackTask {
         logger.info("解析城市平台反馈文件定时任务结束:{}", DateUtils.format(new Date(),DateUtils.FullDatePattern));
     }
 
+    // 解析城市平台消费文件定时任务
+    @Scheduled(cron = "0 0 22 * * ?")// 每天22:00执行
+    public void consumeFileTask() {
+        // 下载至ftp并解析
+        logger.info("解析城市平台消费文件定时任务开始:{}", DateUtils.format(new Date(),DateUtils.FullDatePattern));
+        cardService.analysisCardConsumRecord();
+        logger.info("解析城市平台消费文件定时任务结束:{}", DateUtils.format(new Date(),DateUtils.FullDatePattern));
+    }
+
 
     // 生成发卡信息同步文件定时任务
 //    @Scheduled(cron = "0/30 * * * * ? ")// 30秒

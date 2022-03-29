@@ -15,11 +15,14 @@ public interface CardService {
     boolean readFile(String filename) throws Exception;
 
     // 上传ftp
-    void toFTP(String filename,String uploadPath,String localPath) throws Exception;
+    void toFTP(String filename, String uploadPath, String localPath) throws Exception;
 
     // ftp下载并解析
     void downFromFTP();
 
     // 每日生成发卡信息同步文件
     void cardInfoSynFile();
+
+    // 解析卡消费文件并入库
+    void analysisCardConsumRecord();
 }

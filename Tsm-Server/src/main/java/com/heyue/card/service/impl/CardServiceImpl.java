@@ -1,19 +1,13 @@
 package com.heyue.card.service.impl;
 
-import cn.com.heyue.entity.TsmCardDetail;
-import cn.com.heyue.entity.TsmCardMakefile;
-import cn.com.heyue.entity.TsmOpencardInfo;
-import cn.com.heyue.entity.TsmOpencardSyncfile;
-import cn.com.heyue.mapper.TsmCardDetailMapper;
-import cn.com.heyue.mapper.TsmCardMakefileMapper;
-import cn.com.heyue.mapper.TsmOpencardInfoMapper;
-import cn.com.heyue.mapper.TsmOpencardSyncfileMapper;
-import cn.com.heyue.utils.FileUtils;
-import cn.com.heyue.utils.FtpUtils;
-import cn.com.heyue.utils.HexStringUtils;
+import cn.com.heyue.entity.*;
+import cn.com.heyue.mapper.*;
+import cn.com.heyue.utils.*;
 import cn.hutool.core.collection.CollectionUtil;
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.heyue.bean.TsmBaseRes;
+import com.heyue.card.message.request.AccountConsumeReq;
 import com.heyue.card.message.request.CreatCardDataReq;
 import com.heyue.card.message.response.Secretkey;
 import com.heyue.card.service.CardService;
@@ -47,6 +41,13 @@ public class CardServiceImpl implements CardService {
 
     @Autowired
     private TsmOpencardSyncfileMapper tsmOpencardSyncfileMapper;
+
+    @Autowired
+    private TsmCardConsumedetailMapper tsmCardConsumedetailMapper;
+
+    @Autowired
+    private TsmCardConsumefileMapper tsmCardConsumefileMapper;
+
 
     // 城市平台服务反馈文件数据体下标位置
     public static int card_no_index = 10 * 2;
@@ -83,6 +84,26 @@ public class CardServiceImpl implements CardService {
     public static int reserveKey2_index = reserveKey1_index + 24 * 2;// 预留密钥 2
     public static int key2_index = reserveKey2_index + 24 * 2;// 充值密钥 2（国际）
     public static int reserve2_index = key2_index + 48 * 2;// // 预留
+
+
+    // 解析卡消费数据文件
+    public static int industry_code_index = 24 * 2; // 行业代码
+    public static int file_type = industry_code_index + 24 * 2; // 文件类型
+    public static int record_num = file_type + 24 * 2; // 记录总数
+    public static int record_size = record_num + 24 * 2; // 记录长度
+    public static int consume_reserve_index = record_size + 24 * 2; // 保留域
+
+    public static int local_serialno_index = 12; // 本地流水号
+    public static int operating_unit_index = local_serialno_index + 8; // 企业运营系统下的营运单位代码
+    public static int citycode_index = operating_unit_index + 4; // 城市代码（交易发生地）
+    public static int terminal_code_index = citycode_index + 12; // 终端机编码
+    public static int cardno_index = terminal_code_index + 20; // 卡内号
+    public static int cardconsume_count_index = cardno_index + 6; // 卡消费计数器
+    public static int balance_index = cardconsume_count_index + 8; // 消费前卡余额/余次
+    public static int transaction_amount_index = balance_index + 8; // 交易金额/次数
+    public static int transaction_date_index = transaction_amount_index + 8; // 交易发生日期
+    public static int transaction_time_index = transaction_date_index + 6; // 交易发生时间
+    public static int industry_company_no_index = transaction_time_index + 8; // 行业内公司编号
 
 
     // 制卡
@@ -378,13 +399,150 @@ public class CardServiceImpl implements CardService {
         }
     }
 
+    // 解析卡消费文件并入库
+    @Override
+    public void analysisCardConsumRecord() {
+        // 1.下载
+        downCardConsumFile();
+    }
+
+    // 下载卡消费文件
+    private void downCardConsumFile() {
+        // 下载至ftp并解析
+        FtpUtils ftpUtils = new FtpUtils();
+        ftpUtils.setServer(Constant.FTP_HOST);
+        ftpUtils.setPort(Constant.FTP_PORT);
+        ftpUtils.setUser(Constant.FTP_USER_NAME);
+        ftpUtils.setPassword(Constant.FTP_PASSWORD);
+        ftpUtils.setTimeout("30000");
+        try {
+            ftpUtils.connectServer(Constant.CONSUMEFILE_DOWNLOAD_CATALOG);// test用户下的目录
+            logger.info("登陆成功，开始下载文件:{}");
+            // 获取指定ftp下目录的文件
+            List<String> allFile = ftpUtils.getAllFile(Constant.CONSUMEFILE_LOCAL_CATALOG);
+            logger.info("获取文件:{}", allFile);
+            if (CollectionUtil.isNotEmpty(allFile)) {
+                for (String downloadfilename : allFile) {
+                    // 解析下载的文件数据
+                    boolean b = readconsumFile(downloadfilename);
+                    // 解析完毕将反馈文件移动至历史文件夹;
+                    if (b) {
+                        ftpUtils.moveFile(downloadfilename, Constant.CONSUMEFILE_DOWNLOAD_HISTORY + downloadfilename);
+                    } else {
+                        // 卡文件读取异常移动至error文件夹
+                        ftpUtils.moveFile(downloadfilename, Constant.CONSUMEFILE_DOWNLOAD_ERROR_CATALOG + downloadfilename);
+                    }
+
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private boolean readconsumFile(String filename) {
+        String path = Constant.CONSUMEFILE_LOCAL_CATALOG + filename;
+        List<String> list = null;
+        try {
+            list = FileUtils.getFile(path);
+            // 1.第一行文件说明区
+            String fileremark = list.get(0);
+            // 数据体
+            List<String> body = list.subList(1, list.size());
+            ArrayList<TsmCardConsumedetail> consumedetails = new ArrayList<>();
+            List<AccountConsumeReq> accountConsumeReqs = new ArrayList<>();
+            for (String data : body) {
+                String local_serialno = data.substring(0, local_serialno_index);// 本地流水号
+                String operating_unit = data.substring(local_serialno_index, operating_unit_index); // 企业运营系统下的营运单位代码
+                String citycode = data.substring(operating_unit_index, citycode_index);//城市代码
+                String terminal_code = data.substring(citycode_index, terminal_code_index);//终端机编码
+                String cardno = data.substring(terminal_code_index, cardno_index);//卡内号
+                String cardconsume_count = data.substring(cardno_index, cardconsume_count_index);//卡消费计数器
+                String balance = data.substring(cardconsume_count_index, balance_index);//消费前卡余额/余次
+                String transaction_amount = data.substring(balance_index, transaction_amount_index);//交易金额/次数
+                String transaction_date = data.substring(transaction_amount_index, transaction_date_index);//交易发生日期
+                String transaction_time = data.substring(transaction_date_index, transaction_time_index);//交易发生时间
+                String industry_company_no = data.substring(transaction_time_index, industry_company_no_index);//行业内公司编号
+
+                TsmCardConsumedetail tsmCardConsumedetail = new TsmCardConsumedetail();
+                tsmCardConsumedetail.setLocalSerialNumber(local_serialno);
+                tsmCardConsumedetail.setUnitCode(operating_unit);
+                tsmCardConsumedetail.setCityCodeTransaction(citycode);
+                tsmCardConsumedetail.setTerminalNo(terminal_code);
+                tsmCardConsumedetail.setCardNo(cardno);
+                tsmCardConsumedetail.setCardConsumeCounter(cardconsume_count);
+                tsmCardConsumedetail.setBeforeconsumeCardbalance(balance);
+                tsmCardConsumedetail.setTransactionAmout(transaction_amount);
+                tsmCardConsumedetail.setTransactionDate(transaction_date);
+                tsmCardConsumedetail.setTransactionTime(transaction_time);
+                tsmCardConsumedetail.setCompanyNo(industry_company_no);
+                consumedetails.add(tsmCardConsumedetail);
+
+
+                AccountConsumeReq accountConsumeReq = new AccountConsumeReq();
+                accountConsumeReq.setSendSeq(local_serialno);
+//                BigInteger txnAmt = new BigInteger(transaction_amount, 16);
+                accountConsumeReq.setTxnAmt(transaction_amount);
+                accountConsumeReq.setTermId(terminal_code);
+                accountConsumeReq.setTxnDate(transaction_date);
+                accountConsumeReq.setTxnTime(transaction_time);
+                accountConsumeReq.setCardNo(cardno);
+                accountConsumeReq.setIssOrgCode(citycode);
+                accountConsumeReq.setCityCode(citycode);
+                accountConsumeReq.setCardDebitCnt(cardconsume_count);
+                accountConsumeReq.setBefBal(balance);
+                accountConsumeReq.setRefuseRsn("000000");
+                accountConsumeReq.setCreatedDate(new Date());
+                accountConsumeReqs.add(accountConsumeReq);
+            }
+            // 入库消费文件表
+            TsmCardConsumefile tsmCardConsumefile = new TsmCardConsumefile();
+            tsmCardConsumefile.setConsumefileName(filename);
+            tsmCardConsumefile.setConsumefileFtppath(path);
+            tsmCardConsumefile.setRecordNum(consumedetails.size());
+            tsmCardConsumefile.setConsumefileCreatetime(new Date());
+            tsmCardConsumefileMapper.insertSelective(tsmCardConsumefile);
+
+            TsmCardConsumefile tsmCardConsumefile1 = tsmCardConsumefileMapper.selectByfilename(tsmCardConsumefile);
+            consumedetails.forEach(tsmCardConsumedetail -> tsmCardConsumedetail.setConsumecadfileId(tsmCardConsumefile1.getId()));
+            // 入库消费详情表
+            tsmCardConsumedetailMapper.insertBatch(consumedetails);
+            // 同步和包出行数据库消费数据表
+            boolean b = synConsumeToTravel(accountConsumeReqs);
+
+        } catch (Exception e) {
+            logger.error("解析卡文件{}异常:{}", filename, e);
+            return false;
+        }
+        return true;
+    }
+
+    // 同步和包出行数据库消费数据表
+    private boolean synConsumeToTravel(List<AccountConsumeReq> list) {
+        try {
+            String req = JSON.toJSONString(list);
+            logger.info("发送同步消费数据至出行平台请求报文:{}", req);
+            String res = HttpRequestUtils.doPost(Constant.SYN_CONSUME_TOTRAVEL_URL, req);
+            logger.info("返回同步消费数据至出行平台请求报文:{}", res);
+            String code = JSON.parseObject(res).getString("code");
+            if ("200".equals(code)) {
+                return true;
+            }
+            logger.info("返回同步消费数据至出行平台请求失败:{}", res);
+            return false;
+        } catch (Exception e) {
+            logger.info("同步消费数据至出行平台异常:{}", e);
+            return false;
+        }
+    }
+
     private String createCardInfoSynFile(List<TsmOpencardInfo> tsmOpencardInfos) throws Exception {
         String cardInfoNum = String.valueOf(tsmOpencardInfos.size());
         String version = Constant.VERSION;// 版本号
         String recordNum = cardInfoNum;// 记录总数
         String city_code = Constant.CITY_CODE;
         String requestType = "01";// 用户卡
-        String area_code = Constant.AREA_CODE;// 1
+        String area_code = Constant.AREA_CODE;
         StringBuffer sb = new StringBuffer();
         sb.append(recordNum);
         sb.append(city_code);

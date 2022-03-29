@@ -45,6 +45,14 @@ public class Constant {
     // 卡信息同步文件目录
     public static String CARDINFO_SYNFILE_LOCAL_CATALOG;
     public static String CARDINFO_SYNFILE_UPLOAD_CATALOG;
+    // 卡消费文件
+    public static String CONSUMEFILE_DOWNLOAD_CATALOG;
+    public static String CONSUMEFILE_LOCAL_CATALOG;
+    public static String CONSUMEFILE_DOWNLOAD_HISTORY;
+    public static String CONSUMEFILE_DOWNLOAD_ERROR_CATALOG;
+
+    // 卡消费记录同步出行平台地址
+    public static String SYN_CONSUME_TOTRAVEL_URL;
 
     // 系统参数
     public static String TSM_ID;
@@ -183,6 +191,32 @@ public class Constant {
     @Value("${CARDINFO_SYNFILE_UPLOAD_CATALOG}")
     public void setcardInfoSynFileUploadCatalog(String cardInfoSynFileUploadCatalog) {
         CARDINFO_SYNFILE_UPLOAD_CATALOG = cardInfoSynFileUploadCatalog;
+    }
+
+    @Value("${CONSUMEFILE_DOWNLOAD_CATALOG}")
+    public void setConsumefileDownloadCatalog(String consumefileDownloadCatalog) {
+        CONSUMEFILE_DOWNLOAD_CATALOG = consumefileDownloadCatalog;
+    }
+
+    @Value("${CONSUMEFILE_LOCAL_CATALOG}")
+    public void setConsumefileLocalCatalog(String consumefileDownloadCatalog) {
+        CONSUMEFILE_LOCAL_CATALOG = consumefileDownloadCatalog;
+    }
+
+    @Value("${CONSUMEFILE_DOWNLOAD_HISTORY}")
+    public void setConsumefileDownloadHistory(String consumefileDownloadHistory) {
+        CONSUMEFILE_DOWNLOAD_HISTORY = consumefileDownloadHistory;
+    }
+
+    @Value("${CONSUMEFILE_DOWNLOAD_ERROR_CATALOG}")
+    public void setConsumefileDownloadErrorCatalog(String consumefileDownloadErrorCatalog) {
+        CONSUMEFILE_DOWNLOAD_ERROR_CATALOG = consumefileDownloadErrorCatalog;
+    }
+
+    // 卡消费记录同步出行平台地址
+    @Value("${SYN_CONSUME_TOTRAVEL_URL}")
+    public void setSynConsumeTotravelUrl(String synConsumeTotravelUrl) {
+        SYN_CONSUME_TOTRAVEL_URL = synConsumeTotravelUrl;
     }
 
     @Value("${TSM_ID}")
