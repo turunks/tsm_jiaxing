@@ -35,4 +35,9 @@ public class PayOrderRes {
 	 * 订单生成时间,格式yyyyMMddHHmmss
 	 */
 	private String creatTime;
+
+	/**
+	 * 订单支付时间,格式yyyyMMddHHmmss
+	 */
+	private String payDate;
 }

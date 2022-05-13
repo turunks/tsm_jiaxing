@@ -49,6 +49,7 @@ public class TsmOrderInfoServiceImpl implements TsmOrderInfoService {
     @Autowired
     private TsmUserInfoService tsmUserInfoService;
 
+
     @Autowired
     private TsmRefundOrderMapper tsmRefundOrderMapper;
 
@@ -199,6 +200,7 @@ public class TsmOrderInfoServiceImpl implements TsmOrderInfoService {
                 // 查到支付成功，更新支付状态
                 if (StringUtils.equals(retCode, "000000") && retMap.get("status").toString().equals("SUCCESS")) {
                     tsmPayOrder.setPayRet("01");
+                    tsmPayOrder.setTradeTime(DateUtils.parse(retMap.get("payDate").toString(), DateUtils.FORMAT_FULL));
                     tsmPayOrderMapper.updateByPrimaryKey(tsmPayOrder);
                 }
             }
@@ -208,6 +210,7 @@ public class TsmOrderInfoServiceImpl implements TsmOrderInfoService {
             payOrder.setAmount(String.valueOf(tsmOrderInfo.getAmount()));
             payOrder.setPayRet(tsmPayOrder.getPayRet());
             payOrder.setCreatTime(DateUtils.dateToStr(tsmOrderInfo.getCreateTime(), DateUtils.FORMAT_FULL));
+            payOrder.setPayDate(tsmPayOrder.getTradeTime().toString());
         } catch (Exception e) {
             logger.error("查询订单失败，serviceOrderId={}，{}", serviceOrderId, e);
             return Result.fail(null, "查询订单失败");

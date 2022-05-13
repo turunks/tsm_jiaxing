@@ -6,22 +6,12 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="registry" />
-        <module name="zuul" />
         <module name="Base-Common" />
+        <module name="zuul" />
         <module name="Tsm-Server" />
+        <module name="registry" />
         <module name="config" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="Pay-Server" target="1.8" />
-      <module name="Zuul-Server" target="1.8" />
-    </bytecodeTargetLevel>
-  </component>
-  <component name="JavacSettings">
-    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
-      <module name="config" options="" />
-      <module name="registry" options="" />
-    </option>
   </component>
 </project>
