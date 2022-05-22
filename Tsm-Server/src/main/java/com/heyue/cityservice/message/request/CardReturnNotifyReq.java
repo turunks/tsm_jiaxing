@@ -8,7 +8,7 @@ import lombok.Data;
  */
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class CardReturnReq {
+public class CardReturnNotifyReq {
 
     private String issue_inst; // 发卡机构代码
 

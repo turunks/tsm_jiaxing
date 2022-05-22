@@ -40,5 +40,8 @@ public class AppStatusNoticeReq {
     @NotBlank(message = "卡片状态不能为空")
     private String cardstatus;
 
-
+    /**
+     * 发卡机构代码
+     */
+    private String issueInst;
 }

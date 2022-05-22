@@ -59,14 +59,20 @@ public class TsmOrderInfoServiceImpl implements TsmOrderInfoService {
         try {
             TsmOrderInfo tsmOrderInfo = new TsmOrderInfo();
             BeanUtils.copyProperties(orderApplyReq, tsmOrderInfo);
+
+            String payChannel = orderApplyReq.getPayChannel(); // 支付方式
+            Integer orderType = getOrderType(orderApplyReq.getServiceType()); // 订单类型
+            Integer amount = Integer.valueOf(orderApplyReq.getAmount());// 交易金额
+            int cardprice = orderApplyReq.getCardPrice() == null ? 0 : Integer.parseInt(orderApplyReq.getCardPrice());// 开卡费
+            int cumAmount = orderApplyReq.getCumAmount() == null ? 0 : Integer.parseInt(orderApplyReq.getCumAmount());// 活动累计金额
             String orderId = GenerateIdUtils.getOrderId();
             tsmOrderInfo.setServiceOrderId(orderId);
             tsmOrderInfo.setCreateTime(new Date());
-            tsmOrderInfo.setPayPlatNo(orderApplyReq.getPayChannel());
-            tsmOrderInfo.setOrderType(getOrderType(orderApplyReq.getServiceType()));
-            tsmOrderInfo.setAmount(Integer.valueOf(orderApplyReq.getAmount()));
-            tsmOrderInfo.setCardPrice(orderApplyReq.getCardPrice() == null ? 0 : Integer.parseInt(orderApplyReq.getCardPrice()));
-            tsmOrderInfo.setCumAmount(orderApplyReq.getCumAmount() == null ? 0 : Integer.parseInt(orderApplyReq.getCumAmount()));
+            tsmOrderInfo.setPayPlatNo(payChannel);
+            tsmOrderInfo.setOrderType(orderType);
+            tsmOrderInfo.setAmount(amount);
+            tsmOrderInfo.setCardPrice(cardprice);
+            tsmOrderInfo.setCumAmount(cumAmount);
             tsmOrderInfo.setMarketAmount(orderApplyReq.getMarketAmount() == null ? 0 :
                     Integer.parseInt(orderApplyReq.getMarketAmount()));
             tsmOrderInfo.setTopUpAmount(orderApplyReq.getTopUpAmount() == null ? 0 :

@@ -32,12 +32,12 @@
   </resultMap>
   <sql id="Base_Column_List">
     id, cadFile_id, apply_city_code, area_code, `card_species`, card_no, card_sign, card_app_version,
-    app_serial_no, app_start_date, app_valid_date, card_custom_fci, card_type_sign, internate_code, 
+    app_serial_no, app_start_date, app_valid_date, card_custom_fci, card_type_sign, internate_code,
     province_code,  city_code, contact_card_type, card_type, reserve, internation_key, domestic_key,
     card_status, in_deposit_time, out_deposit_time, app_id, merchant_no, service_order_id
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
-    select 
+    select
     <include refid="Base_Column_List" />
     from `tsm_card_detail`
     where id = #{id,jdbcType=BIGINT}
@@ -65,21 +65,21 @@
   </delete>
   <insert id="insert" keyColumn="id" keyProperty="id" parameterType="cn.com.heyue.entity.TsmCardDetail" useGeneratedKeys="true">
     insert into `tsm_card_detail` (cadFile_id, apply_city_code, area_code,
-      `card_species`, card_no, card_sign, 
-      card_app_version, app_serial_no, app_start_date, 
-      app_valid_date, card_custom_fci, card_type_sign, 
+      `card_species`, card_no, card_sign,
+      card_app_version, app_serial_no, app_start_date,
+      app_valid_date, card_custom_fci, card_type_sign,
       internate_code, province_code,  city_code,  contact_card_type,
-      card_type, reserve, internation_key, 
-      domestic_key, card_status, in_deposit_time, 
+      card_type, reserve, internation_key,
+      domestic_key, card_status, in_deposit_time,
       out_deposit_time, app_id, merchant_no,service_order_id
       )
     values (#{cadfileId,jdbcType=BIGINT}, #{applyCityCode,jdbcType=VARCHAR}, #{areaCode,jdbcType=VARCHAR},
-      #{cardSpecies,jdbcType=VARCHAR}, #{cardNo,jdbcType=VARCHAR}, #{cardSign,jdbcType=VARCHAR}, 
-      #{cardAppVersion,jdbcType=VARCHAR}, #{appSerialNo,jdbcType=VARCHAR}, #{appStartDate,jdbcType=VARCHAR}, 
-      #{appValidDate,jdbcType=VARCHAR}, #{cardCustomFci,jdbcType=VARCHAR}, #{cardTypeSign,jdbcType=VARCHAR}, 
+      #{cardSpecies,jdbcType=VARCHAR}, #{cardNo,jdbcType=VARCHAR}, #{cardSign,jdbcType=VARCHAR},
+      #{cardAppVersion,jdbcType=VARCHAR}, #{appSerialNo,jdbcType=VARCHAR}, #{appStartDate,jdbcType=VARCHAR},
+      #{appValidDate,jdbcType=VARCHAR}, #{cardCustomFci,jdbcType=VARCHAR}, #{cardTypeSign,jdbcType=VARCHAR},
       #{internateCode,jdbcType=VARCHAR}, #{provinceCode,jdbcType=VARCHAR}, #{cityCode,jdbcType=VARCHAR}, #{contactCardType,jdbcType=VARCHAR},
-      #{cardType,jdbcType=VARCHAR}, #{reserve,jdbcType=VARCHAR}, #{internationKey,jdbcType=VARCHAR}, 
-      #{domesticKey,jdbcType=VARCHAR}, #{cardStatus,jdbcType=VARCHAR}, #{inDepositTime,jdbcType=TIMESTAMP}, 
+      #{cardType,jdbcType=VARCHAR}, #{reserve,jdbcType=VARCHAR}, #{internationKey,jdbcType=VARCHAR},
+      #{domesticKey,jdbcType=VARCHAR}, #{cardStatus,jdbcType=VARCHAR}, #{inDepositTime,jdbcType=TIMESTAMP},
       #{outDepositTime,jdbcType=TIMESTAMP}, #{appId,jdbcType=VARCHAR}, #{merchantNo,jdbcType=VARCHAR},#{serviceOrderId,jdbcType=VARCHAR}
       )
   </insert>
@@ -360,4 +360,12 @@
       service_order_id = #{serviceOrderId,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
+  <!--根据cardNo查询卡详情-->
+  <select id="selBycardNo" resultType="cn.com.heyue.entity.TsmCardDetail">
+    select
+    <include refid="Base_Column_List" />
+    from `tsm_card_detail`
+    where card_no = #{cardNo,jdbcType=VARCHAR}
+    limit 1
+  </select>
 </mapper>

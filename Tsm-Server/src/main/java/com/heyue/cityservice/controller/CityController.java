@@ -3,10 +3,7 @@ package com.heyue.cityservice.controller;
 
 import com.heyue.bean.TsmBaseRes;
 import com.heyue.cityservice.message.request.*;
-import com.heyue.cityservice.message.response.CardActiveRes;
-import com.heyue.cityservice.message.response.CardActiveSubmitRes;
-import com.heyue.cityservice.message.response.CardTrapRes;
-import com.heyue.cityservice.message.response.CardTrapSubmitRes;
+import com.heyue.cityservice.message.response.*;
 import com.heyue.cityservice.service.CityService;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,5 +79,13 @@ public class CityController {
     public TsmBaseRes cardConsumRecord(@RequestBody CardConsumRecordReq cardConsumRecordReq) {
         TsmBaseRes result = cityService.cardConsumRecord(cardConsumRecordReq);
         return result;
+    }
+
+    // 退卡通知
+    @PostMapping("cardReturnNotify")
+    @ResponseBody
+    public CardReturnNotifyRes cardReturnNotify(@RequestBody CardReturnNotifyReq cardReturnNotifyReq) {
+        CardReturnNotifyRes cardReturnNotifyRes = cityService.cardReturnNotify(cardReturnNotifyReq);
+        return cardReturnNotifyRes;
     }
 }

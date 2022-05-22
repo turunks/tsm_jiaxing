@@ -8,7 +8,7 @@ import lombok.Data;
  */
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class CardReturnRes {
+public class CardReturnNotifyRes {
 
     private String transaction_datetime; // 交易日期时间
 

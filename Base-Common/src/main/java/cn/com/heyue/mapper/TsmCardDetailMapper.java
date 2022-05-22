@@ -35,4 +35,6 @@ public interface TsmCardDetailMapper  {
      */
     TsmCardDetail selectOne(@Param("cityCode") String cityCode, @Param("areaCode") String areaCode,
                             @Param("cardSpecies") String cardSpecies);
+
+    TsmCardDetail selBycardNo(String cardNo);
 }

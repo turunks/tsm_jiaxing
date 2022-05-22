@@ -8,6 +8,7 @@ public interface TsmCardDetailService {
 
     /**
      * 获取开卡数据
+     *
      * @param req
      * @return
      */
@@ -15,6 +16,7 @@ public interface TsmCardDetailService {
 
     /**
      * 圈存申请
+     *
      * @param req
      * @return
      */
@@ -22,6 +24,7 @@ public interface TsmCardDetailService {
 
     /**
      * 圈存提交
+     *
      * @param req
      * @return
      */
@@ -29,6 +32,7 @@ public interface TsmCardDetailService {
 
     /**
      * 激活申请
+     *
      * @param req
      * @return
      */
@@ -36,6 +40,7 @@ public interface TsmCardDetailService {
 
     /**
      * 激活提交
+     *
      * @param req
      * @return
      */

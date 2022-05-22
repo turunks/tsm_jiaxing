@@ -32,5 +32,6 @@ public interface CityService {
     TsmBaseRes cardConsumRecord(CardConsumRecordReq cardConsumRecordReq);
 
     // 8.退卡通知
-    CardReturnRes cardReturn(CardReturnReq cardReturnReq);
+    CardReturnNotifyRes cardReturnNotify(CardReturnNotifyReq cardReturnNotifyReq);
+
 }

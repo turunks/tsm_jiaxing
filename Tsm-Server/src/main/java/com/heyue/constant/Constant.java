@@ -17,8 +17,7 @@ public class Constant {
     public static String CARD_TRAP_SUBMIT_URL;
     public static String CARD_ACCOUNT_INFO_URL;
     public static String CARD_CONSUM_RECORD_URL;
-    public static String CARD_RETURN_URL;
-
+    public static String CARD_RETURN_NOTIFY_URL;
 
     // 私钥
     public static String TSM_LOC_PRI_KEY;
@@ -102,9 +101,9 @@ public class Constant {
         CARD_CONSUM_RECORD_URL = cardConsumRecordUrl;
     }
 
-    @Value("${CARD_RETURN_URL}")
-    public void setCardReturnUrl(String cardReturnUrl) {
-        CARD_RETURN_URL = cardReturnUrl;
+    @Value("${CARD_RETURN_NOTIFY_URL}")
+    public void setCardReturnNotifyUrl(String cardReturnNotifyUrl) {
+        CARD_RETURN_NOTIFY_URL = cardReturnNotifyUrl;
     }
 
 

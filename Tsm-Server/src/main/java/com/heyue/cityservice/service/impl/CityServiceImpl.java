@@ -387,31 +387,41 @@ public class CityServiceImpl implements CityService {
 
     // 8.退卡通知
     @Override
-    public CardReturnRes cardReturn(CardReturnReq cardReturnReq) {
+    public CardReturnNotifyRes cardReturnNotify(CardReturnNotifyReq cardReturnNotifyReq) {
         try {
+//            cardReturnNotifyReq.setIssue_inst("01493350");
+//            cardReturnNotifyReq.setCard_no("03104880300200000113");
+//            cardReturnNotifyReq.setCard_type("01");
+//            cardReturnNotifyReq.setTransaction_type("01");
+//            cardReturnNotifyReq.setRegion_code("00");
+//            cardReturnNotifyReq.setCard_species("1220");
+            cardReturnNotifyReq.setAlgorithm_id("00");
+            String terminalCode = cardReturnNotifyReq.getTerminal_code();
+
+
             String transactionNum = IdUtil.getTransactionNum();
             String transaction_datetime = sdf.format(new Date());
-            String terminalCode = cardReturnReq.getTerminal_code();
 
             String orderNo = getOrderNo(terminalCode, transactionNum);
-            cardReturnReq.setTransaction_num(transactionNum);
-            cardReturnReq.setTransaction_datetime(transaction_datetime);
-            cardReturnReq.setMerchant_num(Constant.MERCHANT_NO);
-            cardReturnReq.setTransaction_num(orderNo);
+            cardReturnNotifyReq.setTerminal_code(terminalCode);
+            cardReturnNotifyReq.setTransaction_num(transactionNum);
+            cardReturnNotifyReq.setTransaction_datetime(transaction_datetime);
+            cardReturnNotifyReq.setMerchant_num(Constant.MERCHANT_NO);
+            cardReturnNotifyReq.setOrder_no(orderNo);
 
-            String signRet = RSAUtils.signWithRsa2(JSON.toJSONString(cardReturnReq).getBytes(StandardCharsets.UTF_8), Constant.TSM_LOC_PRI_KEY).replaceAll(System.getProperty("line.separator"), "");
-            TsmBaseReq<CardReturnReq> tsmBaseReq = new TsmBaseReq<>(cardReturnReq, signRet);
+            String signRet = RSAUtils.signWithRsa2(JSON.toJSONString(cardReturnNotifyReq).getBytes(StandardCharsets.UTF_8), Constant.TSM_LOC_PRI_KEY).replaceAll(System.getProperty("line.separator"), "");
+            TsmBaseReq<CardReturnNotifyReq> tsmBaseReq = new TsmBaseReq<>(cardReturnNotifyReq, signRet);
             String req = JSON.toJSONString(tsmBaseReq);
             logger.info("发送退卡通知报文:{}", req);
-            String res = HttpRequestUtils.doPost(Constant.CARD_RETURN_URL, req);
+            String res = HttpRequestUtils.doPost(Constant.CARD_RETURN_NOTIFY_URL, req);
             logger.info("返回退卡通知报文:{}", res);
             if (StringUtils.isBlank(res)) {
                 logger.warn("{}返回退卡通知为空");
                 return null;
             }
             TsmBaseRes tsmBaseRes = JSON.parseObject(res, TsmBaseRes.class);
-            CardReturnRes cardReturnRes = JSON.parseObject(JSON.parseObject(res).getString("data"), CardReturnRes.class);
-            return cardReturnRes;
+            CardReturnNotifyRes cardReturnNotifyRes = JSON.parseObject(JSON.parseObject(res).getString("data"), CardReturnNotifyRes.class);
+            return cardReturnNotifyRes;
         } catch (Exception e) {
             logger.error("返回退卡通知异常:{}", e);
             return null;
