@@ -75,34 +75,26 @@ public class TsmCardstatusNotifyServiceImpl implements TsmCardstatusNotifyServic
             BeanUtils.copyProperties(orderInfo, cardstatusNotify);
             cardstatusNotify.setCreatetime(new Date());
             // 开卡通知
-            TsmCardDetail cardDetail = tsmCardDetailMapper.selectOneByServiceOrderId(serviceOrderId);
-            // 储存发卡信息
-            String cardNo = cardDetail.getCardNo();
-            String applyCityCode = cardDetail.getApplyCityCode();
-            String cityCode = cardDetail.getCityCode();
-            String areaCode = cardDetail.getAreaCode();
-            String cardSpecies = cardDetail.getCardSpecies();
-            Date outDepositTime = cardDetail.getOutDepositTime();
-            String IssOrgCode = cardDetail.getCardSign().substring(0, 8);
             if (req.getOptType().equals("01")) {
+                TsmCardDetail cardDetail = tsmCardDetailMapper.selectOneByServiceOrderId(req.getServiceOrderId());
                 if (cardDetail == null) {
                     return Result.fail(null, "暂无开卡信息");
                 }
-                TsmTerminal tsmTerminal = tsmTerminalMpper.selectByCityCode(applyCityCode);
-
+                // 储存发卡信息
+                TsmTerminal tsmTerminal = tsmTerminalMpper.selectByCityCode(cardDetail.getApplyCityCode());
                 TsmOpencardInfo tsmOpencardInfo = new TsmOpencardInfo();
-                tsmOpencardInfo.setMerchantNo(merchantNo);
-                tsmOpencardInfo.setCityCode(cityCode);
-                tsmOpencardInfo.setAreaCode(areaCode);
-                tsmOpencardInfo.setCardSpecies(cardSpecies);
-                tsmOpencardInfo.setUserId(userId);
-                tsmOpencardInfo.setCardNo(cardNo);
-                tsmOpencardInfo.setOpencardTime(outDepositTime);
-                tsmOpencardInfo.setIssOrgCode(IssOrgCode);
+                tsmOpencardInfo.setMerchantNo(req.getMerchantNo());
+                tsmOpencardInfo.setCityCode(cardDetail.getCityCode());
+                tsmOpencardInfo.setAreaCode(cardDetail.getAreaCode());
+                tsmOpencardInfo.setCardSpecies(cardDetail.getCardSpecies());
+                tsmOpencardInfo.setUserId(orderInfo.getUserId());
+                tsmOpencardInfo.setCardNo(cardDetail.getCardNo());
+                tsmOpencardInfo.setOpencardTime(cardDetail.getOutDepositTime());
+                tsmOpencardInfo.setIssOrgCode(cardDetail.getCardSign().substring(0, 8));
                 tsmOpencardInfo.setTerminalNo(tsmTerminal.getTerminalNo());
                 tsmOpencardInfo.setCreatetime(new Date());
                 tsmOpencardInfoMapper.insert(tsmOpencardInfo);
-                cardstatusNotify.setCardNo(cardNo);
+                cardstatusNotify.setCardNo(cardDetail.getCardNo());
             } else if (req.getOptType().equals("02")) {
                 // 退卡通知
                 if (orderInfo == null || orderType != 3) {
@@ -115,12 +107,13 @@ public class TsmCardstatusNotifyServiceImpl implements TsmCardstatusNotifyServic
                 // 根据卡号查询卡详情
                 TsmCardDetail tsmCardDetail = tsmCardDetailMapper.selBycardNo(cardNo1);
 
-                String applyCityCode1 = tsmCardDetail.getApplyCityCode();
+
+                logger.info("获得城市代码:{}",JSON.toJSONString(tsmCardDetail));
                 String cardType1 = tsmCardDetail.getCardType();
                 String areaCode1 = tsmCardDetail.getAreaCode();
                 String cardSpecies1 = tsmCardDetail.getCardSpecies();
 
-                TsmTerminal tsmTerminal = tsmTerminalMpper.selectByCityCode(applyCityCode1);
+                TsmTerminal tsmTerminal = tsmTerminalMpper.selectByCityCode(tsmCardDetail.getApplyCityCode());
                 String terminalNo = tsmTerminal.getTerminalNo();
 
                 // 生成退款账单

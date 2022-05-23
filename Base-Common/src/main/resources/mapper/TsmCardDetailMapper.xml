@@ -361,7 +361,7 @@
     where id = #{id,jdbcType=BIGINT}
   </update>
   <!--根据cardNo查询卡详情-->
-  <select id="selBycardNo" resultType="cn.com.heyue.entity.TsmCardDetail">
+  <select id="selBycardNo" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from `tsm_card_detail`
