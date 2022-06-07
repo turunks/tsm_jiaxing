@@ -1,6 +1,7 @@
 package cn.com.heyue.mapper;
 
 
+import cn.com.heyue.entity.TsmCard;
 import cn.com.heyue.entity.TsmCardDetail;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -37,4 +38,6 @@ public interface TsmCardDetailMapper  {
                             @Param("cardSpecies") String cardSpecies);
 
     TsmCardDetail selBycardNo(String cardNo);
+
+    int qryCardCount(TsmCard tsmCard);
 }
