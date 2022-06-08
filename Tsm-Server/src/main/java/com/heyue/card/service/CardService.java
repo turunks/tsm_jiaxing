@@ -1,7 +1,10 @@
 package com.heyue.card.service;
 
+import com.heyue.bean.Result;
 import com.heyue.bean.TsmBaseRes;
+import com.heyue.card.message.request.CardDetailReq;
 import com.heyue.card.message.request.CreatCardDataReq;
+import com.heyue.hbcxservice.message.response.CardNumRes;
 
 /**
  * 制卡文件服务
@@ -25,4 +28,7 @@ public interface CardService {
 
     // 解析卡消费文件并入库
     void analysisCardConsumRecord();
+
+    //卡库存数据查询
+    Result<CardNumRes> qryCardCount(CardDetailReq cardDetailReq);
 }

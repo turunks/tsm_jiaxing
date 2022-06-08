@@ -6,12 +6,15 @@ import cn.com.heyue.utils.*;
 import cn.hutool.core.collection.CollectionUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.heyue.bean.Result;
 import com.heyue.bean.TsmBaseRes;
 import com.heyue.card.message.request.AccountConsumeReq;
+import com.heyue.card.message.request.CardDetailReq;
 import com.heyue.card.message.request.CreatCardDataReq;
 import com.heyue.card.message.response.Secretkey;
 import com.heyue.card.service.CardService;
 import com.heyue.constant.Constant;
+import com.heyue.hbcxservice.message.response.CardNumRes;
 import com.heyue.utils.IdUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -404,6 +407,17 @@ public class CardServiceImpl implements CardService {
     public void analysisCardConsumRecord() {
         // 1.下载
         downCardConsumFile();
+    }
+
+    @Override
+    public Result<CardNumRes> qryCardCount(CardDetailReq cardDetailReq) {
+        TsmCard tsmCard = new TsmCard();
+        tsmCard.setAreaName(cardDetailReq.getAreaName());
+        tsmCard.setCityCode(cardDetailReq.getCityCode());
+        int count = tsmCardDetailMapper.qryCardCount(tsmCard);
+        CardNumRes cardNumRes = new CardNumRes();
+        cardNumRes.setCount(count);
+        return Result.ok(cardNumRes);
     }
 
     // 下载卡消费文件

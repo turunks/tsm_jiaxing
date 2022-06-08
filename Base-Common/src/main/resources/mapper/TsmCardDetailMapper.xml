@@ -368,4 +368,12 @@
     where card_no = #{cardNo,jdbcType=VARCHAR}
     limit 1
   </select>
+
+  <!--根据cityCode查询卡库存-->
+  <select id="qryCardCount" resultType="java.lang.Integer" parameterType="cn.com.heyue.entity.TsmCard">
+    select count(1) from tsm_card_detail d ,tsm_area a  where a.area_code = d.area_code
+    and card_status =  1
+    and a.area_name = #{areaName}
+    and d.apply_city_code = #{cityCode}
+  </select>
 </mapper>
