@@ -18,6 +18,7 @@ import com.heyue.hbcxservice.message.response.PayOrderRes;
 import com.heyue.hbcxservice.service.TsmOrderInfoService;
 import com.heyue.hbcxservice.service.TsmUserInfoService;
 import com.heyue.utils.GenerateIdUtils;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +28,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.net.URLDecoder;
+import java.text.ParseException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -206,8 +208,8 @@ public class TsmOrderInfoServiceImpl implements TsmOrderInfoService {
                 // 查到支付成功，更新支付状态
                 if (StringUtils.equals(retCode, "000000") && retMap.get("status").toString().equals("SUCCESS")) {
                     tsmPayOrder.setPayRet("01");
-                    tsmPayOrder.setTradeTime(DateUtils.parse(retMap.get("payDate").toString(), DateUtils.FORMAT_FULL));
                     tsmPayOrderMapper.updateByPrimaryKey(tsmPayOrder);
+                    payOrder.setPayDate(DateUtils.format(new Date(), "yyyyMMddHHmmss"));
                 }
             }
             payOrder.setServiceOrderId(serviceOrderId);
@@ -216,7 +218,6 @@ public class TsmOrderInfoServiceImpl implements TsmOrderInfoService {
             payOrder.setAmount(String.valueOf(tsmOrderInfo.getAmount()));
             payOrder.setPayRet(tsmPayOrder.getPayRet());
             payOrder.setCreatTime(DateUtils.dateToStr(tsmOrderInfo.getCreateTime(), DateUtils.FORMAT_FULL));
-            payOrder.setPayDate(tsmPayOrder.getTradeTime().toString());
         } catch (Exception e) {
             logger.error("查询订单失败，serviceOrderId={}，{}", serviceOrderId, e);
             return Result.fail(null, "查询订单失败");

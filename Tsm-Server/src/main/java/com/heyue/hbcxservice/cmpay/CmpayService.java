@@ -316,7 +316,6 @@ public class CmpayService {
             respMap.put("returnCode", "000000");
             respMap.put("message", message);
             respMap.put("status", status);
-            respMap.put("payDate",getValue(responseText, "payDate"));
             return respMap;
         } else {
             respMap.put("returnCode", returnCode);
