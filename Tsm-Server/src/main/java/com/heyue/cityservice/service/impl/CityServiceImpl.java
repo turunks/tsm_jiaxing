@@ -428,6 +428,25 @@ public class CityServiceImpl implements CityService {
         }
     }
 
+    // 8.敬老卡鉴权
+    @Override
+    public String validElderCard(ValidElderCardReq validElderCardReq) {
+        try {
+            String idCardAES = validElderCardReq.getIdcardAES();
+            if (StringUtils.isBlank(idCardAES)) {
+                logger.warn("身份信息为空");
+                return null;
+            }
+            String url = Constant.VALID_ELDERLY_CARE_CARD_URL + idCardAES;
+            logger.info("发送敬老卡鉴权报文:{}", url);
+            String res = HttpRequestUtils.doGet(url);
+            return res;
+        } catch (Exception e) {
+            logger.error("发送敬老卡鉴权异常:{}", e);
+            return null;
+        }
+    }
+
     // 生成唯一的order_no
 
     /**

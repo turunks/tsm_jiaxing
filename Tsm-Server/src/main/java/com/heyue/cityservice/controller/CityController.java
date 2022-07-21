@@ -88,4 +88,12 @@ public class CityController {
         CardReturnNotifyRes cardReturnNotifyRes = cityService.cardReturnNotify(cardReturnNotifyReq);
         return cardReturnNotifyRes;
     }
+
+    // 敬老卡鉴权
+    @PostMapping("validElderCard")
+    @ResponseBody
+    public String validElderCard(@RequestBody ValidElderCardReq validElderCardReq) {
+        return cityService.validElderCard(validElderCardReq);
+
+    }
 }

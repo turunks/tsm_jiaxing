@@ -34,4 +34,7 @@ public interface CityService {
     // 8.退卡通知
     CardReturnNotifyRes cardReturnNotify(CardReturnNotifyReq cardReturnNotifyReq);
 
+    // 9.敬老卡鉴权
+    String validElderCard(ValidElderCardReq validElderCardReq);
+
 }

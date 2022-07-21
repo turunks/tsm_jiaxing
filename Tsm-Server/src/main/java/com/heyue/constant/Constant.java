@@ -19,6 +19,8 @@ public class Constant {
     public static String CARD_CONSUM_RECORD_URL;
     public static String CARD_RETURN_NOTIFY_URL;
 
+    public static String VALID_ELDERLY_CARE_CARD_URL;
+
     // 私钥
     public static String TSM_LOC_PRI_KEY;
 
@@ -256,6 +258,12 @@ public class Constant {
     @Value("${MERCHANT_NO}")
     public void setMerchantNo(String merchantNo) {
         MERCHANT_NO = merchantNo;
+    }
+
+
+    @Value("${VALID_ELDERLY_CARE_CARD_URL}")
+    public void setValidElderlyCareCardUrl(String validElderlyCareCardUrl) {
+        VALID_ELDERLY_CARE_CARD_URL = validElderlyCareCardUrl;
     }
 
 

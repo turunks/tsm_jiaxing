@@ -1,17 +1,5 @@
 package cn.com.heyue.utils;
 
-import java.io.*;
-import java.lang.reflect.Field;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.nio.charset.Charset;
-import java.security.KeyStore;
-import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
-import java.util.*;
-
-import javax.net.ssl.SSLContext;
-
 import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -21,16 +9,32 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.conn.ssl.TrustStrategy;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.ssl.SSLContextBuilder;
 import org.apache.http.ssl.SSLContexts;
 import org.apache.http.util.EntityUtils;
+
+import javax.net.ssl.SSLContext;
+import java.io.*;
+import java.lang.reflect.Field;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.nio.charset.Charset;
+import java.security.KeyStore;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * function: 发送Http请求 <br/>
@@ -346,6 +350,54 @@ public class HttpRequestUtils {
 		}
 		return result;
 	}
+
+	/**
+	 * get方式访问网址
+	 * @param url
+	 * @param
+	 * @return
+	 */
+	/**
+	 * GET请求.
+	 *
+	 * @param url 请求地址
+	 * @return 响应数据
+	 */
+	public static String doGet(String url) {
+		try {
+			// 创建客户端
+			HttpClientBuilder httpClientBuilder = HttpClientBuilder.create();
+			// 建立连接
+			HttpGet httpGet = new HttpGet(url);
+			// 请求配置：超时时间，单位：毫秒
+			RequestConfig requestConfig = RequestConfig.custom().setSocketTimeout(10000).setConnectTimeout(5000).build();
+			httpGet.setConfig(requestConfig);
+			// 设置请求头：内容类型
+			httpGet.setHeader("Content-Type", "application/json;charset=UTF-8");
+
+			return getResponse(httpClientBuilder, httpGet);
+		} catch (Exception ex) {
+			throw new RuntimeException(ex);
+		}
+	}
+
+	/**
+	 * 获取GET请求数据.
+	 *
+	 * @param httpClientBuilder 客户端对象
+	 * @param httpGet           GET请求
+	 * @return 响应数据
+	 */
+	public static String getResponse(HttpClientBuilder httpClientBuilder, HttpGet httpGet) {
+		try (CloseableHttpResponse closeableHttpResponse = httpClientBuilder.build().execute(httpGet)) {
+			HttpEntity httpEntity = closeableHttpResponse.getEntity();
+			return EntityUtils.toString(httpEntity, "UTF-8");
+		} catch (Exception ex) {
+			throw new RuntimeException(ex);
+		}
+	}
+
+
 
 
 	/**
