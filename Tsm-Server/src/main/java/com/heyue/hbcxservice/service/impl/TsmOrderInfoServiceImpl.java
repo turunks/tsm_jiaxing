@@ -100,6 +100,9 @@ public class TsmOrderInfoServiceImpl implements TsmOrderInfoService {
                 if (tsmOrderInfo.getAmount() == 0 && tsmOrderInfo.getMarketAmount() > 0) {
                     logger.info("全额权益金支付，不需要调用和包支付");
                     tsmPayOrder.setPayRet("03");
+                } else if (tsmOrderInfo.getAmount() == 0 && "0820".equals(tsmOrderInfo.getCardSpecies())) {
+                    logger.info("嘉兴敬老卡支持0元开卡，不需要调用和包支付");
+                    tsmPayOrder.setPayRet("01");
                 } else {
                     // 需要现金支付，请求和包支付
                     Map<String, Object> cmPayMap = new HashMap<>();
